@@ -1,0 +1,20 @@
+cff-version: 1.2.0
+message: "Se utilizar este material, cite-o conforme abaixo."
+title: "Estimação de perdas esperadas com dados limitados: modelos de aprendizado de máquina para a avaliação de suficiência da provisão em instituições financeiras dos segmentos S4 e S5 (proposta de dissertação)"
+authors:
+  - given-names: Arthur
+    family-names: ""
+    alias: Arthur0311
+type: software
+version: "0.2.0"
+date-released: "2026-11-06"
+repository-code: "https://github.com/Arthur0311/dissertacao-ecl-ml"
+license: MIT
+keywords:
+  - perdas esperadas de crédito
+  - Resolução CMN 4.966/2021
+  - metodologia simplificada
+  - avaliação de suficiência
+  - aprendizado de máquina
+  - calibração
+  - instituições financeiras de menor porte

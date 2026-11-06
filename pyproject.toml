@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ecl-suficiencia"
+version = "0.2.0"
+description = "Estimação de perdas esperadas com dados limitados para a avaliação de suficiência da provisão (S4 e S5, Res. CMN 4.966/2021)"
+readme = "README.md"
+requires-python = ">=3.11"
+license = {text = "MIT"}
+authors = [{name = "Arthur (Arthur0311)"}]
+dependencies = [
+  "pandas>=2.2",
+  "numpy>=1.26",
+  "scikit-learn>=1.5",
+  "xgboost>=2.1",
+  "lightgbm>=4.5",
+  "statsmodels>=0.14",
+  "pyyaml>=6.0",
+]
+
+[project.optional-dependencies]
+interpret = ["interpret>=0.6", "shap>=0.46"]
+dev = ["pytest>=8", "ruff>=0.6", "jupyter"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

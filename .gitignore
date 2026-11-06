@@ -1,0 +1,35 @@
+# Dados de instituições: nunca versionar
+data/
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+*.csv
+*.parquet
+*.xlsx
+*.xls
+*.sav
+*.dta
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+
+# Experimentos: artefatos pesados
+experiments/**/models/
+experiments/**/outputs/
+mlruns/
+
+# Sistema e editores
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.log
