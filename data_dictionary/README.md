@@ -34,6 +34,9 @@ Campos dos fatores experimentais da proposta v4, gravados por sorteio:
 - `nivel_distancia`, `lambda_subamostragem`, `prob_destino` (saída do classificador de domínio, estimada só no desenvolvimento) e `separabilidade_nivel` (verificação da manipulação). O tamanho da origem é constante entre níveis.
 - Distância observada por par: `dif_taxa_base_logito`, `auc_dominio`, `dist_composicao` e `desajuste_condicional` (excesso de log-loss do modelo da origem no desenvolvimento do destino após correção do intercepto).
 - `variaveis_local_reduzido`: lista fixada antes do teste.
+- `algoritmo` (logística regularizada ou gradient boosting), `regime` e, para a adaptação por reponderação, `peso_importancia` e o limite aplicado.
+- Custo operacional por regime e algoritmo: `tempo_treino`, `tempo_inferencia`, `memoria`, `decisoes_de_ajuste`, `acesso_origem_reestimacao`, com identificação do equipamento.
+- `regime_selecionado` por célula, com a janela em que a regra foi derivada e a janela em que foi avaliada.
 
 ## 4. Recuperação, exposição e ECL
 

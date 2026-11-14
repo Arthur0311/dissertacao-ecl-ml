@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ecl-suficiencia"
-version = "0.4.0"
-description = "Transferência e recalibração de PD entre carteiras de crédito: disponibilidade de dados, heterogeneidade e viés na mensuração de perdas esperadas"
+version = "0.4.1"
+description = "Modelagem adaptativa de perdas esperadas de crédito com Machine Learning: transferência de modelos de PD entre carteiras"
 readme = "README.md"
 requires-python = ">=3.11"
 license = {text = "MIT"}

@@ -1,8 +1,8 @@
-"""Relatórios previstos na proposta v4: contrastes H1–H4 e C1, calibração e viés monetário.
+"""Relatórios previstos na proposta v4: contrastes H1–H5, C1 e C2, calibração e viés monetário.
 
 Previstos e não implementados: intercepto e inclinação de calibração com intervalos,
 viés monetário em pontos-base, critério de adequação (adequada, inadequada,
-inconclusiva) e fronteira de utilidade. Erro de perdas monetárias requer perdas
+inconclusiva), fronteira de utilidade, custo operacional e regra de seleção de regime. Erro de perdas monetárias requer perdas
 realizadas comparáveis; o viés monetário usa apenas a ocorrência do evento.
 """
 from __future__ import annotations

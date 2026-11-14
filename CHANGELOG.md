@@ -1,5 +1,13 @@
 # Histórico
 
+## 0.4.1 — 2026-11-14
+- Proposta v4, revisão 2: Machine Learning restituído ao núcleo e objetivo de aplicação explicitado, por decisão do autor.
+- Título volta a "Modelagem adaptativa de perdas esperadas de crédito com Machine Learning"; a questão passa a incluir a complexidade do algoritmo como variável independente.
+- Regressão logística regularizada e gradient boosting em paridade; novo regime de adaptação por reponderação de importância (sete regimes).
+- Hipóteses em duas famílias: A, transferência (H1–H4, C1); B, Machine Learning (H5, complexidade do algoritmo; C2, reponderação versus recalibração).
+- Custo operacional como medida descritiva; regra de seleção de regime como contribuição metodológica e análise secundária; seção de aplicação posterior.
+- Mantidos o critério de adequação, o viés monetário, a teoria de base e a inferência condicional da versão 0.4.0.
+
 ## 0.4.0 — 2026-11-14
 - Nova proposta v4, motivada pelo parecer metodológico de 14/11 sobre a v3. Título, questão única e objetivo geral reescritos; a variável dependente passa a ser a qualidade da PD (pontuação probabilística, calibração e viés monetário).
 - Teoria de base explicitada: representação fidedigna e usuário externo (CPC 00 R2), com correspondência entre atributos contábeis e medidas da estimativa.

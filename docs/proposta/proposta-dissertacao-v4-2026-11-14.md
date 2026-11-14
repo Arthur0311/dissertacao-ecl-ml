@@ -1,15 +1,15 @@
 # Proposta de Dissertação de Mestrado — versão 4
 
-## Transferência e recalibração de probabilidades de inadimplência entre carteiras de crédito: disponibilidade de dados, heterogeneidade e viés na mensuração de perdas esperadas em instituições financeiras brasileiras
+## Modelagem adaptativa de perdas esperadas de crédito com Machine Learning: transferência de modelos de probabilidade de inadimplência, disponibilidade de dados e heterogeneidade entre carteiras de instituições financeiras brasileiras
 
 **Autor:** Arthur. **Programa:** Mestrado em Controladoria e Contabilidade, PPGCONT/UFRGS, linha Usuários Externos.
-**Data:** 14 de novembro de 2026. **Estado:** proposta para discussão com a orientação. As pendências que condicionam a qualificação estão reunidas na seção 11.
+**Data:** 14 de novembro de 2026 (revisão 2). **Estado:** proposta para discussão com a orientação. As pendências que condicionam a qualificação estão reunidas na seção 11.
 
 ## Resumo
 
-A provisão para perdas esperadas associadas ao risco de crédito é uma estimativa, e sua utilidade para o usuário externo depende de que a probabilidade de inadimplência (PD) empregada no cálculo seja neutra e de que sua incerteza seja conhecida. Carteiras com pouco histórico próprio podem aproveitar informação de outras carteiras, ao custo de importar viés quando as populações diferem. A pesquisa analisará como a disponibilidade de dados locais e a heterogeneidade entre carteiras de origem e de destino afetam a qualidade de PDs de 12 meses estimadas por transferência com recalibração, em comparação com modelos locais e agrupados. O desenho é preditivo e experimental sobre dados observacionais: a disponibilidade local e a distância entre origem e destino serão manipuladas por sorteio controlado, e seis regimes de estimação serão avaliados em janelas futuras do destino. A qualidade será medida por pontuação probabilística, calibração e viés monetário, este definido como o erro da PD ponderado por exposição e severidade. Um critério de adequação fixado antes do teste classificará cada combinação de disponibilidade e heterogeneidade como adequada, inadequada ou inconclusiva. A contribuição pretendida é empírica e metodológica: delimitar a fronteira de utilidade da transferência e traduzir representação fidedigna em propriedades mensuráveis da estimativa.
+A provisão para perdas esperadas associadas ao risco de crédito é uma estimativa, e sua utilidade para o usuário externo depende de que a probabilidade de inadimplência (PD) empregada no cálculo seja neutra e de que sua incerteza seja conhecida. Carteiras com pouco histórico próprio podem aproveitar informação de outras carteiras, ao custo de importar viés quando as populações diferem. A pesquisa analisará como a disponibilidade de dados locais, a heterogeneidade entre carteiras de origem e de destino e a complexidade do algoritmo afetam a qualidade de PDs de 12 meses estimadas por estratégias adaptativas de Machine Learning, em comparação com modelos locais e agrupados. O desenho é preditivo e experimental sobre dados observacionais: a disponibilidade local e a distância entre origem e destino serão manipuladas por sorteio controlado, e sete regimes de estimação, com regressão logística regularizada e *gradient boosting*, serão avaliados em janelas futuras do destino. A qualidade será medida por pontuação probabilística, calibração e viés monetário, este definido como o erro da PD ponderado por exposição e severidade. Um critério de adequação fixado antes do teste classificará cada combinação de disponibilidade e heterogeneidade como adequada, inadequada ou inconclusiva. A contribuição pretendida é empírica e metodológica: delimitar a fronteira de utilidade da transferência, derivar uma regra de seleção da estratégia de estimação conforme a informação disponível e traduzir representação fidedigna em propriedades mensuráveis da estimativa. O método validado e o protótipo reprodutível constituem a base de uma aplicação posterior.
 
-**Palavras-chave:** perdas esperadas de crédito; probabilidade de inadimplência; transferência de aprendizado; recalibração; calibração; representação fidedigna; viés de mensuração.
+**Palavras-chave:** perdas esperadas de crédito; Machine Learning; probabilidade de inadimplência; transferência de aprendizado; adaptação de domínio; calibração; representação fidedigna.
 
 ## 1. Introdução
 
@@ -23,41 +23,44 @@ O risco de viés aumenta quando a carteira dispõe de pouca informação própri
 
 ### 1.2 Problema e questão de pesquisa
 
-O aproveitamento de informação externa em risco de crédito tem antecedentes. Suryanto *et al.* (2022) aplicam transferência de aprendizado e adaptação de domínio a modelos de crédito; Kiefer (2009) e Blümke (2020) tratam da estimação de PD em carteiras com poucos ou nenhum evento. Permanece em aberto o ponto que interessa à mensuração contábil: em que volume de dados locais e até que grau de diferença entre carteiras a informação transferida melhora a estimativa, e a partir de onde passa a prejudicá-la. A questão de pesquisa é:
+O aproveitamento de informação externa em risco de crédito tem antecedentes. Suryanto *et al.* (2022) aplicam transferência de aprendizado e adaptação de domínio a modelos de crédito; Kiefer (2009) e Blümke (2020) tratam da estimação de PD em carteiras com poucos ou nenhum evento. A comparação de algoritmos de Machine Learning (ML) para prever inadimplência conta com literatura extensa, e a simples comparação de classificadores não constitui contribuição. Permanece em aberto o ponto que interessa à mensuração contábil: em que volume de dados locais, até que grau de diferença entre carteiras e com que complexidade de algoritmo a informação transferida melhora a estimativa, e a partir de onde passa a prejudicá-la. A questão de pesquisa é:
 
-> *Como a disponibilidade de dados locais e a heterogeneidade entre carteiras de origem e de destino afetam, em comparação com modelos locais e agrupados, a qualidade das probabilidades de inadimplência de 12 meses estimadas por transferência com recalibração em carteiras de crédito de instituições financeiras brasileiras?*
+> *Como a disponibilidade de dados locais, a heterogeneidade entre carteiras de origem e de destino e a complexidade do algoritmo afetam, em comparação com modelos locais e agrupados, a qualidade das probabilidades de inadimplência de 12 meses estimadas por estratégias adaptativas de Machine Learning em carteiras de crédito de instituições financeiras brasileiras?*
 
-Qualidade designa três atributos mensuráveis, definidos na seção 6.6: pontuação probabilística, calibração e viés monetário. Disponibilidade e heterogeneidade são as variáveis independentes; a qualidade da PD é a variável dependente.
+Estratégia adaptativa designa o procedimento que aproveita um modelo estimado em outra carteira e o ajusta à carteira de destino na medida em que os dados locais o permitem. Qualidade designa três atributos mensuráveis, definidos na seção 6.6: pontuação probabilística, calibração e viés monetário. Disponibilidade, heterogeneidade e algoritmo são as variáveis independentes; a qualidade da PD é a variável dependente.
+
+A motivação aplicada do projeto é oferecer a instituições com pouca informação própria ou pouca capacidade de modelagem um método para estimar perdas esperadas. Desenvolver esse método é um objetivo de engenharia; a questão científica que o sustenta é a das condições em que cada estratégia produz estimativas adequadas. A capacidade operacional entra como dimensão descritiva (seção 6.6), e a aplicação posterior está delimitada na seção 10.
 
 ### 1.3 Justificativa
 
 **Relevância.** A pesquisa interessa a três públicos. O usuário externo (depositantes, credores, investidores, cooperados e o supervisor) depende da provisão para avaliar o risco de crédito da instituição e não tem como auditar a PD. O preparador precisa decidir, com critério defensável, se utiliza um modelo próprio, um modelo de terceiros ou uma combinação. A instituição do Segmento 4 que pleiteia a metodologia completa deve demonstrar ao Banco Central do Brasil (BCB) a qualidade de sua metodologia de avaliação da perda esperada (Banco Central do Brasil [BCB], 2024). Para as instituições que aplicam a metodologia simplificada, a relevância depende de a regulamentação exigir estimativa própria da perda esperada além dos níveis mínimos; esse ponto está registrado como pendência normativa na seção 5.
 
-**Inovação.** O desenho manipula experimentalmente os dois fatores de interesse. A disponibilidade local é reduzida por sorteio de tomadores, e a distância entre origem e destino é variada por subamostragem controlada da origem. A avaliação inclui uma medida monetária do erro da PD e um critério de adequação fixado antes do teste, em lugar de comparações apenas relativas entre modelos.
+**Inovação.** O desenho manipula experimentalmente a disponibilidade local, por sorteio de tomadores, e a distância entre origem e destino, por subamostragem controlada da origem, e cruza esses fatores com dois algoritmos de complexidade distinta e duas formas de adaptação. A avaliação inclui uma medida monetária do erro da PD e um critério de adequação fixado antes do teste, em lugar de comparações apenas relativas entre modelos.
 
-**Contribuição.** A contribuição é empírica e metodológica. A empírica consiste na fronteira de utilidade: o volume local a partir do qual o modelo próprio iguala o modelo transferido e recalibrado, em função da distância entre carteiras. A metodológica consiste em um protocolo que traduz neutralidade e incerteza de mensuração em propriedades verificáveis de uma PD.
+**Contribuição.** A contribuição é empírica e metodológica. A empírica consiste na fronteira de utilidade: o volume local a partir do qual o modelo próprio iguala o modelo transferido e adaptado, em função da distância entre carteiras e do algoritmo. A metodológica tem duas partes: um protocolo que traduz neutralidade e incerteza de mensuração em propriedades verificáveis de uma PD, e uma regra de seleção da estratégia de estimação conforme a informação disponível.
 
-**Impacto.** Os resultados oferecem ao preparador uma regra de decisão documentável, ao auditor e ao supervisor um critério de avaliação e à pesquisa contábil uma operacionalização de representação fidedigna aplicável a outras estimativas baseadas em modelos.
+**Impacto.** Os resultados oferecem ao preparador uma regra de decisão documentável, que constitui o núcleo de uma ferramenta de mensuração utilizável por instituições sem equipe de modelagem, ao auditor e ao supervisor um critério de avaliação e à pesquisa contábil uma operacionalização de representação fidedigna aplicável a outras estimativas baseadas em modelos.
 
 ### 1.4 Delimitação
 
 - **Objeto:** PD de primeiro evento em 12 meses, para operações sem o evento na data-base, em carteiras de crédito de instituições financeiras brasileiras.
-- **Componente modelado:** somente a PD. A perda dado o evento (LGD) e a exposição no evento (EAD) entram como premissas comuns a todos os regimes.
+- **Componente modelado por ML:** a PD. A perda dado o evento (LGD) e a exposição no evento (EAD) entram como premissas comuns a todos os regimes, e a perda esperada é mensurada a partir delas.
 - **População:** contratos das instituições que autorizarem o acesso; amostra por conveniência.
-- **Fora do escopo:** modelagem de LGD e de EAD, perda esperada para a vida inteira do instrumento, alocação em estágios, avaliação de conformidade regulatória e inferência causal sobre decisões de crédito.
+- **Fora do escopo:** modelagem de LGD e de EAD, perda esperada para a vida inteira do instrumento, alocação em estágios, avaliação de conformidade regulatória, inferência causal sobre decisões de crédito e construção de sistema comercial.
 
 ## 2. Objetivos
 
 ### 2.1 Objetivo geral
 
-Analisar o efeito da disponibilidade de dados locais e da heterogeneidade entre carteiras de origem e de destino sobre a qualidade das probabilidades de inadimplência de 12 meses estimadas por transferência com recalibração, em comparação com modelos locais e agrupados, em carteiras de crédito de instituições financeiras brasileiras.
+Analisar o efeito da disponibilidade de dados locais, da heterogeneidade entre carteiras de origem e de destino e da complexidade do algoritmo sobre a qualidade das probabilidades de inadimplência de 12 meses estimadas por estratégias adaptativas de Machine Learning, em comparação com modelos locais e agrupados, em carteiras de crédito de instituições financeiras brasileiras.
 
 ### 2.2 Objetivos específicos
 
 1. Comparar a pontuação probabilística e a calibração dos regimes de estimação ao longo de uma malha de disponibilidade de dados locais.
 2. Mensurar o efeito da heterogeneidade entre origem e destino, induzida e observada, sobre o desempenho relativo dos regimes.
-3. Mensurar o viés monetário das PDs de cada regime sob premissas comuns de LGD e EAD.
-4. Delimitar as combinações de disponibilidade e heterogeneidade em que cada regime satisfaz o critério de adequação.
+3. Comparar algoritmos de complexidade distinta e formas de adaptação quanto ao desempenho e ao custo operacional.
+4. Mensurar o viés monetário das PDs de cada regime sob premissas comuns de LGD e EAD.
+5. Delimitar as combinações de disponibilidade, heterogeneidade e algoritmo em que cada regime satisfaz o critério de adequação e derivar delas uma regra de seleção de regime.
 
 ## 3. Referencial teórico e lacuna
 
@@ -85,6 +88,8 @@ O erro de previsão de um modelo decompõe-se em viés (afastamento sistemático
 
 A diferença entre populações tem três componentes, com consequências distintas. Na diferença de taxa base, a frequência do evento muda e a relação entre características e risco permanece. Na diferença de composição, muda a distribuição das características dos tomadores. Na diferença de relação condicional, a mesma característica passa a indicar risco diferente. A recalibração de intercepto e inclinação, adotada como forma de adaptação neste projeto, corrige por construção a primeira e parte da segunda, e não corrige a terceira. Denomina-se transferência negativa o caso em que o modelo transferido tem desempenho inferior ao do modelo local.
 
+O mesmo dilema governa a escolha do algoritmo. A regressão logística regularizada impõe relação linear em escala logito e tem variância baixa; o *gradient boosting* em árvores capta não linearidades e interações, com viés menor e variância maior. A vantagem do algoritmo flexível depende, por isso, do volume de dados, e não está assegurada em carteiras pequenas. Entre as formas de adaptação próprias de ML, a reponderação por importância reestima o modelo da origem atribuindo mais peso às observações semelhantes às do destino, o que corrige a diferença de composição quando a relação entre características e risco é a mesma nas duas populações.
+
 ### 3.3 Calibração e avaliação de probabilidades
 
 Discriminação é a capacidade de ordenar os tomadores por risco; calibração é a concordância entre as probabilidades estimadas e as frequências observadas. A mensuração de perdas esperadas requer a segunda: uma PD que ordena bem os tomadores e superestima o risco de todos produz provisão enviesada. Van Calster *et al.* (2019) distinguem níveis de calibração (média, fraca, moderada e forte) e mostram que modelos com boa discriminação podem apresentar calibração deficiente, em especial quando aplicados a populações diferentes daquela em que foram estimados. Riley *et al.* (2021) demonstram que a estimação precisa da inclinação de calibração é, em geral, o requisito que determina o tamanho mínimo da amostra de validação. Esses trabalhos provêm da pesquisa clínica, e sua transposição ao crédito requer adaptação quanto à dependência entre contratos do mesmo tomador e à maturação dos rótulos.
@@ -97,7 +102,9 @@ A lacuna é candidata porque a mini revisão sistemática ainda não foi executa
 
 ## 4. Hipóteses
 
-As hipóteses referem-se ao algoritmo principal (regressão logística regularizada) e à métrica primária de pontuação probabilística, o *log-loss*, definido na seção 6.6. Em todos os contrastes, valores negativos favorecem o primeiro regime citado. A malha de disponibilidade e os níveis de distância são os da seção 6.4.
+As hipóteses usam a métrica primária de pontuação probabilística, o *log-loss*, definido na seção 6.6. Em todos os contrastes, valores negativos favorecem o primeiro regime citado. A malha de disponibilidade e os níveis de distância são os da seção 6.4. As hipóteses formam duas famílias. A família A trata da transferência e é estimada com os dois algoritmos em paridade, cada contraste calculado dentro do mesmo algoritmo. A família B trata do papel do Machine Learning. "Adaptado", sem qualificação, designa a adaptação por recalibração.
+
+### Família A — transferência
 
 **H1 — Disponibilidade.** A vantagem do modelo adaptado sobre o modelo local diminui com o volume de dados locais. Estimando: coeficiente de log2(n local) no contraste *log-loss*(adaptado) − *log-loss*(local); sinal esperado positivo. Fundamento: a variância do modelo local decresce com a amostra, enquanto o viés residual do modelo adaptado não decresce.
 
@@ -109,17 +116,26 @@ As hipóteses referem-se ao algoritmo principal (regressão logística regulariz
 
 **C1 — Contraste pré-especificado, bilateral.** *log-loss*(adaptado) − *log-loss*(agrupado) nos dois níveis de menor disponibilidade. A teoria não sustenta expectativa direcional: o modelo agrupado aproveita toda a informação em um único ajuste, e o adaptado preserva o nível local.
 
-De H1 e H2 deriva-se a fronteira de utilidade, n\*(d): o volume local em que o contraste entre adaptado e local se anula, para cada nível de distância d. H1 e H2 implicam que n\* diminui quando a distância aumenta. O sinal de H1 decorre da teoria da estimação; o resultado informativo é a magnitude dos coeficientes e a posição de n\* na malha. As hipóteses são contrariadas por coeficientes de sinal oposto ou por intervalos que incluam zero com precisão suficiente para excluir efeitos de magnitude relevante (seção 6.9).
+### Família B — Machine Learning
+
+**H5 — Complexidade do algoritmo.** No regime local, a vantagem do *gradient boosting* sobre a regressão logística regularizada aumenta com o volume de dados locais. Estimando: coeficiente de log2(n local) no contraste *log-loss*(*gradient boosting*) − *log-loss*(logística); sinal esperado negativo. Fundamento: a variância do algoritmo flexível decresce com a amostra. O volume em que o contraste se anula indica a partir de quando o algoritmo mais complexo compensa.
+
+**C2 — Contraste pré-especificado, bilateral.** *log-loss*(adaptado por reponderação) − *log-loss*(adaptado por recalibração), com a origem em sua composição observada, ao longo da malha de disponibilidade. A expectativa não é direcional: a reponderação corrige a diferença de composição e aumenta a variância da estimativa, e seu saldo em carteiras reais é questão empírica.
+
+### Resultado derivado e matriz de amarração
+
+De H1 e H2 deriva-se a fronteira de utilidade, n\*(d): o volume local em que o contraste entre adaptado e local se anula, para cada nível de distância d e cada algoritmo. H1 e H2 implicam que n\* diminui quando a distância aumenta. O sinal de H1 decorre da teoria da estimação; o resultado informativo é a magnitude dos coeficientes e a posição de n\* na malha. As hipóteses são contrariadas por coeficientes de sinal oposto ou por intervalos que incluam zero com precisão suficiente para excluir efeitos de magnitude relevante (seção 6.9).
 
 **Tabela 2**
 *Matriz de amarração entre objetivos, hipóteses e procedimentos*
 
 | Objetivo específico | Hipótese ou contraste | Variável dependente | Fator | Técnica |
 |---|---|---|---|---|
-| 1 | H1; C1 | Diferença de *log-loss* | Volume local | Modelo de efeitos fixos por par e janela; reamostragem |
+| 1 | H1; C1 | Diferença de *log-loss* | Volume local | Modelo de efeitos fixos por par, janela e algoritmo; reamostragem |
 | 2 | H2; H3 | Diferença de *log-loss* | Distância induzida; distância observada (descritiva) | Idem |
-| 3 | H4 | Viés monetário absoluto | Regime | Contraste pareado; reamostragem |
-| 4 | — | Classificação de adequação | Volume local × distância | Critério da seção 6.6; mapa descritivo |
+| 3 | H5; C2 | Diferença de *log-loss*; custo operacional (descritivo) | Algoritmo; forma de adaptação | Modelo de efeitos fixos por par e janela; contraste pareado |
+| 4 | H4 | Viés monetário absoluto | Regime | Contraste pareado; reamostragem |
+| 5 | — | Classificação de adequação; regime selecionado | Volume local × distância × algoritmo | Critério e regra da seção 6.6; avaliação em janela posterior |
 
 ## 5. Enquadramento normativo
 
@@ -133,7 +149,7 @@ Pendência normativa a resolver antes da qualificação: confirmar, no texto vig
 
 ### 6.1 Delineamento
 
-A pesquisa é quantitativa e preditiva. Shmueli (2010) distingue a modelagem explicativa, que testa hipóteses causais sobre construtos teóricos, da modelagem preditiva, que avalia a capacidade de antecipar observações novas, e mostra que a distinção governa a escolha de dados, de validação e de métricas. O problema desta pesquisa é preditivo: pergunta-se pela qualidade de uma estimativa em observações futuras. Quanto aos procedimentos, trata-se de experimento computacional sobre dados observacionais de arquivo. Os fatores disponibilidade e distância são manipulados pelo pesquisador mediante sorteio, o que permite atribuir a eles as diferenças de desempenho dentro das carteiras estudadas. As diferenças observadas entre carteiras reais não são manipuladas e recebem tratamento descritivo.
+A pesquisa é quantitativa e preditiva. Shmueli (2010) distingue a modelagem explicativa, que testa hipóteses causais sobre construtos teóricos, da modelagem preditiva, que avalia a capacidade de antecipar observações novas, e mostra que a distinção governa a escolha de dados, de validação e de métricas. O problema desta pesquisa é preditivo: pergunta-se pela qualidade de uma estimativa em observações futuras. Quanto aos procedimentos, trata-se de experimento computacional sobre dados observacionais de arquivo. Os fatores disponibilidade e distância são manipulados pelo pesquisador mediante sorteio, e o fator algoritmo é atribuído de forma cruzada a todos os níveis, o que permite atribuir a eles as diferenças de desempenho dentro das carteiras estudadas. As diferenças observadas entre carteiras reais não são manipuladas e recebem tratamento descritivo.
 
 ### 6.2 Unidades e populações
 
@@ -160,9 +176,10 @@ Contratos com acompanhamento inferior a 12 meses serão tratados como censurados
 3. **Local reduzido:** modelo local restrito a um conjunto pequeno e pré-especificado de variáveis. Controla o efeito de estimar menos parâmetros.
 4. **Agrupado:** modelo único estimado com origem e desenvolvimento do destino.
 5. **Transferido:** modelo estimado apenas na origem e aplicado ao destino sem ajuste.
-6. **Adaptado:** modelo da origem recalibrado com o desenvolvimento do destino: logit(p adaptado) = a + b × logit(p origem), com penalização que mantém (a, b) próximos de (0, 1) quando os dados locais não sustentam afastamento. A intensidade da penalização será escolhida em validação interna.
+6. **Adaptado por recalibração:** modelo da origem recalibrado com o desenvolvimento do destino: logit(p adaptado) = a + b × logit(p origem), com penalização que mantém (a, b) próximos de (0, 1) quando os dados locais não sustentam afastamento. A intensidade da penalização será escolhida em validação interna.
+7. **Adaptado por reponderação:** modelo da origem reestimado com pesos de importância, proporcionais à razão entre a probabilidade de a observação pertencer ao destino e a de pertencer à origem, fornecida pelo classificador de domínio, e em seguida recalibrado como no regime 6. Os pesos serão limitados para conter a variância.
 
-O algoritmo principal é a regressão logística regularizada, por ser auditável e por exigir poucas decisões de ajuste. O *gradient boosting* em árvores será aplicado aos regimes 2, 4, 5 e 6 como análise de robustez, com orçamento de ajuste equivalente, e não integra a família confirmatória. Quando o desenvolvimento do destino não contiver as duas classes, os regimes 2, 3 e 6 serão registrados como não estimáveis, e a frequência dessas ocorrências será reportada por célula.
+Os regimes 2 e 4 a 7 serão estimados com dois algoritmos, em paridade e com orçamento de ajuste equivalente: a regressão logística regularizada, auditável e com poucas decisões de ajuste, e o *gradient boosting* em árvores, que capta não linearidades e interações. O ajuste fino do modelo da origem com dados do destino e os modelos hierárquicos são extensões condicionadas ao prazo. Quando o desenvolvimento do destino não contiver as duas classes, os regimes 2, 3, 6 e 7 serão registrados como não estimáveis, e a frequência dessas ocorrências será reportada por célula.
 
 ### 6.6 Medidas de qualidade e critério de adequação
 
@@ -174,7 +191,11 @@ O algoritmo principal é a regressão logística regularizada, por ser auditáve
 
 **Discriminação.** A área sob a curva ROC será reportada como medida descritiva.
 
+**Custo operacional.** Para cada regime e algoritmo serão reportados, em equipamento identificado, tempo de treinamento e de inferência, memória, número de decisões de ajuste e necessidade de acesso aos dados da origem na reestimação. A medida é descritiva: caracteriza a capacidade operacional exigida e não estima custo de adoção.
+
 **Critério de adequação.** Uma PD será classificada como adequada em uma célula quando, no teste, os três requisitos forem atendidos: (i) o intervalo de 95% do intercepto de calibração estiver contido em ±δa; (ii) o intervalo de 95% da inclinação estiver contido em [1 − δb, 1 + δb]; (iii) o limite superior do intervalo de 95% da diferença de *log-loss* em relação à taxa base for negativo. Será classificada como inadequada quando algum intervalo estiver inteiramente fora da faixa correspondente, e como inconclusiva nos demais casos. Os valores candidatos são δa = 0,2 e δb = 0,2; os valores definitivos serão justificados com a literatura de validação e fixados antes da abertura do teste. O critério exige que o intervalo esteja contido na faixa, e não apenas que inclua o valor ideal, para que estimativas imprecisas não sejam aprovadas por falta de evidência em contrário.
+
+**Regra de seleção de regime.** Para cada combinação de volume local e distância, a regra indica o regime e o algoritmo a adotar: entre os classificados como adequados, o de menor *log-loss*; havendo diferença contida na margem de irrelevância, o de menor custo operacional. A regra será derivada com as janelas de teste iniciais e avaliada na janela de teste final, por comparação do regime selecionado com o regime local e com o melhor regime observado nessa janela. Trata-se de análise secundária, que só é executável com pelo menos duas janelas de teste.
 
 ### 6.7 Informação prospectiva
 
@@ -186,7 +207,7 @@ As janelas de teste serão formadas por datas-base posteriores ao desenvolviment
 
 ### 6.9 Inferência
 
-A inferência confirmatória é condicional às carteiras estudadas. Os contrastes de H1 a H3 serão estimados por modelo linear da diferença de *log-loss* por célula, com efeitos fixos por par origem–destino e janela, e com log2(n local) e nível de distância como regressores. A incerteza será obtida por reamostragem que combina os sorteios de desenvolvimento com *bootstrap* de tomadores do teste em blocos temporais. H4 e C1 serão estimados por contraste pareado com a mesma reamostragem. Os cinco testes formam uma família, com intervalos de 95% e ajuste de Holm.
+A inferência confirmatória é condicional às carteiras estudadas. Os contrastes de H1 a H3 serão estimados por modelo linear da diferença de *log-loss* por célula, com efeitos fixos por par origem–destino, janela e algoritmo, e com log2(n local) e nível de distância como regressores; as interações com o algoritmo serão reportadas. H5 será estimada por modelo análogo, sem o efeito de algoritmo. A incerteza será obtida por reamostragem que combina os sorteios de desenvolvimento com *bootstrap* de tomadores do teste em blocos temporais. H4, C1 e C2 serão estimados por contraste pareado com a mesma reamostragem. O ajuste de Holm será aplicado separadamente à família A (H1 a H4 e C1) e à família B (H5 e C2), com intervalos de 95%.
 
 A opção por efeitos fixos responde ao número de carteiras disponíveis. Com poucas instituições, não há base para inferir sobre a população de carteiras brasileiras, e repetições de sorteio não criam carteiras independentes. A associação entre heterogeneidade observada e desempenho será reportada de forma descritiva; passará a ser testada, com reamostragem por destino, se o número de destinos independentes atingir o mínimo fixado no protocolo antes do teste. A generalização para outras carteiras será argumentada com base na descrição das carteiras estudadas, e não inferida estatisticamente.
 
@@ -200,7 +221,7 @@ A precisão-alvo é uma meia-largura de 0,2 para o intervalo de 95% da inclinaç
 
 **Interna.** As ameaças principais são o vazamento de informação do teste, controlado pela separação temporal e pelo registro prévio das decisões, e a multiplicidade de análises, controlada pela família confirmatória fechada e pela identificação das demais análises como exploratórias.
 
-**De construto.** A disponibilidade manipulada por sorteio reproduz a redução de volume e não reproduz as demais condições de uma instituição com poucos dados, como política de crédito recente, sistemas menos maduros e campos de qualidade inferior. Uma análise com janelas históricas curtas aproximará a condição de início de operação. A distância induzida reproduz a diferença de composição e não a diferença de relação condicional, que só é observada entre carteiras reais.
+**De construto.** A disponibilidade manipulada por sorteio reproduz a redução de volume e não reproduz as demais condições de uma instituição com poucos dados, como política de crédito recente, sistemas menos maduros e campos de qualidade inferior. Uma análise com janelas históricas curtas aproximará a condição de início de operação. A distância induzida reproduz a diferença de composição e não a diferença de relação condicional, que só é observada entre carteiras reais. Pelo mesmo motivo, a adaptação por reponderação não é avaliada sob distância induzida: o procedimento desfaria a manipulação que o próprio classificador de domínio produziu, e o resultado seria circular. O contraste C2 utiliza apenas a composição observada.
 
 **Externa.** A amostra é de conveniência. Os resultados descrevem as carteiras estudadas, e sua extensão a outras instituições depende da semelhança de modalidades, políticas e período.
 
@@ -224,13 +245,13 @@ Um estudo-piloto em base pública de contratos será executado nos três primeir
 
 ## 9. Reprodutibilidade, governança e ética
 
-O [protocolo experimental](../metodologia/protocolo-experimental-v4.md) especifica as decisões a registrar antes da abertura do teste: versão dos dados, definições de evento, cortes temporais, malha, níveis de distância, faixas do critério de adequação, margem de irrelevância e plano de análise. Alterações posteriores serão registradas como emendas datadas. Código, configuração, sementes e versões de bibliotecas serão versionados; o código será desenvolvido em Python, com os pacotes identificados no repositório.
+O [protocolo experimental](../metodologia/protocolo-experimental-v4.md) especifica as decisões a registrar antes da abertura do teste: versão dos dados, definições de evento, cortes temporais, malha, níveis de distância, faixas do critério de adequação, margem de irrelevância e plano de análise. Alterações posteriores serão registradas como emendas datadas. Código, configuração, sementes e versões de bibliotecas serão versionados; o código será desenvolvido em Python, com os pacotes identificados no repositório, e organizado como protótipo reprodutível dos regimes, das medidas e da regra de seleção.
 
 Dados identificáveis não serão versionados nem enviados a serviços externos. A pseudonimização de identificadores não equivale a anonimização, e o risco de reidentificação será avaliado. Termos de cessão, base legal, sigilo, prazo de retenção e necessidade de apreciação por comitê de ética serão definidos com as instituições e com o programa antes do acesso.
 
-## 10. Entregas e cronograma
+## 10. Entregas, cronograma e aplicação posterior
 
-**Entregas:** mini revisão sistemática da literatura; protocolo e dicionário de dados fixados; comparação reprodutível dos regimes; fronteira de utilidade e mapa de adequação; análise do viés monetário; relatório de limitações.
+**Entregas:** mini revisão sistemática da literatura; protocolo e dicionário de dados fixados; comparação reprodutível dos regimes e algoritmos; fronteira de utilidade, mapa de adequação e regra de seleção de regime; análise do viés monetário; protótipo reprodutível; relatório de limitações.
 
 **Tabela 3**
 *Cronograma indicativo, em meses a contar do início formal*
@@ -240,10 +261,12 @@ Dados identificáveis não serão versionados nem enviados a serviços externos.
 | 1–3 | Mini revisão sistemática; negociação de acesso; estudo-piloto em base pública; decisão de cenário |
 | 3–4 | Diagnóstico dos dados; fixação do protocolo |
 | 4–6 | Regimes de referência e validação temporal |
-| 6–8 | Transferência, adaptação e fatores experimentais |
-| 8–9 | Viés monetário e análises de sensibilidade |
-| 9–10 | Inferência e robustez |
+| 6–8 | Transferência, formas de adaptação, algoritmos e fatores experimentais |
+| 8–9 | Viés monetário, custo operacional e análises de sensibilidade |
+| 9–10 | Inferência, regra de seleção e robustez |
 | 10–12 | Redação e revisão |
+
+**Aplicação posterior.** A dissertação entrega um método validado e um protótipo. A regra de seleção, o critério de adequação e as medidas de calibração e de viés monetário formam o núcleo de uma ferramenta de mensuração de perdas esperadas dirigida a instituições com pouca informação própria ou pouca capacidade de modelagem: a ferramenta indicaria a estratégia compatível com a informação disponível, documentaria seus limites e acompanharia a calibração à medida que novos dados surgissem. Integração de dados, segregação entre clientes, governança, validação independente e enquadramento regulatório por instituição são desenvolvimento posterior e não integram o escopo. O uso comercial de dados ou de modelos estimados com dados de terceiros depende de autorização específica.
 
 ## 11. Limitações e pendências
 
@@ -251,7 +274,7 @@ Quatro pendências condicionam a qualificação e não são resolvidas por este 
 
 1. **Acesso a dados.** Não há microdados confirmados. Sem acesso a dados brasileiros até o terceiro mês, aplica-se o cenário C, com revisão do título.
 2. **Lacuna.** A mini revisão sistemática não foi executada. A lacuna da seção 3.4 é candidata e pode ser refutada pelos achados ali especificados.
-3. **Parâmetros do critério.** As faixas de adequação, a margem de irrelevância e o limiar de materialidade são candidatos e dependem de justificação na literatura e de decisão com a orientação.
+3. **Parâmetros do critério.** As faixas de adequação, a margem de irrelevância e o limiar de materialidade são candidatos e dependem de justificação na literatura e de decisão com a orientação. A regra de seleção depende desses parâmetros.
 4. **Base normativa.** A extensão da exigência de estimativa própria sob a metodologia simplificada e a vigência de cada dispositivo nas datas-base precisam de conferência no texto oficial.
 
 As limitações do desenho são as da seção 6.11: amostra de conveniência, escassez e distância induzidas que reproduzem apenas parte das condições reais, e desdobramento contábil restrito ao componente de PD.

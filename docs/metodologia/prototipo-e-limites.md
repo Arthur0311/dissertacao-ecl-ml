@@ -1,6 +1,6 @@
 # Protótipo: capacidades existentes e implementação prevista
 
-Referência: [proposta v4](../proposta/proposta-dissertacao-v4-2026-11-14.md) e [protocolo v4](protocolo-experimental-v4.md). O nome `ecl_suficiencia` foi mantido para não romper importações. A versão 0.4.0 identifica a revisão da proposta e das interfaces documentadas, não a entrega de modelos treinados.
+Referência: [proposta v4](../proposta/proposta-dissertacao-v4-2026-11-14.md) e [protocolo v4](protocolo-experimental-v4.md). O nome `ecl_suficiencia` foi mantido para não romper importações. A versão 0.4.1 identifica a revisão da proposta e das interfaces documentadas, não a entrega de modelos treinados.
 
 ## O que funciona hoje
 
@@ -20,13 +20,17 @@ Ingestão, construção de atributos, treinamento, recalibração, LGD/EAD, perd
 |---|---|
 | Regimes taxa base e local reduzido | `pd_models` |
 | Recalibração de intercepto e inclinação penalizada em direção a (0, 1) | `local_recalibration` |
+| Adaptação por reponderação: pesos de importância limitados e reestimação da origem | `local_recalibration` e `pd_models` |
+| Logística regularizada e gradient boosting com orçamento de ajuste equivalente | `pd_models` |
 | Sorteio de tomadores por nível de disponibilidade | `validation` |
 | Classificador de domínio e subamostragem da origem por nível de distância | novo módulo de fatores experimentais |
 | Medidas de distância observada (taxa base, separabilidade, composição, desajuste condicional) | novo módulo de fatores experimentais |
 | Intercepto e inclinação de calibração com intervalos | `reporting` |
 | Viés monetário em pontos-base | `reporting` |
 | Critério de adequação com três classes | `reporting` |
-| Contrastes H1–H4 e C1, fronteira de utilidade e reamostragem | `reporting` |
+| Contrastes H1–H5, C1 e C2, fronteira de utilidade e reamostragem | `reporting` |
+| Custo operacional por regime e algoritmo | `reporting` |
+| Regra de seleção de regime, derivada e avaliada em janelas distintas | `reporting` |
 
 ## Mapeamento dos módulos existentes
 
@@ -37,5 +41,7 @@ Ingestão, construção de atributos, treinamento, recalibração, LGD/EAD, perd
 1. Estudo-piloto em base pública: ingestão mínima, regimes, recalibração, medidas e critério.
 2. Fatores experimentais e reamostragem.
 3. Ingestão dos dados autorizados e dicionário fixado.
+
+O protótipo reprodutível é entrega da dissertação e base da aplicação posterior; integração, segregação de dados entre clientes e governança não fazem parte dele.
 
 Cada módulo implementado terá testes próprios de vazamento, censura, maturação e calibração. Os testes aritméticos atuais não demonstram validade empírica.
