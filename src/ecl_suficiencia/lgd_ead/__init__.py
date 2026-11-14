@@ -3,7 +3,10 @@ from __future__ import annotations
 
 
 def segmented_lgd(recoveries, *, maturity_months: int = 24):
-    """LGD por segmento a partir de fluxos de recuperação maturados por ao menos `maturity_months`."""
+    """Interface prevista de LGD por segmento; maturação e censura dependem da carteira.
+
+    O padrão histórico de 24 meses é ilustrativo, não garantia de recuperação completa.
+    """
     raise NotImplementedError
 
 

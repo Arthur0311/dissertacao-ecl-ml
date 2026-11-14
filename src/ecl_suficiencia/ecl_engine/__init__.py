@@ -1,10 +1,14 @@
-"""Perda esperada por contrato (12 meses) e extensão multiperíodo (soma descontada das perdas marginais)."""
+"""Aproximação experimental LP12 e interface multiperíodo ainda não implementada.
+
+PD12 não é ECL integral: interpretação requer LGD/EAD, horizonte, cenários e desconto
+compatíveis. Perdas decorrentes de defaults em 12 meses podem ocorrer além desse prazo.
+"""
 from __future__ import annotations
 import numpy as np
 
 
 def ecl_12m(pd_12m: np.ndarray, lgd: np.ndarray, ead: np.ndarray) -> np.ndarray:
-    """ECL = PD × LGD × EAD, elemento a elemento."""
+    """Produto PD12 × LGD × EAD (LP12); não aplica cenários ou desconto por conta própria."""
     pd_12m, lgd, ead = (np.asarray(a, dtype=float) for a in (pd_12m, lgd, ead))
     if not ((0 <= pd_12m) & (pd_12m <= 1)).all():
         raise ValueError("PD fora de [0, 1]")

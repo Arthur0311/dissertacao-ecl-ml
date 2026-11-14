@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ecl-suficiencia"
-version = "0.2.0"
-description = "Estimação de perdas esperadas com dados limitados para a avaliação de suficiência da provisão (S4 e S5, Res. CMN 4.966/2021)"
+version = "0.3.0"
+description = "Modelagem adaptativa de ECL com Machine Learning: transferência entre carteiras, validação de PD e repercussões contábeis"
 readme = "README.md"
 requires-python = ">=3.11"
 license = {text = "MIT"}

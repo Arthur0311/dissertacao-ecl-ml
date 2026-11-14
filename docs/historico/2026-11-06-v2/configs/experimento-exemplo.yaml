@@ -1,0 +1,33 @@
+# Configuração declarativa de um experimento (exemplo; valores ilustrativos)
+nome: pd-regimes-escassez-v0
+dados:
+  fonte: data/processed/contratos_mes.parquet      # nunca versionado
+  unidade: contrato-mes
+  periodo_inicio: 2020-01
+  periodo_fim: 2025-12
+  teste_fora_do_tempo_meses: 12
+evento:
+  definicao: atraso_superior_90_dias_ou_ativo_problematico
+  horizonte_meses: 12
+  tratar_cura: true
+carteiras:
+  chave: [modalidade, tipo_garantia]
+  minimo_eventos_local: 50
+modelos:
+  algoritmos: [logistica_regularizada, gradient_boosting]
+  regimes: [global, local, hibrido]
+  macro: [M0, M1_uniforme, M2_por_carteira]
+escassez:
+  eventos_treino: [25, 50, 100, 200, total]
+  repeticoes: 20
+  semente_base: 2026
+recalibracao_hibrida:
+  encolhimento_k: 50
+metricas_primarias:
+  H1: [intercepto_calibracao, inclinacao_calibracao, erro_relativo_ecl]
+  H2: [logloss_fora_do_tempo]
+  H3: [inclinacao_erro_vs_eventos]
+  H4: {metrica: erro_relativo_ecl, teste: tost, delta: 0.10}
+  H5: [razao_ecl_minimo, complemento_pct_carteira, defasagem_meses]
+niveis_minimos:
+  fonte: data/processed/niveis_minimos_vigentes.csv  # percentuais por carteira C1-C5 e faixa de atraso, por data

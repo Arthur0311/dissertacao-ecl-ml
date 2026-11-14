@@ -1,13 +1,15 @@
-"""Regime híbrido: recalibração logística por carteira do logit da PD global, com encolhimento para (0, 1).
+"""Interface histórica de recalibração e auxiliar heurístico de encolhimento.
 
-logit(PD_ic) = a_c + b_c · logit(PD_global(X_i)) + s_c(t)
+V3 prevê modelo da origem e recalibração local regularizada para (0, 1), ajustada
+apenas no desenvolvimento. O peso n/(n+k) não implementa essa estimação nem um
+modelo bayesiano. Informação macro comum é tratada separadamente; ver protocolo.
 """
 from __future__ import annotations
 import numpy as np
 
 
 def shrinkage_weight(n_events: int, k: float = 50.0) -> float:
-    """Peso do ajuste local w = n / (n + k). Com poucos eventos, a carteira herda o modelo global."""
+    """Peso heurístico w = n/(n+k); k=50 é ilustrativo, não limiar validado de viabilidade."""
     if n_events < 0:
         raise ValueError("n_events deve ser não negativo")
     return n_events / (n_events + k)

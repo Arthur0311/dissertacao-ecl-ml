@@ -1,4 +1,8 @@
-"""Relatórios: calibração (intercepto e inclinação), log-loss, erro relativo de perdas, TOST, Diebold–Mariano e explicabilidade."""
+"""Relatórios previstos: H1–H3 em log-loss, calibração, incerteza e transferência negativa.
+
+Erro monetário requer perdas realizadas comparáveis; não confundir defaults com ECL.
+TOST e Diebold–Mariano não são requisitos automáticos do protocolo v3.
+"""
 from __future__ import annotations
 import numpy as np
 

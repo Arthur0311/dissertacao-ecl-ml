@@ -1,5 +1,7 @@
-"""ecl_suficiencia: estimação de perdas esperadas com dados limitados para a avaliação de suficiência (S4 e S5).
+"""Modelagem adaptativa de ECL: transferência entre carteiras e validação de PD.
 
-Pacote organizado conforme a seção 8 da proposta. Nesta versão, os módulos contêm apenas as interfaces previstas.
+Nome técnico preservado. Proposta v3: dados e heterogeneidade são dimensões observadas,
+não consequências do segmento S4/S5. Há auxiliares aritméticos e interfaces pendentes;
+não há pipeline adaptativo ou motor regulatório validado. Ver docs/metodologia/.
 """
-__version__ = "0.2.0"
+__version__ = "0.3.0"

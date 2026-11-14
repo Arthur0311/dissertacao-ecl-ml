@@ -1,33 +1,112 @@
-# Configuração declarativa de um experimento (exemplo; valores ilustrativos)
-nome: pd-regimes-escassez-v0
+# Configuração declarativa da proposta v3; NÃO é um executor implementado.
+# Valores ilustrativos: fixar após diagnóstico, antes de abrir o teste final.
+versao_proposta: '3'
+status: planejamento_nao_preregistrado
+nome: transferencia-adaptacao-pd-ecl-v3
+
 dados:
-  fonte: data/processed/contratos_mes.parquet      # nunca versionado
-  unidade: contrato-mes
-  periodo_inicio: 2020-01
-  periodo_fim: 2025-12
-  teste_fora_do_tempo_meses: 12
+  fonte: data/processed/contratos_mes.parquet
+  acesso_confirmado: false
+  cenario: a_definir  # A: multi-instituicao; B: multi-carteira; C: prova de conceito
+  unidade: contrato-data_base
+  grupo_dependencia: id_tomador_pseudonimo
+  destino: a_definir
+  origens: []
+  segmento_prudencial_define_escassez: false
+
 evento:
-  definicao: atraso_superior_90_dias_ou_ativo_problematico
+  definicao_candidata: primeiro_atraso_superior_90_dias
+  interpretacao: proxy_se_nao_cobrir_ativo_problematico
   horizonte_meses: 12
-  tratar_cura: true
-carteiras:
-  chave: [modalidade, tipo_garantia]
-  minimo_eventos_local: 50
-modelos:
-  algoritmos: [logistica_regularizada, gradient_boosting]
-  regimes: [global, local, hibrido]
-  macro: [M0, M1_uniforme, M2_por_carteira]
-escassez:
-  eventos_treino: [25, 50, 100, 200, total]
+  excluir_evento_presente_na_data_base: true
+  alternativa_ativo_problematico: separada_se_disponivel
+  seguimento_incompleto: censurar_nao_rotular_zero
+  cura_renegociacao_baixa_cessao: regras_pendentes_no_dicionario
+
+validacao:
+  externa: temporal_com_rotulos_maturados
+  interna: cronologica_aninhada
+  teste_final_intocado: true
+  uso_teste_para_escolher_origem: false
+  embargo_meses_candidato: 12
+  grupo_tomador: controlar_dependencia_e_sobreposicao_de_dominios
+  bootstrap: tomadores_e_blocos_temporais_a_definir
+  intervalo_confianca: 0.95
+
+informacao_local:
+  fracao_tomadores_desenvolvimento: [0.10, 0.40, 1.0]
+  amostragem: aleatoria_por_tomador_sem_selecao_por_classe
+  eventos: reportar_observados_em_cada_sorteio
+  teste: manter_distribuicao_original
   repeticoes: 20
   semente_base: 2026
-recalibracao_hibrida:
-  encolhimento_k: 50
-metricas_primarias:
-  H1: [intercepto_calibracao, inclinacao_calibracao, erro_relativo_ecl]
-  H2: [logloss_fora_do_tempo]
-  H3: [inclinacao_erro_vs_eventos]
-  H4: {metrica: erro_relativo_ecl, teste: tost, delta: 0.10}
-  H5: [razao_ecl_minimo, complemento_pct_carteira, defasagem_meses]
-niveis_minimos:
-  fonte: data/processed/niveis_minimos_vigentes.csv  # percentuais por carteira C1-C5 e faixa de atraso, por data
+  inicio_operacao: sensibilidade_separada_por_janelas_curtas
+  sem_rotulos_locais: transferencia_pura_sem_recalibracao_supervisionada
+
+heterogeneidade:
+  dados_para_medicao: desenvolvimento_origem_destino
+  medida_principal: media_distancias_covariaveis_comuns
+  numericas: wasserstein_normalizada_escala_robusta_origem
+  categoricas: variacao_total
+  variaveis_pesos_escala_nula: a_fixar_antes_do_teste
+  cortes_compatibilidade: a_fixar_no_desenvolvimento
+  taxa_default: descrever_separadamente_com_rotulos_maturados
+
+modelos:
+  algoritmos: [logistica_regularizada, gradient_boosting]
+  regimes: [local, agrupado, transferido_sem_adaptacao, adaptado]
+  adaptado: recalibracao_logistica_regularizada_para_identidade
+  penalizacao: escolher_na_validacao_interna
+  falha_local: registrar_nao_estimavel
+  fallback_adaptado: origem_com_frequencia_reportada
+  extensoes: [reponderacao_dominio, modelo_hierarquico]
+  orcamento_ajuste: a_fixar
+
+macro:
+  principal: conjunto_parcimonioso_comum
+  disponibilidade: verificar_publicacao_e_vintage_na_data_base
+  ablacao_sem_macro: apenas_sensibilidade
+  selecao_por_carteira: extensao
+
+hipoteses:
+  H1:
+    metrica: logloss
+    contraste: adaptado_menos_local
+    condicao: menor_informacao_maior_compatibilidade_predefinidas
+    sinal_esperado: negativo
+  H2:
+    metrica: logloss
+    contraste: transferido_sem_adaptacao_menos_local
+    estimando: coeficiente_distancia_controlando_informacao_local
+    sinal_esperado: positivo
+  H3:
+    metrica: logloss
+    contraste: adaptado_menos_transferido_sem_adaptacao
+    estimando: coeficiente_log2_1_mais_n_local
+    n_local: tomadores_distintos_utilizaveis
+    sinal_esperado: negativo
+  multiplicidade: holm_H1_H2_H3
+metricas_complementares:
+  - brier
+  - intercepto_e_inclinacao_calibracao
+  - curvas_calibracao_com_incerteza
+  - roc_auc_e_pr_auc_quando_definidas
+  - estabilidade_temporal
+  - cobertura_de_execucao_e_fallback
+
+ecl:
+  principal: LP12_aproximacao_PD12_vezes_LGD_vezes_EAD
+  lgd_e_ead: premissas_comuns_entre_modelos_a_documentar
+  desconto_cenarios_recuperacoes: explicitar_antes_de_interpretar_como_ECL
+  extensao_multiperiodo: condicionada_a_dados_e_protocolo
+  validacao_monetaria: somente_com_perdas_e_recuperacoes_comparaveis
+  medidas: [delta_brl, delta_pontos_base_exposicao]
+  comparacao_regulatoria:
+    habilitada: false
+    requer: escopo_horizonte_e_regras_compativeis_por_ativo_e_data
+    norma_referencia: Res_BCB_352_2023_e_alteracoes_aplicaveis
+    fonte: data/processed/regras_provisao_por_vigencia.csv
+    interpretacao: diferenca_experimental_nao_lancamento_obrigatorio
+
+viabilidade_secundaria: [tempo_treino, tempo_inferencia, memoria, requisitos_manutencao]
+produto_comercial: desenvolvimento_posterior_fora_do_escopo

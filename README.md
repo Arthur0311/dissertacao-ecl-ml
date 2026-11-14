@@ -1,60 +1,68 @@
-# Estimação de perdas esperadas com dados limitados
+# Modelagem adaptativa de perdas esperadas de crédito com Machine Learning
 
-Modelos de aprendizado de máquina para a avaliação de suficiência da provisão para perdas esperadas em instituições financeiras brasileiras dos segmentos S4 e S5 (Resolução CMN nº 4.966/2021).
+**Disponibilidade de dados e heterogeneidade entre carteiras de instituições financeiras brasileiras.**
 
-Projeto de dissertação de mestrado em Controladoria e Contabilidade, PPGCONT/UFRGS, linha de pesquisa Usuários Externos.
+Projeto de dissertação em Controladoria e Contabilidade, PPGCONT/UFRGS, linha Usuários Externos. Versão documental **0.3.0 — 13/11/2026**.
 
-> **Status:** proposta em discussão com a orientação. Nenhum resultado empírico foi produzido ainda. Os dispositivos normativos citados devem ser conferidos no texto consolidado vigente e as referências bibliográficas nas fontes primárias.
+> Proposta para discussão com a orientação. Não há resultados empíricos nem acesso a microdados confirmado. O código é um esqueleto experimental, não um motor de ECL validado.
 
-## O problema em uma frase
+## Questão central
 
-As instituições dos segmentos S4 e S5 apuram a provisão pela metodologia simplificada, cujos percentuais por carteira e faixa de atraso são níveis mínimos; a norma exige, ainda assim, montantes suficientes para a totalidade da perda esperada e o registro segregado do excedente. Para cumprir essa avaliação de suficiência, a instituição precisa estimar a perda esperada com histórico curto, poucos eventos de inadimplência e equipe reduzida. A pesquisa investiga em que condições modelos de probabilidade de inadimplência, com personalização por carteira e informação macroeconômica prospectiva, produzem estimativas calibradas para esse fim, e, como desdobramento aplicado, em que carteiras e fases do ciclo essas estimativas excedem os níveis mínimos.
+Em que condições de disponibilidade de dados locais e heterogeneidade entre carteiras estratégias adaptativas de Machine Learning produzem estimativas confiáveis de probabilidade de inadimplência, e como essas estimativas se refletem na mensuração de perdas esperadas de crédito em instituições financeiras brasileiras?
 
-## Conteúdo do repositório
+O estudo compara modelos locais, agrupados, transferidos sem adaptação e adaptados, avaliando calibração, qualidade probabilística, discriminação, estabilidade e incerteza. A disponibilidade será medida pelos dados efetivos; **S4/S5 não são sinônimos de poucos dados**. Recursos operacionais entram como viabilidade secundária. A plataforma comercial é uma aplicação posterior da pesquisa.
 
-| Caminho | Conteúdo |
-|---|---|
-| `docs/index.html` | Apresentação interativa da proposta (abre no navegador; publicável via GitHub Pages) |
-| `docs/proposta/` | Proposta de dissertação, versão 1 (28/10/2026) e versão 2 reformulada (06/11/2026) |
-| `docs/parecer/` | Parecer metodológico sobre a versão 1, que motivou a reformulação |
-| `docs/normativo/` | Notas de verificação do enquadramento normativo |
-| `docs/apresentacao/` | Fonte da apresentação (fragmento publicado como artefato) e script de construção |
-| `src/ecl_suficiencia/` | Esqueleto do protótipo computacional, organizado conforme a seção 8 da proposta |
-| `configs/` | Configuração declarativa dos experimentos (exemplo) |
-| `data_dictionary/` | Modelo de dicionário de dados e critérios de qualidade |
-| `experiments/`, `notebooks/`, `tests/` | Reservados para os experimentos, as análises exploratórias e os testes |
-| `data/` | Ignorado pelo Git. Dados de instituições nunca são versionados |
+## Documentos correntes
 
-## Como abrir a apresentação
+- [Proposta v3](docs/proposta/proposta-dissertacao-v3-2026-11-13.md): título, problema, questão, objetivos, H1–H3, método, ECL, cronograma e limitações.
+- [Apresentação](docs/index.html): síntese interativa da proposta, com navegação por setas, modo contínuo e exemplo ilustrativo de propagação da PD.
+- [Protocolo experimental](docs/metodologia/protocolo-experimental-v3.md): regras a congelar antes dos experimentos, contrastes e critérios de viabilidade.
+- [Notas normativas](docs/normativo/notas-verificacao-normativa.md): correção da referência à Resolução BCB 309/2023 e aplicação da 352/2023, com fontes e pendências.
+- [Dicionário de dados](data_dictionary/README.md) e [configuração ilustrativa](configs/experimento-exemplo.yaml).
+- [Registro da revisão](docs/registro-atualizacao-2026-11-13.md): mudanças, rastreabilidade, preservação e verificações.
 
-Abra `docs/index.html` em qualquer navegador. Navegação pelas setas do teclado ou pelos pontos no rodapé; o botão "Modo contínuo" empilha todos os slides. Com o GitHub Pages apontado para a pasta `docs/`, a apresentação fica disponível em `https://<usuário>.github.io/<repositório>/`.
+## Histórico e referências preservadas
 
-## Arquitetura do protótipo (prevista)
+As [propostas v1](docs/proposta/proposta-dissertacao-v1-2026-10-28.md) e [v2](docs/proposta/proposta-dissertacao-v2-2026-11-06.md), assim como o [parecer de 05/11](docs/parecer/parecer-metodologico-v1-2026-11-05.md), permanecem intactos. Contêm formulações superadas e interpretações normativas corrigidas na v3; não são as instruções correntes do projeto.
 
-```
-microdados de contratos ─┐
-instituição e carteira ──┼─▶ modelo global ─▶ recalibração híbrida por carteira ─┐
-macro e expectativas ────┼─▶ modelo local ──────────────────────────────────────┼─▶ comparação sob escassez controlada ─▶ PD calibrada
-                         └─▶ ajuste macro prospectivo (M0 · M1 · M2) ────────────┘                                          │
-recuperações ──▶ LGD segmentada ─┐                                                                                         ▼
-EAD contratual ──────────────────┼─▶ perda esperada estimada ─▶ avaliação de suficiência ◀── níveis mínimos (C1–C5 × atraso)
-                                 └──────────────────────────────────────────────────▶ provisão complementar por carteira e período
-```
+A apresentação anterior, notas e demais documentos substituídos têm [cópias integrais e manifesto de integridade](docs/historico/README.md). O [CHANGELOG](CHANGELOG.md) conserva a evolução das versões.
 
-Os módulos em `src/ecl_suficiencia/` contêm apenas a interface prevista (docstrings e assinaturas). A implementação começa após a confirmação do acesso aos dados, conforme a regra de decisão do item 7.4 da proposta.
+## Desenho analítico previsto
 
-## Ambiente
-
-```bash
-python -m venv .venv && source .venv/bin/activate
-pip install -e ".[dev]"
-pytest
+```mermaid
+flowchart LR
+    A[Origem autorizada] --> C[Modelo da origem]
+    B[Dados locais disponíveis] --> D[Modelo local e agrupado]
+    C --> E[Transferência sem adaptação]
+    C --> F[Adaptação regularizada]
+    B --> F
+    D --> G[Teste futuro do destino]
+    E --> G
+    F --> G
+    G --> H[PD: calibração e incerteza]
+    H --> I[Repercussões na ECL sob premissas explícitas]
 ```
 
-## Licenças
+A validação separa treino, adaptação e teste, considera transferência negativa e preserva prevalência no teste. `PD × LGD × EAD` é um auxiliar aproximado: a mensuração contábil pode exigir múltiplos períodos, cenários, desconto e recuperações. Diferença experimental em relação a um nível regulatório não determina lançamento contábil.
 
-Código sob licença MIT (`LICENSE`). Textos, figuras e apresentação sob CC BY 4.0 (`docs/LICENSE-CC-BY-4.0.md`). Os textos normativos citados pertencem aos seus emissores.
+## Organização e estado de implementação
 
-## Citação
+`src/ecl_suficiencia/` conserva o nome técnico por compatibilidade. Há auxiliares aritméticos implementados para produto PD/LGD/EAD, peso heurístico, faixas de atraso e diferenças; os estimadores, adaptação, validação e motor multiperíodo ainda são interfaces com `NotImplementedError`. As faixas e a diferença positiva não implementam integralmente as regras do BCB. Veja [o mapa do protótipo](docs/metodologia/prototipo-e-limites.md).
 
-Veja `CITATION.cff`.
+`configs/` descreve o desenho; ainda não existe executor para o YAML. `experiments/` e `notebooks/` estão reservados. Dados privados em `data/` não devem ser versionados nem compartilhados externamente. Identificadores com hash podem continuar sendo dados pseudonimizados.
+
+## Ambiente e apresentação
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\python -m pip install -e ".[dev]"
+.\.venv\Scripts\python -m pytest
+```
+
+Em Linux/macOS, usar `.venv/bin/python`. Os testes atuais verificam apenas os auxiliares existentes; não validam a proposta empiricamente nem demonstram conformidade normativa.
+
+Abra `docs/index.html` no navegador. Para reconstruir no Windows: `python docs/apresentacao/build.py`; em Git Bash, com `python3` disponível: `bash docs/apresentacao/build.sh`. A fonte e as instruções estão em [docs/apresentacao](docs/apresentacao/README.md). Nenhuma publicação remota é necessária para consultar o arquivo.
+
+## Licenças e citação
+
+Código sob [MIT](LICENSE). Textos e apresentação sob [CC BY 4.0](docs/LICENSE-CC-BY-4.0.md). As licenças do repositório não concedem direitos sobre dados de terceiros. Metadados em [CITATION.cff](CITATION.cff).
