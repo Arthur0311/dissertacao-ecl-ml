@@ -1,0 +1,32 @@
+CONSULTAS WEB OF SCIENCE CORE COLLECTION — 14/11/2026
+Status: sintaxe conferida documentalmente; execução institucional pendente.
+Usar Advanced Search > Query Builder; Exact Search desligado.
+Copiar apenas a expressão de cada Q, sem título. Executar separadamente.
+Reunir Q1–Q4 por OR; Q5/Q6 são complementares. Deduplicar a união.
+Sem corte inicial de ano; registrar data real, índices, filtros e resultados.
+
+Q1 — Transferência, adaptação e compartilhamento de informação
+TS=("credit risk" OR "credit scoring" OR "credit score" OR "credit scores" OR "probability of default" OR "probabilities of default" OR "default probability" OR "default probabilities" OR "default prediction" OR "default estimation" OR "loan default" OR "loan defaults")
+AND TS=("transfer learning" OR "domain adaptation" OR "negative transfer" OR "multi task learning" OR "multitask learning" OR "partial pooling" OR "hierarchical model" OR "hierarchical models" OR "hierarchical Bayesian" OR recalibrat* OR "model updating" OR "model transfer" OR "dataset shift" OR "covariate shift" OR "domain shift" OR "distribution shift")
+
+Q2 — PD com poucos dados, poucos eventos ou pouco histórico
+TS=("credit risk" OR "credit scoring" OR "credit score" OR "credit scores" OR "probability of default" OR "probabilities of default" OR "default probability" OR "default probabilities" OR "default prediction" OR "default estimation" OR "loan default" OR "loan defaults")
+AND TS=("low default" OR "no default" OR "zero default" OR "rare event" OR "rare events" OR "small sample" OR "small samples" OR "limited data" OR "data scarcity" OR "sparse data" OR "scarce data" OR "few shot" OR "cold start" OR "short history" OR "short histories" OR "limited history" OR "limited historical data" OR "limited labeled data" OR "limited labelled data")
+
+Q3 — Calibração e qualidade probabilística em crédito
+TS=("credit risk" OR "credit scoring" OR "credit score" OR "credit scores" OR "probability of default" OR "probabilities of default" OR "default probability" OR "default probabilities" OR "default prediction" OR "default estimation" OR "loan default" OR "loan defaults")
+AND TS=(calibrat* OR recalibrat* OR "Brier score" OR "Brier scores" OR "log loss" OR "logloss" OR "logarithmic loss" OR "probability estimation" OR "probabilistic prediction" OR "probabilistic predictions")
+
+Q4 — Ponte entre modelos de risco e mensuração de ECL
+TS=("expected credit loss" OR "expected credit losses" OR "IFRS 9" OR IFRS9 OR "current expected credit loss" OR "current expected credit losses" OR (CECL NEAR/5 (credit OR loss* OR provision*)))
+AND TS=("machine learning" OR "statistical learning" OR "artificial intelligence" OR "gradient boosting" OR "logistic regression" OR "probability of default" OR "probabilities of default" OR "default probability" OR "default probabilities" OR calibrat* OR validat* OR "model risk" OR "estimation uncertainty" OR "measurement uncertainty")
+
+Q5 — Busca complementar: capacidade operacional
+TS=("credit risk" OR "credit scoring" OR "credit score" OR "credit scores" OR "probability of default" OR "probabilities of default" OR "default probability" OR "default probabilities" OR "default prediction" OR "default estimation" OR "loan default" OR "loan defaults")
+AND TS=("machine learning" OR "statistical learning" OR "gradient boosting" OR "logistic regression" OR "transfer learning")
+AND TS=((computation* NEAR/3 (cost* OR budget* OR efficien* OR resource*)) OR "training time" OR "inference time" OR "memory usage" OR "resource constrained" OR "resource constraints" OR "model maintenance" OR "model governance" OR "implementation cost" OR "implementation costs")
+
+Q6 — Busca complementar: contexto brasileiro e termos em português
+TS=("risco de credito" OR "risco de crédito" OR "probabilidade de inadimplencia" OR "probabilidade de inadimplência" OR "perdas esperadas de credito" OR "perdas esperadas de crédito" OR "perdas de credito esperadas" OR "perdas de crédito esperadas")
+OR (TS=(Brazil* OR Brasil*) AND TS=("expected credit loss" OR "expected credit losses" OR "credit risk" OR "probability of default") AND TS=("machine learning" OR "transfer learning" OR "domain adaptation" OR "IFRS 9" OR IFRS9 OR calibrat* OR "low default"))
+

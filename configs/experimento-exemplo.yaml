@@ -1,33 +1,142 @@
-# Configuração declarativa de um experimento (exemplo; valores ilustrativos)
-nome: pd-regimes-escassez-v0
+# Configuração declarativa da proposta v4; NÃO é um executor implementado.
+# Valores candidatos: fixar após diagnóstico, antes de abrir o teste.
+# Referência: docs/metodologia/protocolo-experimental-v4.md
+versao_proposta: '4'
+status: planejamento_nao_preregistrado
+nome: transferencia-recalibracao-pd-v4
+
 dados:
-  fonte: data/processed/contratos_mes.parquet      # nunca versionado
-  unidade: contrato-mes
-  periodo_inicio: 2020-01
-  periodo_fim: 2025-12
-  teste_fora_do_tempo_meses: 12
+  fonte: data/processed/contratos_mes.parquet
+  acesso_confirmado: false
+  cenario: a_definir  # A: várias instituições; B: uma instituição, várias carteiras; C: base pública ou estrangeira
+  piloto_base_publica: previsto_meses_1_a_3_sem_valor_de_conclusao
+  unidade: contrato-data_base
+  grupo_dependencia: id_tomador_pseudonimo
+  destino: a_definir
+  origens: []
+  segmento_prudencial_define_escassez: false
+
 evento:
-  definicao: atraso_superior_90_dias_ou_ativo_problematico
+  definicao: primeiro_atraso_superior_90_dias
   horizonte_meses: 12
-  tratar_cura: true
-carteiras:
-  chave: [modalidade, tipo_garantia]
-  minimo_eventos_local: 50
+  excluir_evento_presente_na_data_base: true
+  alternativa_ativo_problematico: analise_separada_se_disponivel
+  seguimento_incompleto: censurar_nao_rotular_zero
+  cura_renegociacao_baixa_cessao: regras_a_fixar_no_dicionario
+
+validacao:
+  externa: temporal_com_rotulos_maturados
+  interna: cronologica_aninhada
+  teste_intocado: true
+  exclusao_entre_treino_e_validacao_meses: 12
+  tomador_em_um_unico_dominio: true
+  intervalo_confianca: 0.95
+
+fatores:
+  disponibilidade:
+    fracao_tomadores_desenvolvimento: [0.05, 0.10, 0.20, 0.40, 0.70, 1.0]
+    amostragem: aleatoria_por_tomador_sem_selecao_por_classe
+    repeticoes: 20
+    semente_base: 2026
+    n_local: tomadores_distintos_no_desenvolvimento
+    teste: identico_em_todos_os_niveis
+    inicio_operacao: analise_separada_por_janelas_curtas
+  distancia_induzida:
+    metodo: subamostragem_da_origem_por_classificador_de_dominio
+    inclusao: proporcional_a_exp_lambda_vezes_logit_e_x
+    niveis: 5
+    lambdas: a_fixar_simetricos_em_torno_de_zero
+    tamanho_origem: constante_entre_niveis
+    verificacao: separabilidade_medida_por_nivel
+  distancia_observada:
+    dados: desenvolvimento_com_rotulos_maturados
+    taxa_base: diferenca_em_logito
+    separabilidade: auc_classificador_de_dominio_validacao_cruzada
+    composicao: [wasserstein_normalizada_numericas, variacao_total_categoricas]
+    desajuste_condicional: excesso_logloss_modelo_origem_apos_correcao_de_intercepto
+    tratamento: descritivo_salvo_minimo_de_destinos_independentes
+
 modelos:
-  algoritmos: [logistica_regularizada, gradient_boosting]
-  regimes: [global, local, hibrido]
-  macro: [M0, M1_uniforme, M2_por_carteira]
-escassez:
-  eventos_treino: [25, 50, 100, 200, total]
-  repeticoes: 20
-  semente_base: 2026
-recalibracao_hibrida:
-  encolhimento_k: 50
-metricas_primarias:
-  H1: [intercepto_calibracao, inclinacao_calibracao, erro_relativo_ecl]
-  H2: [logloss_fora_do_tempo]
-  H3: [inclinacao_erro_vs_eventos]
-  H4: {metrica: erro_relativo_ecl, teste: tost, delta: 0.10}
-  H5: [razao_ecl_minimo, complemento_pct_carteira, defasagem_meses]
-niveis_minimos:
-  fonte: data/processed/niveis_minimos_vigentes.csv  # percentuais por carteira C1-C5 e faixa de atraso, por data
+  algoritmo_principal: logistica_regularizada
+  algoritmo_robustez: gradient_boosting
+  regimes:
+    - taxa_base
+    - local
+    - local_reduzido
+    - agrupado
+    - transferido
+    - adaptado
+  adaptado: recalibracao_intercepto_inclinacao_penalizada_para_identidade
+  penalizacao: escolher_na_validacao_interna
+  local_reduzido_variaveis: a_fixar_no_desenvolvimento
+  nao_estimavel: registrar_e_reportar_cobertura
+  orcamento_ajuste: a_fixar
+
+macro:
+  principal: conjunto_parcimonioso_comum
+  disponibilidade: versao_vigente_na_data_base
+  sem_macro: analise_de_sensibilidade
+
+medidas:
+  primaria: logloss
+  complementares: [brier, intercepto_calibracao, inclinacao_calibracao, curvas_calibracao, auc_descritiva, cobertura_de_execucao]
+  vies_monetario:
+    formula: soma_pd_menos_y_vezes_lgd_vezes_ead_sobre_soma_ead
+    unidade: pontos_base_da_exposicao
+    lgd_e_ead: comuns_aos_regimes_com_origem_documentada
+
+criterio_adequacao:
+  delta_intercepto_logito: 0.2   # candidato
+  delta_inclinacao: 0.2          # candidato
+  referencia: logloss_menor_que_taxa_base
+  regra: intervalo_contido_na_faixa
+  classes: [adequada, inadequada, inconclusiva]
+
+precisao:
+  alvo_meia_largura_ic95_inclinacao: 0.2  # candidato
+  calculo: riley_et_al_2021_e_simulacao_no_desenvolvimento
+  celulas_abaixo_do_alvo: manter_e_classificar
+
+hipoteses:
+  H1:
+    contraste: logloss_adaptado_menos_local
+    estimando: coeficiente_log2_n_local
+    sinal_esperado: positivo
+  H2:
+    contraste: logloss_adaptado_menos_local
+    estimando: coeficiente_nivel_distancia_induzida
+    sinal_esperado: positivo
+  H3:
+    contraste: logloss_transferido_menos_adaptado
+    estimando: coeficiente_nivel_distancia_induzida
+    sinal_esperado: positivo
+  H4:
+    contraste: vies_monetario_absoluto_adaptado_menos_local
+    celulas: dois_niveis_inferiores_da_malha
+    sinal_esperado: negativo
+  C1:
+    contraste: logloss_adaptado_menos_agrupado
+    celulas: dois_niveis_inferiores_da_malha
+    sinal_esperado: bilateral
+  derivado: fronteira_de_utilidade_n_estrela_por_nivel_de_distancia
+
+inferencia:
+  escopo: condicional_as_carteiras_estudadas
+  modelo: efeitos_fixos_por_par_e_janela
+  incerteza: sorteios_de_desenvolvimento_e_bootstrap_de_tomadores_em_blocos_temporais
+  multiplicidade: holm_H1_H2_H3_H4_C1
+  efeito_nulo: somente_com_intervalo_contido_na_margem_de_irrelevancia
+  margem_irrelevancia_logloss: a_fixar_no_desenvolvimento
+  minimo_destinos_independentes: a_fixar_por_simulacao
+
+desdobramento_contabil:
+  principal: vies_monetario
+  limiar_materialidade_pb: a_fixar_com_a_orientacao
+  lp12: aproximacao_PD12_vezes_LGD_vezes_EAD
+  diferenca_lp12_entre_regimes: analise_de_sensibilidade
+  comparacao_regulatoria:
+    habilitada: false
+    requer: classificacao_por_ativo_garantias_e_regras_por_data_base
+    norma_referencia: Res_BCB_352_2023_e_alteracoes_aplicaveis
+
+fora_do_escopo: [modelagem_lgd_ead, perda_esperada_vida_inteira, estagios, conformidade_regulatoria, produto_comercial]

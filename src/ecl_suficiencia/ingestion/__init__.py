@@ -7,8 +7,12 @@ import pandas as pd
 
 
 def load_contract_month(path: str) -> pd.DataFrame:
-    """Carrega a base contrato-mês já anonimizada. Colunas mínimas: id_contrato, instituicao, carteira,
-    data_base, saldo_devedor, dias_atraso, carteira_regulatoria (C1–C5), evento_default_12m."""
+    """Interface prevista; esquema final conforme data_dictionary/README.md.
+
+    Exigir identificação pseudonimizada de contrato/tomador, domínio, data-base,
+    disponibilidade, seguimento e evento. C1–C5 é condicional à comparação regulatória.
+    Pseudonimização não comprova anonimização nem autorização de uso.
+    """
     raise NotImplementedError
 
 
@@ -18,5 +22,5 @@ def load_macro(path: str, *, use_focus: bool = True) -> pd.DataFrame:
 
 
 def load_regulatory_floors(path: str) -> pd.DataFrame:
-    """Carrega os percentuais dos níveis mínimos vigentes por data, carteira C1–C5 e faixa de atraso."""
+    """Previsto: carregar regras por vigência, carteira, atraso, componente e condições especiais."""
     raise NotImplementedError

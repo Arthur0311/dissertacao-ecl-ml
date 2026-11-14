@@ -1,0 +1,19 @@
+{
+  "data_preservacao": "2026-11-13",
+  "arquivos_copiados": {
+    "README.md": "8cacf2a74b03f7c65f236861b6f76f774cac46bc2352b90b35794ce2c607d9e9",
+    "CITATION.cff": "5e14d4351beb43496a8caef8f30c5b214b1a23bd486312e3c7d7ca706b8f5fa1",
+    "configs/experimento-exemplo.yaml": "bc03ed628195f6831499c7d8fd186a1dff41818beeb0f450bf8c177182405601",
+    "data_dictionary/README.md": "c75966e8c01b433019eb3db52ac9113e163ac43e7c3a6cc1d55b22b0542df58f",
+    "docs/normativo/notas-verificacao-normativa.md": "a5d16729699568942542fd04b8b3923ce8fd2c4f19cd2182d490e9fa7ff533d5",
+    "docs/apresentacao/README.md": "44ed16491fccf40d44ae3d667b63046e3a069464af70e8ead46bba766ce563e0",
+    "docs/apresentacao/apresentacao-fragmento-artefato.html": "3d6b51afb4dceff930d4c54a0ea400a51db04a337d21aa4e347d96392f78d19c",
+    "docs/index.html": "5558d6a4f8c73be0ad3657e0477cdc989520f85b536f5158e7b2af55db1408aa"
+  },
+  "arquivos_preservados_no_local_original": {
+    "docs/proposta/proposta-dissertacao-v1-2026-10-28.md": "36a291862b050242198400d5e378c7cde287493a17205d11c219264f92a2d8e6",
+    "docs/proposta/proposta-dissertacao-v2-2026-11-06.md": "c03c8075ca57e00161cebb602839eb616535cc3dd5de947205d1625901da7efb",
+    "docs/parecer/parecer-metodologico-v1-2026-11-05.md": "4e294ef7f31dbb13450c17e5e271ac2a254e6f26e87ffd635bec33cb32eca0dd",
+    "docs/apresentacao/build.sh": "7b46be514b309b985e12774d7715e03ca51c95c66c9e9d580a0dc21b0251fae9"
+  }
+}

@@ -1,4 +1,8 @@
-"""Componente macroeconômico prospectivo s_c(t): configurações M0 (sem macro), M1 (uniforme), M2 (por carteira), M3 (direto no modelo)."""
+"""Interface histórica de extensões macro (M0–M3), ainda não implementada.
+
+O núcleo da proposta usa conjunto parcimonioso comum; seleção por carteira é extensão.
+Exigir vintage e data de publicação, inclusive para expectativas Focus.
+"""
 from __future__ import annotations
 import pandas as pd
 

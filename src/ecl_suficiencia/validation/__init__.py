@@ -12,7 +12,10 @@ class TemporalSplit:
 
 
 def out_of_time_split(df: pd.DataFrame, *, test_months: int = 12, horizon_months: int = 12) -> TemporalSplit:
-    """Reserva os últimos `test_months` como teste fora do tempo e aplica embargo de `horizon_months` entre treino e teste."""
+    """Previsto: reservar datas-base futuras com rótulos maturados e embargo coerente com o horizonte.
+
+    Não reservar simplesmente os últimos registros se faltar acompanhamento futuro.
+    """
     raise NotImplementedError
 
 

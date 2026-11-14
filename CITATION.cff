@@ -1,20 +1,22 @@
 cff-version: 1.2.0
 message: "Se utilizar este material, cite-o conforme abaixo."
-title: "Estimação de perdas esperadas com dados limitados: modelos de aprendizado de máquina para a avaliação de suficiência da provisão em instituições financeiras dos segmentos S4 e S5 (proposta de dissertação)"
+title: "Transferência e recalibração de probabilidades de inadimplência entre carteiras de crédito: disponibilidade de dados, heterogeneidade e viés na mensuração de perdas esperadas em instituições financeiras brasileiras"
 authors:
   - given-names: Arthur
     family-names: ""
     alias: Arthur0311
 type: software
-version: "0.2.0"
-date-released: "2026-11-06"
+version: "0.4.0"
+date-released: "2026-11-14"
 repository-code: "https://github.com/Arthur0311/dissertacao-ecl-ml"
 license: MIT
 keywords:
   - perdas esperadas de crédito
   - Resolução CMN 4.966/2021
-  - metodologia simplificada
-  - avaliação de suficiência
-  - aprendizado de máquina
+  - probabilidade de inadimplência
+  - transferência de aprendizado
+  - recalibração
   - calibração
-  - instituições financeiras de menor porte
+  - representação fidedigna
+  - viés de mensuração
+  - instituições financeiras brasileiras

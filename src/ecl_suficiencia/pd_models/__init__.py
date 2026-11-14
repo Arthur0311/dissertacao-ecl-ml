@@ -1,4 +1,9 @@
-"""Modelos de probabilidade de inadimplência: regressão logística regularizada (referência), gradient boosting e EBM."""
+"""Interfaces de PD: logística regularizada e gradient boosting; EBM é extensão histórica.
+
+A proposta v4 compara seis regimes: taxa base, local, local reduzido, agrupado,
+transferido e adaptado. O chamador deve definir explicitamente a população de treino;
+ainda não há executor desses regimes nem interface para taxa base e local reduzido.
+"""
 from __future__ import annotations
 from typing import Literal
 
@@ -11,10 +16,10 @@ def make_model(algorithm: Algorithm, **params):
 
 
 def fit_global(X, y, algorithm: Algorithm = "logistic", **params):
-    """Modelo global: treinado com todas as carteiras, sem identificadores de grupo e sem variáveis macro."""
+    """Previsto: ajustar na origem ou em origem+destino, conforme população fornecida; nunca no teste."""
     raise NotImplementedError
 
 
 def fit_local(X, y, groups, algorithm: Algorithm = "logistic", *, min_events: int = 50, **params):
-    """Modelos locais: um por carteira com ao menos `min_events` eventos."""
+    """Interface local legada; min_events=50 é ilustrativo e deve ser revisto por precisão/viabilidade."""
     raise NotImplementedError

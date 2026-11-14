@@ -3,1256 +3,185 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Proposta ECL Suficiência S4 S5</title>
-<meta name="claude:viewport-fit-sides" content="cover">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&family=STIX+Two+Text:ital,wght@0,400;0,600;1,400&display=swap">
+<title>Transferência e recalibração de PD entre carteiras de crédito — Proposta v4</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700&family=IBM+Plex+Sans:wght@400;600;700&family=STIX+Two+Text:wght@400;600&display=swap">
 <style>
-/* Layout: one slide at a time inside a bounded stage; a toggle stacks every slide as a continuous document. */
-:root{
-  --bg:#f2f5f4; --surface:#ffffff; --surface-2:#e9efee; --fg:#16242b; --muted:#5a6c74; --line:#d2dcdd;
-  --primary:#0d5260; --primary-ink:#083c47; --primary-soft:#d9eaec;
-  --accent:#c4651b; --accent-soft:#f7e4d2;
-  --ok:#2e7b4f; --warn:#a8741a; --crit:#b23a3a;
-  --font-display:"Archivo","Helvetica Neue",Arial,sans-serif;
-  --font-body:"IBM Plex Sans","Segoe UI",Roboto,Arial,sans-serif;
-  --font-mono:"IBM Plex Mono",Menlo,Consolas,monospace;
-  --radius:10px; --shadow:0 10px 30px rgba(13,82,96,.10);
-}
-@media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){
-    --bg:#0d171b; --surface:#14222a; --surface-2:#1a2b33; --fg:#e4ecee; --muted:#9db0b7; --line:#28404a;
-    --primary:#5ec2d2; --primary-ink:#a9e3ec; --primary-soft:#113a46;
-    --accent:#f0a35a; --accent-soft:#3d2912;
-    --ok:#5fbf86; --warn:#e0b25a; --crit:#e07070; --shadow:0 10px 30px rgba(0,0,0,.35); color-scheme:dark;
-  }
-}
-:root[data-theme="dark"]{
-  --bg:#0d171b; --surface:#14222a; --surface-2:#1a2b33; --fg:#e4ecee; --muted:#9db0b7; --line:#28404a;
-  --primary:#5ec2d2; --primary-ink:#a9e3ec; --primary-soft:#113a46;
-  --accent:#f0a35a; --accent-soft:#3d2912;
-  --ok:#5fbf86; --warn:#e0b25a; --crit:#e07070; --shadow:0 10px 30px rgba(0,0,0,.35); color-scheme:dark;
-}
-*{box-sizing:border-box}
-html,body{height:100%}
-body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5}
-body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
-#app{min-height:100%;display:flex;flex-direction:column;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:12px 0}
+/* ===========================================
+   FIXED 16:9 STAGE: MANDATORY BASE STYLES
+   Include this ENTIRE file in every presentation.
+   Slides are authored at 1920×1080 and scaled as a whole.
+   =========================================== */
 
-/* Top bar */
-.bar{display:flex;align-items:center;justify-content:space-between;gap:12px;max-width:1180px;margin:0 auto;width:100%;padding-block:6px 10px}
-.bar .brand{font-family:var(--font-display);font-weight:700;font-size:.92rem;letter-spacing:.02em;color:var(--primary)}
-.bar .brand span{color:var(--muted);font-weight:500}
-.bar .ctrls{display:flex;gap:8px;align-items:center}
-button{font:inherit;color:var(--fg);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:6px 12px;cursor:pointer}
-button:hover{border-color:var(--primary)}
-button:focus-visible,select:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-button.primary{background:var(--primary);border-color:var(--primary);color:#fff}
-:root[data-theme="dark"] button.primary,:root:not([data-theme="light"]) button.primary{color:var(--bg)}
-@media (prefers-color-scheme: light){:root:not([data-theme="dark"]) button.primary{color:#fff}}
-button[aria-pressed="true"]{background:var(--primary-soft);border-color:var(--primary)}
-
-/* Stage */
-.stage{flex:1;display:flex;flex-direction:column;max-width:1180px;width:100%;margin:0 auto}
-.progress{height:4px;background:var(--line);border-radius:2px;overflow:hidden}
-.progress > i{display:block;height:100%;width:0;background:var(--accent);transition:width .35s ease}
-main{flex:1;position:relative}
-.slide{display:none;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:clamp(18px,3vw,40px);margin-top:14px;min-height:min(72vh,640px);overflow:auto}
-.slide.active{display:block;animation:fade .3s ease}
-@keyframes fade{from{opacity:.4;transform:translateY(4px)}to{opacity:1;transform:none}}
-@media (prefers-reduced-motion: reduce){.slide.active{animation:none}.progress > i{transition:none}}
-#app.doc .slide{display:block;min-height:0;margin-top:18px}
-#app.doc .nav{display:none}
-
-/* Nav */
-.nav{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-block:12px 16px;flex-wrap:wrap}
-.nav .dots{display:flex;gap:6px;flex-wrap:wrap}
-.nav .dots button{width:22px;height:22px;padding:0;border-radius:50%;font-size:.65rem;color:var(--muted);line-height:1}
-.nav .dots button[aria-current="true"]{background:var(--primary);border-color:var(--primary);color:#fff}
-.nav .count{font-family:var(--font-mono);font-size:.85rem;color:var(--muted)}
-kbd{font-family:var(--font-mono);font-size:.75rem;border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;padding:1px 5px;background:var(--surface-2)}
-
-/* Type */
-.eyebrow{font-family:var(--font-mono);font-size:.74rem;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin:0 0 8px}
-h1,h2,h3{font-family:var(--font-display);text-wrap:balance;margin:0}
-h1{font-size:clamp(1.6rem,3.2vw,2.5rem);line-height:1.12;font-weight:800;color:var(--primary-ink)}
-h2{font-size:clamp(1.3rem,2.4vw,1.9rem);line-height:1.18;font-weight:700;color:var(--primary-ink);margin-bottom:14px}
-h3{font-size:1.05rem;font-weight:700;margin-bottom:6px}
-p{margin:0 0 10px;max-width:72ch}
-.lead{font-size:1.08rem;color:var(--fg)}
-.muted{color:var(--muted)}
-.small{font-size:.86rem}
-.mono{font-family:var(--font-mono)}
-.note{font-size:.84rem;color:var(--muted);border-left:3px solid var(--accent);padding:6px 10px;background:var(--surface-2);border-radius:0 6px 6px 0;max-width:none}
-.q{font-family:var(--font-display);font-weight:500;font-size:clamp(1.05rem,1.8vw,1.35rem);line-height:1.4;color:var(--fg);background:var(--primary-soft);border-left:5px solid var(--primary);padding:16px 20px;border-radius:0 var(--radius) var(--radius) 0;max-width:none;margin:12px 0 16px}
-.q em{font-style:normal;color:var(--primary-ink);font-weight:700}
-
-/* Grid helpers */
-.grid{display:grid;gap:14px}
-.g2{grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
-.g3{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
-.g4{grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}
-.grid > *{min-width:0}
-.card{background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px}
-.card.hi{background:var(--primary-soft);border-color:var(--primary)}
-.card.acc{background:var(--accent-soft);border-color:var(--accent)}
-.card h3{display:flex;gap:8px;align-items:baseline}
-.tag{display:inline-block;font-family:var(--font-mono);font-size:.7rem;letter-spacing:.06em;padding:2px 8px;border-radius:999px;background:var(--surface);border:1px solid var(--line);color:var(--muted)}
-.tag.p{color:var(--primary);border-color:var(--primary)}
-.tag.a{color:var(--accent);border-color:var(--accent)}
-ul.clean{margin:0;padding-left:1.1em}
-ul.clean li{margin-bottom:6px}
-ol.steps{margin:0;padding-left:1.3em}
-ol.steps li{margin-bottom:8px}
-
-/* Cover */
-.cover{display:grid;grid-template-columns:1.2fr .8fr;gap:28px;align-items:center;min-height:min(70vh,600px)}
-.cover .meta{display:grid;gap:8px;font-size:.92rem}
-.cover .meta div{display:flex;gap:10px;align-items:baseline}
-.cover .meta b{font-family:var(--font-mono);font-weight:500;font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);min-width:110px}
-@media (max-width:760px){.cover{grid-template-columns:1fr}}
-
-/* Tables */
-.tbl{overflow-x:auto}
-table{border-collapse:collapse;width:100%;font-size:.86rem}
-th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
-th{font-family:var(--font-display);font-weight:700;font-size:.78rem;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
-td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;font-family:var(--font-mono)}
-
-/* Accordion */
-details{border:1px solid var(--line);border-radius:8px;background:var(--surface-2);margin-bottom:8px}
-details summary{cursor:pointer;padding:10px 14px;font-weight:600;list-style:none;display:flex;gap:10px;align-items:center}
-details summary::-webkit-details-marker{display:none}
-details summary::before{content:"+";font-family:var(--font-mono);color:var(--accent);width:1em}
-details[open] summary::before{content:"–"}
-details .body{padding:0 14px 12px;font-size:.92rem}
-
-/* Tabs */
-.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
-.tabs button[aria-selected="true"]{background:var(--primary);border-color:var(--primary);color:#fff}
-.panel[hidden]{display:none}
-
-/* SVG diagrams */
-figure{margin:0}
-figcaption{font-size:.82rem;color:var(--muted);margin-top:6px}
-.dg{width:100%;height:auto;display:block;max-width:100%}
-.dg text{font-family:var(--font-body);fill:var(--fg)}
-.dg .t-mono{font-family:var(--font-mono)}
-.dg .t-muted{fill:var(--muted)}
-.dg .t-inv{fill:#fff}
-.dg .bx{fill:var(--surface);stroke:var(--line);stroke-width:1.2}
-.dg .bx-p{fill:var(--primary-soft);stroke:var(--primary);stroke-width:1.4}
-.dg .bx-a{fill:var(--accent-soft);stroke:var(--accent);stroke-width:1.4}
-.dg .bx-s{fill:var(--primary);stroke:var(--primary)}
-.dg .ln{stroke:var(--muted);stroke-width:1.4;fill:none}
-.dg .ln-p{stroke:var(--primary);stroke-width:1.8;fill:none}
-.dg .ln-a{stroke:var(--accent);stroke-width:1.8;fill:none}
-.dg .dash{stroke-dasharray:5 4}
-.dg .node{cursor:help;transition:transform .15s}
-.dg .node:hover rect,.dg .node:focus rect{stroke-width:2.4;filter:drop-shadow(0 2px 6px rgba(0,0,0,.18))}
-.dg .grp{fill:none;stroke:var(--line);stroke-dasharray:4 4;stroke-width:1}
-.tip{position:fixed;z-index:50;max-width:300px;background:var(--fg);color:var(--bg);font-size:.82rem;line-height:1.4;padding:8px 10px;border-radius:6px;pointer-events:none;opacity:0;transition:opacity .12s}
-.tip.on{opacity:1}
-
-/* Simulator */
-.sim{display:grid;grid-template-columns:1fr 1fr;gap:18px}
-@media (max-width:820px){.sim{grid-template-columns:1fr}}
-.sim label{display:block;font-size:.85rem;color:var(--muted);margin-bottom:4px}
-.sim select,.sim input[type=number]{font:inherit;color:var(--fg);background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:6px 8px;width:100%}
-.sim input[type=range]{width:100%;accent-color:var(--accent)}
-.sim .row{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:8px;align-items:center;margin-bottom:6px;font-size:.88rem}
-.sim .row .pct{font-family:var(--font-mono);text-align:right;color:var(--muted)}
-.kpi{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:10px}
-.kpi div{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px}
-.kpi b{display:block;font-family:var(--font-mono);font-size:1.15rem;font-variant-numeric:tabular-nums}
-.kpi span{font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
-.kpi .c b{color:var(--accent)}
-.bars{display:grid;gap:8px;margin-top:12px}
-.bars .b{display:grid;grid-template-columns:140px 1fr 80px;gap:8px;align-items:center;font-size:.85rem}
-.bars .b i{display:block;height:16px;border-radius:4px;background:var(--primary);transition:width .25s}
-.bars .b.ecl i{background:var(--accent)}
-.bars .b .v{font-family:var(--font-mono);text-align:right;font-variant-numeric:tabular-nums}
-
-/* Timeline */
-.tl{display:grid;grid-template-columns:repeat(12,1fr);gap:4px;margin-top:8px}
-.tl .m{font-family:var(--font-mono);font-size:.7rem;color:var(--muted);text-align:center}
-.tl .ph{grid-column:span var(--span);background:var(--primary-soft);border:1px solid var(--primary);border-radius:6px;padding:6px 8px;font-size:.78rem;line-height:1.3}
-.tl .ph.a{background:var(--accent-soft);border-color:var(--accent)}
-@media (max-width:700px){.tl{grid-template-columns:repeat(6,1fr)}}
-
-.foot{font-size:.78rem;color:var(--muted);max-width:1180px;margin:0 auto;width:100%;padding-block:10px 18px}
-
-
-/* ===== Motion layer ===== */
-.slide.active{animation:slideIn .5s cubic-bezier(.2,.7,.2,1)}
-@keyframes slideIn{from{opacity:0;transform:translateY(10px) scale(.995)}to{opacity:1;transform:none}}
-.rv{opacity:0;transform:translateY(14px)}
-.slide.active.play .rv,#app.doc .rv{animation:rise .6s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(min(var(--i,0),9) * 80ms + 100ms)}
-#app.doc .rv{animation-delay:0s}
-@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
-.card{transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease}
-.card:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(13,82,96,.12);border-color:var(--primary)}
-.progress > i{background:linear-gradient(90deg,var(--primary),var(--accent))}
-.nav .dots button[aria-current="true"]{box-shadow:0 0 0 3px var(--primary-soft)}
-.cover{position:relative;isolation:isolate}
-#coverfx{position:absolute;left:-18px;top:-18px;width:calc(100% + 36px);height:calc(100% + 36px);z-index:-1;border-radius:var(--radius);opacity:.9}
-.cover h1{background:linear-gradient(100deg,var(--primary-ink),var(--primary) 60%,var(--accent));-webkit-background-clip:text;background-clip:text;color:transparent}
-/* growing bars (figura 1) */
-.grow{transform-box:fill-box;transform-origin:left center;transform:scaleX(0)}
-.slide.active.play .grow,#app.doc .grow{animation:growx 1.1s cubic-bezier(.2,.7,.2,1) forwards;animation-delay:var(--d,0s)}
-@keyframes growx{to{transform:scaleX(1)}}
-.slide.active.play .after,#app.doc .after{animation:rise .6s both;animation-delay:var(--d,1.6s)}
-.after{opacity:0}
-/* architecture play-through */
-.dg .flowing{stroke-dasharray:6 6;animation:march 1.2s linear infinite}
-@keyframes march{to{stroke-dashoffset:-24}}
-.dg .node.lit rect{stroke:var(--accent);stroke-width:3;filter:drop-shadow(0 0 8px var(--accent))}
-.dg .node.lit text{font-weight:700}
-.dg .node.dim{opacity:.28}
-.dg .node{transition:opacity .4s}
-.playbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:8px 0 4px}
-.playbar .cap{flex:1;min-width:220px;font-size:.9rem;padding:8px 12px;border-radius:8px;background:var(--primary-soft);border-left:4px solid var(--accent);min-height:2.6em}
-.playbar .cap b{color:var(--accent);font-family:var(--font-mono);font-size:.78rem;margin-right:6px}
-.stepdots{display:flex;gap:5px}
-.stepdots i{width:8px;height:8px;border-radius:50%;background:var(--line);display:inline-block;transition:background .3s,transform .3s}
-.stepdots i.on{background:var(--accent);transform:scale(1.3)}
-/* shrinkage demo */
-.shrink{display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;margin-top:8px}
-@media (max-width:760px){.shrink{grid-template-columns:1fr}}
-.shrink label{font-size:.85rem;color:var(--muted)}
-.shrink input[type=range]{width:100%;accent-color:var(--accent)}
-.shrink .out{background:var(--surface-2);border:1px solid var(--line);border-radius:12px;padding:8px 12px;min-width:280px}
-.shrink .out b{color:var(--accent)}
-#hyb{transition:cx .35s cubic-bezier(.2,.7,.2,1)}
-@media (prefers-reduced-motion: reduce){
-  .slide.active{animation:none}.rv,.after{opacity:1;transform:none;animation:none!important}.grow{transform:none;animation:none!important}
-  .dg .flowing{animation:none}.card:hover{transform:none}
+/* 1. Lock the browser viewport */
+html,
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+    background: var(--stage-bg, #000);
 }
 
-/* ===== Visual polish ===== */
-body{background:
-  radial-gradient(900px 500px at 8% -10%, color-mix(in srgb, var(--primary) 12%, transparent), transparent 60%),
-  radial-gradient(700px 400px at 100% 110%, color-mix(in srgb, var(--accent) 10%, transparent), transparent 60%),
-  var(--bg)}
-.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);background:color-mix(in srgb, var(--bg) 78%, transparent);border-bottom:1px solid color-mix(in srgb, var(--line) 70%, transparent);margin-bottom:6px}
-.bar .brand{font-size:.95rem}
-.slide{border-radius:18px;box-shadow:0 1px 2px rgba(13,82,96,.06),0 18px 50px -20px rgba(13,82,96,.28);border-color:color-mix(in srgb, var(--line) 80%, transparent)}
-:root[data-theme="dark"] .slide{box-shadow:0 1px 2px rgba(0,0,0,.4),0 18px 50px -20px rgba(0,0,0,.7)}
-.eyebrow{display:flex;align-items:center;gap:10px}
-.eyebrow::before{content:"";width:22px;height:2px;background:linear-gradient(90deg,var(--accent),var(--primary));border-radius:2px}
-h2{font-size:clamp(1.4rem,2.6vw,2.05rem);letter-spacing:-.01em}
-.card{border-radius:14px;background:linear-gradient(180deg,color-mix(in srgb, var(--surface) 55%, var(--surface-2)),var(--surface-2))}
-.card.hi{background:linear-gradient(180deg,color-mix(in srgb, var(--primary-soft) 70%, var(--surface)),var(--primary-soft))}
-.card.acc{background:linear-gradient(180deg,color-mix(in srgb, var(--accent-soft) 70%, var(--surface)),var(--accent-soft))}
-.tag{background:color-mix(in srgb, var(--surface) 70%, transparent)}
-.tag.p{background:color-mix(in srgb, var(--primary) 10%, transparent)}
-.tag.a{background:color-mix(in srgb, var(--accent) 12%, transparent)}
-.q{border-radius:14px;border-left-width:6px;box-shadow:inset 0 1px 0 rgba(255,255,255,.35)}
-table tbody tr:nth-child(even) td{background:color-mix(in srgb, var(--surface-2) 55%, transparent)}
-th{border-bottom:2px solid var(--line)}
-details{border-radius:12px;overflow:hidden}
-details summary::before{content:"";width:8px;height:8px;border-right:2px solid var(--accent);border-bottom:2px solid var(--accent);transform:rotate(-45deg);transition:transform .25s;margin-right:4px}
-details[open] summary::before{transform:rotate(45deg)}
-.nav{position:sticky;bottom:0;background:color-mix(in srgb, var(--bg) 85%, transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-top:1px solid color-mix(in srgb, var(--line) 60%, transparent);margin-top:6px}
-.nav .dots button{width:20px;height:20px;font-size:.6rem;border-radius:999px}
-.nav .dots button:hover{background:var(--primary-soft)}
-button.primary{box-shadow:0 6px 16px -6px color-mix(in srgb, var(--primary) 60%, transparent)}
-.kpi div{border-radius:12px}
-.note{border-radius:0 10px 10px 0}
-/* math */
-.math{font-family:"STIX Two Text","Times New Roman",Georgia,serif;font-size:1.25rem;line-height:1.3;display:flex;align-items:center;justify-content:center;gap:.28em;flex-wrap:wrap;padding:14px 10px;background:var(--surface);border:1px solid var(--line);border-radius:12px}
-.math i{font-style:italic}
-.math .op{font-family:"IBM Plex Sans",sans-serif;font-weight:500}
-.math sub{font-size:.62em;vertical-align:-.28em;line-height:0}
-.math .fn{font-style:normal}
-.math .frac{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;line-height:1.1;margin:0 .15em}
-.math .frac > span{padding:0 .3em}
-.math .frac > span:first-child{border-bottom:1.2px solid currentColor}
-.math.sm{font-size:1.05rem;padding:8px 10px;background:transparent;border:0}
-.legend{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:.84rem;margin-top:10px}
-.mi{font-family:"STIX Two Text","Times New Roman",serif;font-style:italic;font-size:1.06em}
-.mi sub{font-size:.65em;vertical-align:-.25em}
-.legend b{font-family:"STIX Two Text",serif;font-style:italic;font-weight:400;font-size:1rem}
-/* graph detail overlay */
-.gwrap{position:relative;display:block;min-height:0}
-#gcanvas{height:560px}
-.gdetail{position:absolute;top:12px;right:12px;width:min(340px,calc(100% - 24px));max-height:calc(100% - 24px);box-shadow:0 14px 34px -14px rgba(0,0,0,.35);background:color-mix(in srgb, var(--surface) 92%, transparent);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);transition:opacity .25s,transform .25s}
-.gdetail.idle{opacity:.92}
-.gdetail .close{position:absolute;top:8px;right:8px;width:26px;height:26px;padding:0;border-radius:50%;font-size:.8rem;line-height:1}
-.gdetail .links span{cursor:pointer}
-.gdetail .links span:hover{border-color:var(--accent);color:var(--accent)}
+/* 2. Full-window deck viewport */
+.deck-viewport {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    background: var(--stage-bg, #000);
+}
 
-/* Reference graph (Obsidian-like) */
-:root{--g-contabil:#c4651b;--g-estat:#0d5260;--g-ecl:#3f7d3a;--g-norma:#7a4ea8;--g-hub:#8a8f93}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--g-contabil:#f0a35a;--g-estat:#5ec2d2;--g-ecl:#7fcf78;--g-norma:#b894e6;--g-hub:#a9b2b7}}
-:root[data-theme="dark"]{--g-contabil:#f0a35a;--g-estat:#5ec2d2;--g-ecl:#7fcf78;--g-norma:#b894e6;--g-hub:#a9b2b7}
-.gtools{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:10px}
-.chips{display:flex;gap:6px;flex-wrap:wrap}
-.chips button{display:inline-flex;align-items:center;gap:6px;font-size:.8rem;padding:4px 10px;border-radius:999px}
-.chips button i{width:10px;height:10px;border-radius:50%;display:inline-block}
-.chips button[aria-pressed="false"]{opacity:.45}
-#gsearch{font:inherit;font-size:.85rem;color:var(--fg);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:6px 10px;min-width:200px}
-.gwrap{position:relative;min-height:0}
-#gcanvas{width:100%;height:560px;background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius);touch-action:none;cursor:grab;display:block}
-#gcanvas.drag{cursor:grabbing}
-.gdetail{position:absolute;top:12px;right:12px;width:min(340px,calc(100% - 24px));max-height:calc(100% - 24px);background:color-mix(in srgb, var(--surface) 92%, transparent);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid var(--line);border-radius:var(--radius);padding:12px 14px;font-size:.86rem;overflow:auto;box-shadow:0 14px 34px -14px rgba(0,0,0,.35)}
-.gdetail h3{font-size:.98rem;margin-bottom:4px}
-.gdetail .apa{font-size:.82rem;line-height:1.45;margin:6px 0}
-.gdetail .use{border-top:1px solid var(--line);padding-top:8px;margin-top:8px}
-.gdetail .links{margin-top:8px;display:flex;flex-wrap:wrap;gap:4px}
-.gdetail .links span{font-size:.72rem;padding:2px 7px;border-radius:999px;background:var(--surface);border:1px solid var(--line)}
-.glist{columns:2;column-gap:28px;font-size:.84rem;margin-top:8px}
-@media (max-width:860px){.glist{columns:1}}
-.glist p{break-inside:avoid;padding-left:1.6em;text-indent:-1.6em;margin:0 0 8px;max-width:none}
-.glist p i{font-style:italic}
+/* 3. Fixed 16:9 design canvas.
+   JavaScript sets transform: translate(...) scale(...). */
+.deck-stage {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 1920px;
+    height: 1080px;
+    overflow: hidden;
+    transform-origin: 0 0;
+    background: var(--slide-bg, #fff);
+}
+
+/* 4. Slides stack inside the fixed stage.
+   Content must be laid out at 1920×1080, not reflowed per device. */
+.slide {
+    position: absolute;
+    inset: 0;
+    width: 1920px;
+    height: 1080px;
+    overflow: hidden;
+    display: block;
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+    background: var(--slide-bg, #fff);
+}
+
+.slide.active,
+.slide.visible {
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
+    z-index: 1;
+}
+
+/* 5. Keep media inside authored slide bounds */
+img,
+video,
+canvas,
+svg {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+/* 6. Presentation chrome stays outside the slide design system */
+.deck-controls {
+    position: fixed;
+    left: 50%;
+    bottom: 22px;
+    transform: translateX(-50%);
+    z-index: 1000;
+}
+
+/* 7. Print one fixed-size slide per page */
+@media print {
+    html,
+    body {
+        width: 1920px;
+        height: auto;
+        overflow: visible;
+        background: #fff;
+    }
+
+    .deck-viewport {
+        position: static;
+        overflow: visible;
+        background: #fff;
+    }
+
+    .deck-stage {
+        position: static;
+        width: auto;
+        height: auto;
+        transform: none !important;
+        background: none;
+    }
+
+    .slide {
+        position: relative;
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        pointer-events: auto !important;
+        width: 1920px;
+        height: 1080px;
+        break-after: page;
+        page-break-after: always;
+    }
+
+    .slide:last-child {
+        break-after: auto;
+        page-break-after: auto;
+    }
+
+    .deck-controls {
+        display: none !important;
+    }
+}
+
+/* 8. Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.2s !important;
+    }
+}
+
+/* === Visual system, inherited teal and editorial typography === */
+:root {--stage-bg:#dce5e5;--slide-bg:#f7f9f7;--ink:#16313b;--muted:#52676d;--accent:#0d5260;--line:#b9cdcf;}
+*{box-sizing:border-box}body{font-family:'IBM Plex Sans','Segoe UI',sans-serif;color:var(--ink)}
+.slide{padding:78px 110px 90px;transition:opacity .18s ease}
+.eyebrow{font-size:25px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin:0 0 28px;font-weight:600}
+h2{font-family:'Archivo',sans-serif;font-size:66px;line-height:1.12;max-width:1580px;margin:0 0 45px;letter-spacing:-.025em}
+h3{font-size:34px;color:var(--accent);margin:0 0 18px}.content{font-size:32px;line-height:1.43}.content p{margin:0 0 26px}
+.lead{font-size:40px;line-height:1.4}.note{color:var(--muted);font-size:27px;margin-top:38px!important}.small{font-size:25px}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:80px}.cols>div{min-width:0}.three{display:grid;grid-template-columns:repeat(3,1fr);gap:45px}.four{display:grid;grid-template-columns:repeat(4,1fr);gap:30px}
+article{border-top:5px solid var(--accent);padding-top:30px}article b{font-size:36px}article p{margin-top:20px!important}.four article p{font-size:29px}
+.callout{border-left:7px solid var(--accent);padding:25px 38px;margin-top:55px!important;background:#e6eeee}
+blockquote{font-family:'STIX Two Text',Georgia,serif;font-size:43px;line-height:1.45;margin:0;max-width:1600px;border-left:5px solid var(--accent);padding-left:42px}
+ul,ol{margin:0;padding-left:46px}li{padding:0 0 26px 12px}.steps li{padding-bottom:34px}.hyp{display:grid;grid-template-columns:100px 1fr;gap:26px}.hyp>b{font-size:44px;color:var(--accent)}
+.flow{display:flex;justify-content:space-between;gap:35px;margin-top:55px;border-top:2px solid var(--line);padding-top:30px}.flow span+span:before{content:'→';margin-right:30px;color:var(--accent)}
+.timeline{display:grid;grid-template-columns:repeat(3,1fr);gap:40px;margin-bottom:45px}.timeline>div{border-top:5px solid var(--accent);padding-top:25px}.timeline p{font-size:27px;margin-top:15px}
+.formula{font-size:64px;color:var(--accent);font-family:'STIX Two Text',Georgia,serif;border-bottom:2px solid var(--line);padding-bottom:25px}
+.result{background:#e6eeee;padding:40px}.result output{display:block;font-size:70px;font-weight:700;margin-bottom:25px}input[type=range]{width:100%;accent-color:var(--accent);margin:30px 0;height:35px}label{display:block}
+a{color:var(--accent);text-underline-offset:5px}a:focus-visible,button:focus-visible,select:focus-visible{outline:4px solid #bb651e;outline-offset:6px}
+footer{position:absolute;left:110px;right:110px;bottom:37px;font-size:22px;color:var(--muted);border-top:1px solid var(--line);padding-top:18px;display:flex;justify-content:space-between}.cover h2{font-size:86px;max-width:1610px}.cover .lead{max-width:1450px}.rule{width:140px;border-top:6px solid var(--accent);margin:40px 0}
+/* === Controls and continuous view === */
+.deck-controls{display:flex;gap:8px;align-items:center;bottom:10px;background:#fff;padding:7px;border:1px solid var(--line);max-width:98vw;font-size:14px}
+button,select{font:inherit;border:1px solid var(--line);background:#fff;color:var(--ink);padding:8px;cursor:pointer}button:disabled{opacity:.4;cursor:default}select{max-width:29vw}.deck-controls span{white-space:nowrap}
+.continuous .deck-viewport{overflow-y:auto}.continuous .deck-stage{height:auto}.continuous .slide{position:relative;visibility:visible;opacity:1;pointer-events:auto;border-bottom:12px solid var(--line)}
+@media print{.deck-stage{height:auto!important}.scroll-area{height:auto!important}.slide{border:0!important}.deck-controls{display:none!important}}
+
 </style>
 </head>
 <body>
-
-<div id="app">
-  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs><marker id="arM" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="var(--muted)"/></marker><marker id="arP" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="var(--primary)"/></marker><marker id="arA" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="var(--accent)"/></marker></defs></svg>
-  <header class="bar">
-    <div class="brand">Proposta de dissertação <span>· PPGCONT/UFRGS · Usuários Externos</span></div>
-    <div class="ctrls">
-      <button id="themeBtn" aria-pressed="false" title="Alternar entre tema claro e escuro">Tema escuro</button>
-      <button id="modeBtn" aria-pressed="false" title="Mostrar todos os slides em sequência">Modo contínuo</button>
-    </div>
-  </header>
-
-  <div class="stage">
-    <div class="progress" aria-hidden="true"><i id="prog"></i></div>
-    <main id="deck" aria-live="polite">
-
-      <!-- 1 Capa -->
-      <section class="slide" id="s01" data-title="Capa">
-        <div class="cover">
-          <canvas id="coverfx" aria-hidden="true"></canvas>
-          <div>
-            <p class="eyebrow">Projeto de dissertação · versão de 6 de novembro de 2026</p>
-            <h1>Estimação de perdas esperadas com dados limitados</h1>
-            <p class="lead" style="margin-top:12px">Modelos de aprendizado de máquina para a avaliação de suficiência da provisão em instituições financeiras dos segmentos S4 e S5</p>
-            <p class="muted small" style="margin-top:14px">Reformulação da proposta de 28 de outubro de 2026. Dispositivos normativos e referências a conferir nas fontes primárias antes da redação final.</p>
-          </div>
-          <div class="card meta">
-            <div><b>Programa</b><span>PPGCONT/UFRGS, Controladoria e Contabilidade</span></div>
-            <div><b>Linha</b><span>Usuários Externos</span></div>
-            <div><b>Mestrando</b><span>Arthur</span></div>
-            <div><b>Área</b><span>Contabilidade bancária, risco de crédito, aprendizado de máquina</span></div>
-            <div><b>Objeto</b><span>Provisão para perdas esperadas sob a Res. CMN nº 4.966/2021</span></div>
-            <div><b>Navegação</b><span><kbd>←</kbd> <kbd>→</kbd> ou os pontos abaixo</span></div>
-          </div>
-        </div>
-      </section>
-
-      <!-- 2 Contexto -->
-      <section class="slide" id="s02" data-title="Ponto de partida">
-        <p class="eyebrow">1 · Ponto de partida</p>
-        <h2>Três fatos normativos criam o problema</h2>
-        <div class="grid g3">
-          <div class="rv card" style="--i:0">
-            <span class="tag p">Res. CMN 4.966/2021</span>
-            <h3 style="margin-top:8px">Perda esperada desde 1º/1/2025</h3>
-            <p class="small">A provisão deixa de seguir níveis fixos de risco (Res. 2.682/1999) e passa a refletir uma estimativa de perdas futuras com informação histórica, corrente e prospectiva.</p>
-          </div>
-          <div class="rv card" style="--i:1">
-            <span class="tag p">Art. 50</span>
-            <h3 style="margin-top:8px">S4 e S5 usam a metodologia simplificada</h3>
-            <p class="small">S1 a S3 aplicam a metodologia completa. O S4 pode pedir autorização ao BCB para a completa (IN BCB 487/2024, que exige dois anos de uso gerencial de perdas esperadas). O S5 não tem essa opção.</p>
-          </div>
-          <div class="rv card acc" style="--i:2">
-            <span class="tag a">Res. BCB 309/2023</span>
-            <h3 style="margin-top:8px">Os percentuais são pisos, não a provisão</h3>
-            <p class="small">A norma fixa níveis mínimos por carteira (C1 a C5) e faixa de atraso, mas exige montantes suficientes para a totalidade da perda esperada e o registro segregado do excedente, com revisão mensal (arts. 11, 13, 14 e 15, conforme o Voto BCB 60/2023).</p>
-          </div>
-        </div>
-        <p style="margin-top:16px" class="lead">Consequência: a instituição S4 ou S5 precisa de uma estimativa de perda esperada todo mês, mesmo sem poder substituir os mínimos por ela. Ela tem histórico curto, poucos defaults e equipe reduzida. A norma não diz como produzir essa estimativa.</p>
-      </section>
-
-      <!-- 3 O problema em imagem -->
-      <section class="slide" id="s03" data-title="Suficiência">
-        <p class="eyebrow">2 · O problema em uma imagem</p>
-        <h2>Avaliação de suficiência: mínimo regulatório versus perda esperada estimada</h2>
-        <figure>
-          <svg class="dg" viewBox="0 0 980 300" role="img" aria-label="Diagrama comparando a provisão mínima regulatória com a perda esperada estimada e a parcela complementar">
-            
-            <!-- left: floors -->
-            <rect class="bx-p" x="20" y="30" width="270" height="110" rx="10"/>
-            <text x="155" y="58" text-anchor="middle" font-weight="700" font-size="15">Níveis mínimos (Res. BCB 309)</text>
-            <text x="155" y="82" text-anchor="middle" font-size="12.5" class="t-muted">percentual × saldo, por carteira C1–C5</text>
-            <text x="155" y="100" text-anchor="middle" font-size="12.5" class="t-muted">e faixa de dias de atraso</text>
-            <text x="155" y="124" text-anchor="middle" font-size="12.5" class="t-mono">uniforme para todo o país</text>
-            <!-- right: model -->
-            <rect class="bx-a" x="690" y="30" width="270" height="110" rx="10"/>
-            <text x="825" y="58" text-anchor="middle" font-weight="700" font-size="15">Perda esperada estimada</text>
-            <text x="825" y="82" text-anchor="middle" font-size="12.5" class="t-muted">PD × LGD × EAD por contrato,</text>
-            <text x="825" y="100" text-anchor="middle" font-size="12.5" class="t-muted">com informação prospectiva</text>
-            <text x="825" y="124" text-anchor="middle" font-size="12.5" class="t-mono">específica da carteira</text>
-            <!-- center: comparison -->
-            <rect class="bx" x="355" y="40" width="270" height="90" rx="10"/>
-            <text x="490" y="70" text-anchor="middle" font-weight="700" font-size="15">Comparação mensal</text>
-            <text x="490" y="92" text-anchor="middle" font-size="12.5" class="t-muted">exigida pela norma (art. 14, III)</text>
-            <text x="490" y="112" text-anchor="middle" font-size="12.5" class="t-muted">por carteira e período</text>
-            <path class="ln-p" d="M290 85 L355 85" marker-end="url(#arP)"/>
-            <path class="ln-a" d="M690 85 L625 85" marker-end="url(#arA)"/>
-            <!-- bars -->
-            <text x="60" y="190" font-size="12.5" class="t-muted">Provisão mínima</text>
-            <rect class="grow" style="--d:.3s" x="200" y="176" width="300" height="20" rx="4" fill="var(--primary)"/>
-            <text x="60" y="226" font-size="12.5" class="t-muted">Perda esperada estimada</text>
-            <rect class="grow" style="--d:.9s" x="200" y="212" width="300" height="20" rx="4" fill="var(--primary)" opacity=".55"/>
-            <rect class="grow" style="--d:1.7s" x="500" y="212" width="150" height="20" rx="4" fill="var(--accent)"/>
-            <g class="after" style="--d:2.2s"><path class="ln-a dash" d="M500 170 L500 240"/>
-            <text x="660" y="226" font-size="13" font-weight="700" fill="var(--accent)">Parcela complementar</text>
-            <text x="660" y="244" font-size="12" class="t-muted">registro segregado; afeta resultado e PL</text></g>
-            <text x="60" y="280" font-size="12.5" class="t-muted">Perguntas da pesquisa: como estimar a barra laranja com poucos dados, e quando ela existe.</text>
-          </svg>
-          <figcaption>Figura 1. A norma fixa o piso e exige a comparação; a estimativa que serve de referência é obrigação da instituição, sem método prescrito.</figcaption>
-        </figure>
-      </section>
-
-      <!-- 4 Questão -->
-      <section class="slide" id="s04" data-title="Questão">
-        <p class="eyebrow">3 · Questão de pesquisa</p>
-        <h2>Uma pergunta, e seu desdobramento aplicado</h2>
-        <div class="q"><em>Em que condições</em>, definidas pelo número de eventos de inadimplência disponíveis e pela heterogeneidade entre carteiras, modelos de probabilidade de inadimplência com <em>personalização por carteira</em> e <em>seleção de indicadores macroeconômicos prospectivos</em> produzem <em>estimativas calibradas de perda esperada</em> para a avaliação de suficiência da provisão em instituições financeiras brasileiras dos segmentos S4 e S5?</div>
-        <p class="small muted" style="margin:-6px 0 12px">Questão aplicada, que decorre da principal: em que carteiras e fases do ciclo a estimativa excede os níveis mínimos da metodologia simplificada, em que magnitude e com que antecedência (objetivo específico 4; H5).</p>
-        <div class="grid g2">
-          <div class="rv card hi" style="--i:0">
-            <span class="tag p">Camada metodológica</span>
-            <h3 style="margin-top:8px">Qual estimador funciona com poucos dados?</h3>
-            <p class="small">Regressão logística, <i>gradient boosting</i> ou EBM; treinados de forma global, local ou híbrida; com ou sem seleção macro por carteira. O critério é a calibração, porque é o nível da PD que vira provisão.</p>
-          </div>
-          <div class="rv card acc" style="--i:1">
-            <span class="tag a">Camada contábil</span>
-            <h3 style="margin-top:8px">O que a estimativa revela sobre os mínimos?</h3>
-            <p class="small">Em que carteiras e fases do ciclo a perda esperada excede os pisos, qual a magnitude do complemento e com que antecedência a estimativa reage em relação aos defaults observados.</p>
-          </div>
-        </div>
-        <p class="note" style="margin-top:14px"><b>Delimitação.</b> Objeto principal: PD calibrada em 12 meses, agregada por carteira. LGD e EAD por métodos segmentados. Extensão multiperíodo condicionada à profundidade da base. População: instituições S4 e S5 sujeitas à Res. CMN 4.966. O estudo não propõe substituir os mínimos; produz e avalia a estimativa que a norma exige como referência.</p>
-      </section>
-
-      <!-- 5 Objetivos -->
-      <section class="slide" id="s05" data-title="Objetivos">
-        <p class="eyebrow">4 · Objetivos</p>
-        <h2>Objetivo geral e desdobramentos</h2>
-        <div class="rv card hi" style="--i:0;margin-bottom:14px">
-          <h3>Objetivo geral</h3>
-          <p>Analisar em que condições, definidas pelo número de eventos de inadimplência e pela heterogeneidade entre carteiras, modelos de PD com personalização por carteira e seleção de indicadores macroeconômicos prospectivos produzem estimativas calibradas de perda esperada para a avaliação de suficiência da provisão em instituições S4 e S5.</p>
-        </div>
-        <div class="grid g4">
-          <div class="rv card" style="--i:1"><span class="tag">OE1</span><p class="small" style="margin-top:8px"><b>Estimar</b> modelos de PD de referência (logística regularizada) e de ML (<i>gradient boosting</i>, EBM) sob os regimes global, local e híbrido, com validação fora do tempo.</p></div>
-          <div class="rv card" style="--i:2"><span class="tag">OE2</span><p class="small" style="margin-top:8px"><b>Comparar</b> calibração e erro de perdas agregadas entre regimes em função do número de eventos, por subamostragem controlada.</p></div>
-          <div class="rv card" style="--i:3"><span class="tag">OE3</span><p class="small" style="margin-top:8px"><b>Verificar</b> a contribuição incremental, fora da amostra, da seleção macroeconômica por carteira frente a um conjunto uniforme.</p></div>
-          <div class="rv card acc" style="--i:4"><span class="tag a">OE4</span><p class="small" style="margin-top:8px"><b>Mensurar</b> a diferença e a defasagem temporal entre a perda esperada estimada e a provisão pelos níveis mínimos, por carteira e período.</p></div>
-        </div>
-        <p class="small muted" style="margin-top:12px">Revisão sistemática, construção da base e documentação do protótipo são procedimentos do método, não objetivos.</p>
-      </section>
-
-      <!-- 6 Lacuna -->
-      <section class="slide" id="s06" data-title="Lacuna">
-        <p class="eyebrow">5 · Lacuna de pesquisa</p>
-        <h2>Três pontos cegos articulados, e não uma combinação inédita</h2>
-        <div class="grid g3">
-          <div class="rv card" style="--i:0">
-            <span class="tag p">Teórico-metodológico</span>
-            <h3 style="margin-top:8px">Discriminação em bases grandes versus calibração com poucos eventos</h3>
-            <p class="small">Os benchmarks de <i>credit scoring</i> comparam algoritmos por AUC em dezenas de milhares de observações (Lessmann et al., 2015; Gunnarsson et al., 2021). A provisão depende do nível da PD, isto é, da calibração, dimensão menos estudada (Van Calster et al., 2019) e a primeira a degradar em carteiras com poucos eventos (Pluto & Tasche, 2005).</p>
-          </div>
-          <div class="rv card" style="--i:1">
-            <span class="tag p">Empírico</span>
-            <h3 style="margin-top:8px">A teoria prevê o sinal, não a magnitude</h3>
-            <p class="small">A estimação com agrupamento parcial prevê que modelos híbridos superem modelos locais em grupos pequenos (Efron & Morris, 1975; Gelman & Hill, 2007). Não se sabe a magnitude do ganho em PD de crédito, o limiar de eventos em que ele se anula, nem o que ocorre com carteiras de dinâmica distinta.</p>
-          </div>
-          <div class="rv card acc" style="--i:2">
-            <span class="tag a">Institucional e contábil</span>
-            <h3 style="margin-top:8px">Pisos uniformes mais obrigação de provisionar a perda total</h3>
-            <p class="small">A coexistência de níveis mínimos por carteira com a exigência de suficiência é característica brasileira, sem paralelo na implementação europeia da IFRS 9. Não há evidência sobre em que carteiras e fases do ciclo os mínimos se afastam da perda esperada estimada.</p>
-          </div>
-        </div>
-        <p class="note" style="margin-top:14px">Há ainda uma tensão teórica em aberto: selecionar indicadores macro por carteira sobre séries curtas pode capturar heterogeneidade real ou sobreajustar. Breed et al. (2023) e Moodley et al. (2025) usam ajustes uniformes ou pragmáticos e não testam a especificidade em validação temporal estrita. A revisão sistemática confirmará os três pontos antes do congelamento dos objetivos.</p>
-      </section>
-
-      <!-- 7 Lentes -->
-      <section class="slide" id="s07" data-title="Teoria">
-        <p class="eyebrow">6 · Lentes teóricas</p>
-        <h2>Duas teorias, e as hipóteses decorrem delas</h2>
-        <div class="grid g2">
-          <div class="rv card" style="--i:0">
-            <span class="tag p">Lente contábil</span>
-            <h3 style="margin-top:8px">Qualidade e tempestividade da informação</h3>
-            <p class="small">A provisão deve representar fidedignamente a perda de valor da carteira, de forma relevante e tempestiva (CPC 00 R2). Atrasos no reconhecimento de perdas esperadas reduzem a disposição dos bancos a emprestar em recessões (Beatty & Liao, 2011); a tempestividade da provisão está associada à disciplina sobre a tomada de risco (Bushman & Williams, 2012); a transição para perda esperada está associada a provisões mais tempestivas (López-Espinosa et al., 2021).</p>
-            <p class="small"><b>Fornece o critério:</b> aderência entre previsto e observado (calibração) e antecedência da reação à deterioração (tempestividade). Deriva <b>H5</b>.</p>
-          </div>
-          <div class="rv card" style="--i:1">
-            <span class="tag p">Lente estatística</span>
-            <h3 style="margin-top:8px">Agrupamento parcial e dilema viés-variância</h3>
-            <p class="small">Estimar cada grupo separadamente gera variância alta nos grupos pequenos; estimar tudo junto gera viés nos grupos que diferem da média. Estimadores que encolhem as estimativas locais para a média global, em proporção inversa ao tamanho do grupo, dominam ambos (Efron & Morris, 1975; Gelman & Hill, 2007; Hastie et al., 2009).</p>
-            <p class="small"><b>Fornece a previsão:</b> o híbrido vence o local quando há poucos eventos. Deriva <b>H1</b> e <b>H3</b>. A mesma lógica, aplicada a séries temporais curtas, deriva <b>H2</b>; a evidência de benchmarks deriva <b>H4</b>.</p>
-          </div>
-        </div>
-        <figure style="margin-top:14px">
-          <svg class="dg" viewBox="0 0 980 150" role="img" aria-label="Esquema: global, híbrido e local em um eixo de viés e variância">
-            
-            <path class="ln" d="M80 80 L900 80" marker-end="url(#arM)" marker-start="url(#arM)"/>
-            <text x="80" y="60" font-size="12.5" class="t-muted">menor variância, maior viés</text>
-            <text x="900" y="60" font-size="12.5" class="t-muted" text-anchor="end">menor viés, maior variância</text>
-            <g><circle cx="180" cy="80" r="26" fill="var(--primary)"/><text x="180" y="85" text-anchor="middle" font-size="12.5" font-weight="700" class="t-inv">Global</text><text x="180" y="130" text-anchor="middle" font-size="12">um modelo para todas as carteiras</text></g>
-            <g><circle id="hyb" cx="490" cy="80" r="30" fill="var(--accent)"/><text id="hybt" x="490" y="85" text-anchor="middle" font-size="12.5" font-weight="700" class="t-inv">Híbrido</text><text x="490" y="130" text-anchor="middle" font-size="12">global recalibrado por carteira, com encolhimento</text></g>
-            <g><circle cx="800" cy="80" r="26" fill="var(--primary)"/><text x="800" y="85" text-anchor="middle" font-size="12.5" font-weight="700" class="t-inv">Local</text><text x="800" y="130" text-anchor="middle" font-size="12">um modelo por carteira</text></g>
-          </svg>
-          <figcaption>Figura 2. Posição esperada dos três regimes; a pesquisa mede onde o híbrido deixa de compensar, em número de eventos.</figcaption>
-        </figure>
-        <div class="shrink">
-          <div><label for="nev">Demonstração: eventos de inadimplência na carteira: <b id="nevv" class="mono"></b></label><input type="range" id="nev" min="5" max="400" step="5" value="40"></div>
-          <div class="out" id="nevout"></div>
-        </div>
-      </section>
-
-      <!-- 8 Hipóteses -->
-      <section class="slide" id="s08" data-title="Hipóteses">
-        <p class="eyebrow">7 · Hipóteses</p>
-        <h2>Cinco hipóteses condicionais e falsificáveis</h2>
-        <details open class="rv" style="--i:0"><summary><span class="tag p">H1</span> Personalização</summary><div class="body">Em carteiras com menos de <span class="mi">k</span> eventos de inadimplência no treinamento, modelos híbridos com recalibração por carteira apresentam intercepto e inclinação de calibração mais próximos de (0, 1) e menor erro relativo de perdas agregadas do que modelos globais e locais; a diferença se reduz com o aumento do número de eventos. <span class="muted">k fixado antes da análise (referência: 50).</span></div></details>
-        <details class="rv" style="--i:1"><summary><span class="tag p">H2</span> Seleção macroeconômica</summary><div class="body">A seleção de indicadores macro por carteira só gera ganho de log-verossimilhança fora do tempo quando há períodos suficientes para estimar os coeficientes com estabilidade; em séries curtas, não supera, ou piora, o conjunto uniforme.</div></details>
-        <details class="rv" style="--i:2"><summary><span class="tag p">H3</span> Escassez</summary><div class="body">A degradação da calibração com a redução do número de eventos (inclinação da curva erro × eventos) é menor para modelos híbridos regularizados do que para modelos locais, desde que as carteiras compartilhem estrutura de risco compatível.</div></details>
-        <details class="rv" style="--i:3"><summary><span class="tag p">H4</span> Parcimônia</summary><div class="body">A diferença de erro relativo de perdas agregadas entre a regressão logística regularizada e o <i>gradient boosting</i> situa-se dentro de uma margem de equivalência de ±δ da provisão, verificada por teste de equivalência (TOST), em carteiras com menos de k eventos. <span class="muted">δ fixado por materialidade contábil.</span></div></details>
-        <details class="rv" style="--i:4"><summary><span class="tag a">H5</span> Suficiência</summary><div class="body">A perda esperada estimada excede os níveis mínimos em carteiras com dinâmica distinta da média nacional implícita nos percentuais (crédito rural, capital de giro para pequenas empresas) e em fases de piora do ciclo, e fica abaixo deles em carteiras colateralizadas e fases benignas; a elevação da estimativa antecede a da provisão mínima em relação aos defaults observados.</div></details>
-        <p class="small muted" style="margin-top:10px">H1, H3 e H4 exigem variação controlada do número de eventos; H2 exige variação do número de períodos; H5 exige comparação carteira a carteira com os mínimos vigentes. Com base de instituição única, H1 e H3 são testadas entre carteiras.</p>
-      </section>
-
-      <!-- 8b Desenho de pesquisa -->
-      <section class="slide" id="s09" data-title="Desenho de pesquisa">
-        <p class="eyebrow">8 · Desenho de pesquisa</p>
-        <h2>Do problema à resposta: encadeamento conceitual</h2>
-        <figure>
-          <svg class="dg" viewBox="0 0 1000 560" role="img" aria-label="Desenho de pesquisa: problema, lentes teóricas, hipóteses, variáveis e resposta">
-            <!-- Problema -->
-            <rect class="bx-p" x="120" y="14" width="760" height="58" rx="10"/>
-            <text x="500" y="38" text-anchor="middle" font-size="14" font-weight="700">Problema: estimar perda esperada calibrada com poucos eventos para a avaliação de suficiência</text>
-            <text x="500" y="58" text-anchor="middle" font-size="12" class="t-muted">e medir quando e quanto ela excede os níveis mínimos (S4 e S5, Res. CMN 4.966 e Res. BCB 309)</text>
-            <path class="ln-p" d="M300 72 L300 100" marker-end="url(#arP)"/>
-            <path class="ln-p" d="M700 72 L700 100" marker-end="url(#arP)"/>
-            <!-- Lentes -->
-            <text x="20" y="128" font-size="11" class="t-mono t-muted">LENTES</text>
-            <rect class="bx" x="120" y="100" width="360" height="70" rx="10"/>
-            <text x="300" y="124" text-anchor="middle" font-size="13.5" font-weight="700">Lente estatística</text>
-            <text x="300" y="143" text-anchor="middle" font-size="12" class="t-muted">agrupamento parcial e viés-variância</text>
-            <text x="300" y="160" text-anchor="middle" font-size="11.5" class="t-muted">Efron &amp; Morris (1975); Gelman &amp; Hill (2007); Hastie et al. (2009)</text>
-            <rect class="bx" x="520" y="100" width="360" height="70" rx="10"/>
-            <text x="700" y="124" text-anchor="middle" font-size="13.5" font-weight="700">Lente contábil</text>
-            <text x="700" y="143" text-anchor="middle" font-size="12" class="t-muted">qualidade e tempestividade da informação</text>
-            <text x="700" y="160" text-anchor="middle" font-size="11.5" class="t-muted">CPC 00 R2; Beatty &amp; Liao (2011); Bushman &amp; Williams (2012)</text>
-            <!-- Hipóteses -->
-            <text x="20" y="226" font-size="11" class="t-mono t-muted">HIPÓTESES</text>
-            <g>
-              <rect class="bx-p" x="120" y="198" width="130" height="56" rx="8"/><text x="185" y="220" text-anchor="middle" font-size="13" font-weight="700">H1</text><text x="185" y="238" text-anchor="middle" font-size="11" class="t-muted">personalização</text>
-              <rect class="bx-p" x="262" y="198" width="130" height="56" rx="8"/><text x="327" y="220" text-anchor="middle" font-size="13" font-weight="700">H3</text><text x="327" y="238" text-anchor="middle" font-size="11" class="t-muted">escassez</text>
-              <rect class="bx-p" x="404" y="198" width="130" height="56" rx="8"/><text x="469" y="220" text-anchor="middle" font-size="13" font-weight="700">H2</text><text x="469" y="238" text-anchor="middle" font-size="11" class="t-muted">seleção macro</text>
-              <rect class="bx-p" x="546" y="198" width="130" height="56" rx="8"/><text x="611" y="220" text-anchor="middle" font-size="13" font-weight="700">H4</text><text x="611" y="238" text-anchor="middle" font-size="11" class="t-muted">parcimônia</text>
-              <rect class="bx-a" x="688" y="198" width="192" height="56" rx="8"/><text x="784" y="220" text-anchor="middle" font-size="13" font-weight="700">H5</text><text x="784" y="238" text-anchor="middle" font-size="11" class="t-muted">suficiência e tempestividade</text>
-            </g>
-            <path class="ln" d="M300 170 L185 198" marker-end="url(#arM)"/>
-            <path class="ln" d="M300 170 L327 198" marker-end="url(#arM)"/>
-            <path class="ln" d="M300 170 L469 198" marker-end="url(#arM)"/>
-            <path class="ln" d="M300 170 L611 198" marker-end="url(#arM)"/>
-            <path class="ln-a" d="M700 170 L784 198" marker-end="url(#arA)"/>
-            <!-- Variáveis -->
-            <text x="20" y="318" font-size="11" class="t-mono t-muted">VARIÁVEIS</text>
-            <rect class="bx" x="120" y="284" width="240" height="118" rx="10"/>
-            <text x="240" y="306" text-anchor="middle" font-size="12.5" font-weight="700">Condições (moderadoras)</text>
-            <text x="240" y="328" text-anchor="middle" font-size="11.5">número de eventos no treino</text>
-            <text x="240" y="346" text-anchor="middle" font-size="11.5">número de períodos</text>
-            <text x="240" y="364" text-anchor="middle" font-size="11.5">heterogeneidade entre carteiras</text>
-            <text x="240" y="388" text-anchor="middle" font-size="10.5" class="t-mono t-muted">manipuladas por subamostragem</text>
-            <rect class="bx" x="380" y="284" width="240" height="118" rx="10"/>
-            <text x="500" y="306" text-anchor="middle" font-size="12.5" font-weight="700">Tratamentos (explicativas)</text>
-            <text x="500" y="328" text-anchor="middle" font-size="11.5">regime: global · local · híbrido</text>
-            <text x="500" y="346" text-anchor="middle" font-size="11.5">macro: M0 · M1 · M2</text>
-            <text x="500" y="364" text-anchor="middle" font-size="11.5">algoritmo: logística · GBM · EBM</text>
-            <text x="500" y="388" text-anchor="middle" font-size="10.5" class="t-mono t-muted">plano fatorial 2 × 3 × 3</text>
-            <rect class="bx-a" x="640" y="284" width="240" height="118" rx="10"/>
-            <text x="760" y="306" text-anchor="middle" font-size="12.5" font-weight="700">Resultados (explicadas)</text>
-            <text x="760" y="328" text-anchor="middle" font-size="11.5">calibração (intercepto, inclinação)</text>
-            <text x="760" y="346" text-anchor="middle" font-size="11.5">log-loss · erro de perdas agregadas</text>
-            <text x="760" y="364" text-anchor="middle" font-size="11.5">razão · complemento · defasagem</text>
-            <text x="760" y="388" text-anchor="middle" font-size="10.5" class="t-mono t-muted">métrica primária por hipótese</text>
-            <path class="ln" d="M185 254 L240 284" marker-end="url(#arM)"/>
-            <path class="ln" d="M327 254 L260 284" marker-end="url(#arM)"/>
-            <path class="ln" d="M469 254 L490 284" marker-end="url(#arM)"/>
-            <path class="ln" d="M611 254 L520 284" marker-end="url(#arM)"/>
-            <path class="ln-a" d="M784 254 L760 284" marker-end="url(#arA)"/>
-            <path class="ln-p" d="M360 343 L380 343" marker-end="url(#arP)"/>
-            <path class="ln-p" d="M620 343 L640 343" marker-end="url(#arP)"/>
-            <!-- Resposta -->
-            <path class="ln-a" d="M500 402 L500 430" marker-end="url(#arA)"/>
-            <rect class="bx-s" x="120" y="430" width="760" height="56" rx="10"/>
-            <text x="500" y="454" text-anchor="middle" font-size="13.5" font-weight="700" class="t-inv">Resposta: condições em que cada estimador preserva calibração e magnitude da provisão complementar</text>
-            <text x="500" y="474" text-anchor="middle" font-size="11.5" class="t-inv" opacity=".85">evidência metodológica (H1–H4) e contábil (H5), com validação fora do tempo</text>
-            <text x="500" y="520" text-anchor="middle" font-size="11.5" class="t-muted">Relação testada: tratamentos × condições → resultados. As condições moderam o efeito dos tratamentos; a resposta é condicional por construção.</text>
-          </svg>
-          <figcaption>Figura 3. Desenho de pesquisa: as lentes derivam as hipóteses; as hipóteses definem variáveis e métrica primária; a resposta é condicional.</figcaption>
-        </figure>
-      </section>
-
-      <!-- 8c Desenho metodológico -->
-      <section class="slide" id="s10" data-title="Desenho metodológico">
-        <p class="eyebrow">9 · Desenho metodológico</p>
-        <h2>Classificação do estudo e sequência de procedimentos</h2>
-        <div class="grid g2">
-          <div class="tbl"><table>
-            <thead><tr class="rv" style="--i:0"><th>Dimensão</th><th>Escolha e justificativa</th></tr></thead>
-            <tbody>
-              <tr class="rv" style="--i:1"><td>Abordagem</td><td>Quantitativa: o problema exige mensurar calibração e magnitudes.</td></tr>
-              <tr class="rv" style="--i:2"><td>Finalidade</td><td>Preditiva e avaliativa: avalia estimadores por desempenho fora do tempo; não testa causalidade.</td></tr>
-              <tr class="rv" style="--i:3"><td>Delineamento</td><td>Quase-experimental computacional: configurações manipuladas pelo pesquisador sobre dados observacionais (Lessmann et al., 2015).</td></tr>
-              <tr class="rv" style="--i:4"><td>Unidade de análise</td><td>Contrato-mês, agregado por carteira; instituição como fonte.</td></tr>
-              <tr class="rv" style="--i:5"><td>População e amostra</td><td>Instituições S4 e S5 sob a Res. CMN 4.966; amostra não probabilística, por acesso (cenários A ou B), com limites de generalização declarados.</td></tr>
-              <tr class="rv" style="--i:6"><td>Coleta</td><td>Dados secundários anonimizados, sob termo de cessão (LGPD, art. 7º, IV); séries públicas BCB, Focus, IBGE.</td></tr>
-              <tr class="rv" style="--i:7"><td>Análise</td><td>Validação progressiva e fora do tempo; bootstrap agrupado; Diebold–Mariano; TOST para H4; métrica primária pré-registrada.</td></tr>
-            </tbody>
-          </table></div>
-          <figure>
-            <svg class="dg" viewBox="0 0 480 560" role="img" aria-label="Sequência de seis fases do método com as hipóteses atendidas em cada fase">
-              <g>
-                <rect class="bx-p" x="20" y="10" width="440" height="72" rx="10"/>
-                <text x="36" y="34" font-size="12" class="t-mono" fill="var(--accent)">FASE 1 · meses 1–2</text>
-                <text x="36" y="54" font-size="13" font-weight="700">Revisão sistemática e revisão normativa</text>
-                <text x="36" y="72" font-size="11.5" class="t-muted">protocolo; matriz de extração; lacuna confirmada; hipóteses congeladas</text>
-              </g>
-              <path class="ln-p" d="M240 82 L240 98" marker-end="url(#arP)"/>
-              <g>
-                <rect class="bx-a" x="20" y="98" width="440" height="72" rx="10"/>
-                <text x="36" y="122" font-size="12" class="t-mono" fill="var(--accent)">FASE 2 · meses 2–3 · decisão de dados</text>
-                <text x="36" y="142" font-size="13" font-weight="700">Base analítica, dicionário e definição do evento</text>
-                <text x="36" y="160" font-size="11.5" class="t-muted">termo de cessão; anonimização; carteiras C1–C5; regra de decisão A/B/C</text>
-              </g>
-              <path class="ln-p" d="M240 170 L240 186" marker-end="url(#arP)"/>
-              <g>
-                <rect class="bx-p" x="20" y="186" width="440" height="72" rx="10"/>
-                <text x="36" y="210" font-size="12" class="t-mono" fill="var(--accent)">FASE 3 · meses 4–7 · H1 H2 H3 H4</text>
-                <text x="36" y="230" font-size="13" font-weight="700">Modelagem: regimes, seleção macro, escassez controlada</text>
-                <text x="36" y="248" font-size="11.5" class="t-muted">logística · GBM · EBM; global · local · híbrido; M0 · M1 · M2; 25 a 200 eventos</text>
-              </g>
-              <path class="ln-p" d="M240 258 L240 274" marker-end="url(#arP)"/>
-              <g>
-                <rect class="bx-p" x="20" y="274" width="440" height="72" rx="10"/>
-                <text x="36" y="298" font-size="12" class="t-mono" fill="var(--accent)">FASE 4 · contínua</text>
-                <text x="36" y="318" font-size="13" font-weight="700">Validação temporal e inferência</text>
-                <text x="36" y="336" font-size="11.5" class="t-muted">janela expansiva; 12 meses fora do tempo; bootstrap agrupado; DM; TOST</text>
-              </g>
-              <path class="ln-p" d="M240 346 L240 362" marker-end="url(#arP)"/>
-              <g>
-                <rect class="bx-a" x="20" y="362" width="440" height="72" rx="10"/>
-                <text x="36" y="386" font-size="12" class="t-mono" fill="var(--accent)">FASE 5 · meses 7–8 · H5</text>
-                <text x="36" y="406" font-size="13" font-weight="700">Perda esperada, níveis mínimos e suficiência</text>
-                <text x="36" y="424" font-size="11.5" class="t-muted">LGD segmentada; EAD; razão, complemento e defasagem por carteira e mês</text>
-              </g>
-              <path class="ln-p" d="M240 434 L240 450" marker-end="url(#arP)"/>
-              <g>
-                <rect class="bx-p" x="20" y="450" width="440" height="72" rx="10"/>
-                <text x="36" y="474" font-size="12" class="t-mono" fill="var(--accent)">FASE 6 · meses 9–12</text>
-                <text x="36" y="494" font-size="13" font-weight="700">Explicabilidade, limitações, redação e defesa</text>
-                <text x="36" y="512" font-size="11.5" class="t-muted">importância por permutação; SHAP; repositório documentado</text>
-              </g>
-              <text x="240" y="548" text-anchor="middle" font-size="11" class="t-mono t-muted">cada fase registra decisões e versões no repositório</text>
-            </svg>
-            <figcaption>Figura 4. Fases do método e hipóteses atendidas em cada uma.</figcaption>
-          </figure>
-        </div>
-      </section>
-
-      <!-- 9 Arquitetura -->
-      <section class="slide" id="s11" data-title="Arquitetura">
-        <p class="eyebrow">10 · Desenho da pesquisa</p>
-        <h2>Arquitetura analítica <span class="muted small" style="font-family:var(--font-body);font-weight:400">(passe o cursor sobre os blocos)</span></h2>
-        <div class="playbar"><button id="archPlay" class="primary">▶ Reproduzir o fluxo</button><div class="stepdots" id="archDots"><i></i><i></i><i></i><i></i><i></i></div><div class="cap" id="archCap"><b>FLUXO</b>Clique em reproduzir para acompanhar o caminho dos dados até a provisão complementar.</div></div>
-        <figure>
-          <svg class="dg" id="archSvg" viewBox="0 0 1000 520" role="img" aria-label="Fluxo dos dados aos resultados: dados, PD em três regimes, ajuste macro, perda esperada, comparação com níveis mínimos e provisão complementar">
-            
-            <!-- column labels -->
-            <text x="90" y="24" font-size="11" class="t-mono t-muted">ENTRADAS</text>
-            <text x="330" y="24" font-size="11" class="t-mono t-muted">PROBABILIDADE DE INADIMPLÊNCIA</text>
-            <text x="640" y="24" font-size="11" class="t-mono t-muted">PERDA ESPERADA</text>
-            <text x="840" y="24" font-size="11" class="t-mono t-muted">SAÍDAS</text>
-            <rect class="grp" x="300" y="34" width="300" height="300" rx="12"/>
-            <!-- inputs -->
-            <g class="node" data-step="1" tabindex="0" data-tip="Posições mensais por contrato: saldo, atraso, garantias, modalidade, carteira C1–C5, eventos. Fonte provável: core banking e histórico do documento 3040 (SCR)."><rect class="bx" x="20" y="44" width="200" height="54" rx="8"/><text x="120" y="66" text-anchor="middle" font-size="13" font-weight="600">Microdados de contratos</text><text x="120" y="84" text-anchor="middle" font-size="11.5" class="t-muted">contrato-mês, 36 a 60 meses</text></g>
-            <g class="node" data-step="1" tabindex="0" data-tip="Segmento, tipo, sistema cooperativo, composição e concentração por carteira. Define os grupos dos regimes local e híbrido."><rect class="bx" x="20" y="118" width="200" height="54" rx="8"/><text x="120" y="140" text-anchor="middle" font-size="13" font-weight="600">Instituição e carteira</text><text x="120" y="158" text-anchor="middle" font-size="11.5" class="t-muted">segmento, modalidade, garantias</text></g>
-            <g class="node" data-step="1" tabindex="0" data-tip="Expectativas Focus (BCB) como variáveis prospectivas disponíveis em cada data; realizações defasadas do SGS e IBGE respeitando o calendário de divulgação; séries setoriais (CEPEA, INMET)."><rect class="bx" x="20" y="192" width="200" height="54" rx="8"/><text x="120" y="214" text-anchor="middle" font-size="13" font-weight="600">Macro e expectativas Focus</text><text x="120" y="232" text-anchor="middle" font-size="11.5" class="t-muted">SGS, Focus, IBGE, setoriais</text></g>
-            <g class="node" data-step="1" tabindex="0" data-tip="Fluxos recebidos após o evento, custos e valor realizado de garantias. Permitem LGD segmentada; LGD modelada é extensão condicionada."><rect class="bx" x="20" y="266" width="200" height="54" rx="8"/><text x="120" y="288" text-anchor="middle" font-size="13" font-weight="600">Recuperações</text><text x="120" y="306" text-anchor="middle" font-size="11.5" class="t-muted">fluxos pós-evento, garantias</text></g>
-            <g class="node" data-step="5" tabindex="0" data-tip="Percentuais dos níveis mínimos vigentes em cada data, por carteira C1–C5 e faixa de atraso, e regras de classificação das operações."><rect class="bx-a" x="20" y="400" width="200" height="54" rx="8"/><text x="120" y="422" text-anchor="middle" font-size="13" font-weight="600">Níveis mínimos (Res. BCB 309)</text><text x="120" y="440" text-anchor="middle" font-size="11.5" class="t-muted">C1–C5 × faixa de atraso</text></g>
-            <!-- PD regimes -->
-            <g class="node" data-step="2" tabindex="0" data-tip="Um modelo treinado com todas as carteiras, sem identificadores de grupo. Candidatos: logística regularizada, gradient boosting, EBM."><rect class="bx-p" x="320" y="50" width="260" height="50" rx="8"/><text x="450" y="71" text-anchor="middle" font-size="13" font-weight="600">Modelo global de PD</text><text x="450" y="89" text-anchor="middle" font-size="11.5" class="t-muted">logística · GBM · EBM</text></g>
-            <g class="node" data-step="2" tabindex="0" data-tip="Um modelo por carteira, sujeito a número mínimo de eventos. Alta variância quando há poucos defaults."><rect class="bx-p" x="320" y="118" width="260" height="50" rx="8"/><text x="450" y="139" text-anchor="middle" font-size="13" font-weight="600">Modelo local de PD</text><text x="450" y="157" text-anchor="middle" font-size="11.5" class="t-muted">um por carteira</text></g>
-            <g class="node" data-step="2" tabindex="0" data-tip="Segundo estágio: regressão logística do evento sobre o logit da PD global, com intercepto e inclinação por carteira encolhidos para (0, 1) em proporção inversa ao número de eventos."><rect class="bx-p" x="320" y="186" width="260" height="50" rx="8"/><text x="450" y="207" text-anchor="middle" font-size="13" font-weight="600">Híbrido: recalibração por carteira</text><text x="450" y="225" text-anchor="middle" font-size="11.5" class="t-muted">encolhimento para o global</text></g>
-            <g class="node" data-step="2" tabindex="0" data-tip="Componente s_c(t) estimado sobre a diferença entre inadimplência observada e prevista, por carteira-período, com Elastic Net. Configurações M0, M1 (uniforme), M2 (por carteira), M3 (opcional)."><rect class="bx-p" x="320" y="254" width="260" height="50" rx="8"/><text x="450" y="275" text-anchor="middle" font-size="13" font-weight="600">Ajuste macro prospectivo</text><text x="450" y="293" text-anchor="middle" font-size="11.5" class="t-muted">M0 · M1 uniforme · M2 por carteira</text></g>
-            <!-- comparison -->
-            <g class="node" data-step="3" tabindex="0" data-tip="Treino com 25, 50, 100, 200 e todos os eventos; validação progressiva; 12 meses finais fora do tempo; bootstrap agrupado; métrica primária por hipótese."><rect class="bx" x="320" y="360" width="260" height="60" rx="8"/><text x="450" y="383" text-anchor="middle" font-size="13" font-weight="600">Comparação sob escassez controlada</text><text x="450" y="401" text-anchor="middle" font-size="11.5" class="t-muted">calibração · log-loss · erro de ECL · TOST</text></g>
-            <!-- ECL -->
-            <g class="node" data-step="4" tabindex="0" data-tip="Por contrato: PD × LGD × EAD em 12 meses; extensão multiperíodo pela soma descontada das perdas marginais. LGD segmentada por modalidade e garantia; EAD contratual."><rect class="bx-p" x="630" y="118" width="180" height="118" rx="8"/><text x="720" y="150" text-anchor="middle" font-size="13" font-weight="600">Perda esperada</text><text x="720" y="168" text-anchor="middle" font-size="13" font-weight="600">estimada</text><text x="720" y="192" text-anchor="middle" font-size="11.5" class="t-mono">PD × LGD × EAD</text><text x="720" y="212" text-anchor="middle" font-size="11.5" class="t-muted">por contrato, agregada</text></g>
-            <!-- sufficiency -->
-            <g class="node" data-step="5" tabindex="0" data-tip="Razão perda esperada / provisão mínima; parcela complementar em % da carteira; defasagem em meses entre a elevação da estimativa e a dos mínimos frente aos defaults observados nos 12 meses seguintes."><rect class="bx-a" x="620" y="390" width="200" height="74" rx="8"/><text x="720" y="418" text-anchor="middle" font-size="13" font-weight="600">Avaliação de suficiência</text><text x="720" y="436" text-anchor="middle" font-size="11.5" class="t-muted">por carteira e período</text><text x="720" y="452" text-anchor="middle" font-size="11" class="t-muted">razão · complemento · defasagem</text></g>
-            <!-- outputs -->
-            <g class="node" data-step="3" tabindex="0" data-tip="Respondem H1 a H4: quais estimadores preservam calibração, quando o híbrido compensa, se a seleção macro agrega, quando a logística basta."><rect class="bx-s" x="850" y="118" width="130" height="70" rx="8"/><text x="915" y="147" text-anchor="middle" font-size="12.5" font-weight="700" class="t-inv">Evidência H1–H4</text><text x="915" y="166" text-anchor="middle" font-size="11" class="t-inv" opacity=".85">metodológica</text></g>
-            <g class="node" data-step="5" tabindex="0" data-tip="Responde H5: magnitude e tempestividade da parcela complementar por carteira e fase do ciclo; insumo para a revisão dos percentuais pelo regulador."><rect class="bx-s" x="850" y="392" width="130" height="70" rx="8"/><text x="915" y="421" text-anchor="middle" font-size="12.5" font-weight="700" class="t-inv">Provisão</text><text x="915" y="438" text-anchor="middle" font-size="12.5" font-weight="700" class="t-inv">complementar (H5)</text><text x="915" y="455" text-anchor="middle" font-size="11" class="t-inv" opacity=".85">contábil</text></g>
-            <!-- edges -->
-            <path class="ln" d="M220 71 L320 75" marker-end="url(#arM)"/>
-            <path class="ln" d="M220 85 L320 143" marker-end="url(#arM)"/>
-            <path class="ln" d="M220 145 L320 150" marker-end="url(#arM)"/>
-            <path class="ln" d="M220 160 L320 205" marker-end="url(#arM)"/>
-            <path class="ln" d="M220 219 L320 279" marker-end="url(#arM)"/>
-            <path class="ln dash" d="M220 293 L300 293 L300 345 L680 345 L680 236" marker-end="url(#arM)"/>
-            <path class="ln-p" d="M580 75 L595 75 L595 385 L580 385" marker-end="url(#arP)"/>
-            <path class="ln-p" d="M580 143 L595 143"/>
-            <path class="ln-p" d="M580 211 L595 211"/>
-            <path class="ln-p" d="M580 279 L595 279"/>
-            <path class="ln-p" d="M580 405 L612 405 L612 200 L630 200" marker-end="url(#arP)"/>
-            <path class="ln-p" d="M580 370 L915 370 L915 188" marker-end="url(#arP)"/>
-            <path class="ln-p" d="M810 160 L850 153" marker-end="url(#arP)"/>
-            <path class="ln-a" d="M220 427 L620 427" marker-end="url(#arA)"/>
-            <path class="ln-a" d="M720 236 L720 390" marker-end="url(#arA)"/>
-            <path class="ln-a" d="M820 427 L850 427" marker-end="url(#arA)"/>
-            <text x="450" y="326" text-anchor="middle" font-size="11" class="t-mono t-muted">validação fora do tempo · 12 meses finais reservados</text>
-          </svg>
-          <figcaption>Figura 5. O protótipo é instrumento: a saída metodológica (H1–H4) alimenta a saída contábil (H5).</figcaption>
-        </figure>
-      </section>
-
-      <!-- 10 Regimes -->
-      <section class="slide" id="s12" data-title="Regimes">
-        <p class="eyebrow">11 · Módulo de PD</p>
-        <h2>Como a personalização é especificada sem duplicar efeitos</h2>
-        <div class="grid g2">
-          <div>
-            <ol class="steps">
-              <li><b>Modelo-base global</b>, treinado sem identificadores de carteira e sem variáveis macro. Candidatos: regressão logística regularizada (referência), <i>gradient boosting</i> (XGBoost ou LightGBM) e, se viável, <i>Explainable Boosting Machine</i> (Nori et al., 2019).</li>
-              <li><b>Recalibração por carteira</b>: regressão logística do evento sobre o logit da PD global, com intercepto <span class="mi">a<sub>c</sub></span> e inclinação <span class="mi">b<sub>c</sub></span> encolhidos para (0, 1) em proporção inversa ao número de eventos da carteira.</li>
-              <li><b>Componente prospectivo</b> <span class="mi">s<sub>c</sub>(t)</span>, estimado no nível carteira-período sobre a diferença entre a inadimplência observada e a prevista, por Elastic Net sobre indicadores e defasagens, apenas dentro das janelas de treino.</li>
-            </ol>
-            <div class="card" style="margin-top:12px">
-              <div class="math" aria-label="logit de PD índice i c igual a a índice c mais b índice c vezes logit de PD global de X índice i mais s índice c de t">
-                <span><span class="fn">logit</span>(<i>PD</i><sub><i>ic</i></sub>)</span><span class="op">=</span><span><i>a</i><sub><i>c</i></sub></span><span class="op">+</span><span><i>b</i><sub><i>c</i></sub> · <span class="fn">logit</span>(<i>PD</i><sub>global</sub>(<i>X</i><sub><i>i</i></sub>))</span><span class="op">+</span><span><i>s</i><sub><i>c</i></sub>(<i>t</i>)</span>
-              </div>
-              <div class="legend">
-                <b>i</b><span>contrato</span>
-                <b>c</b><span>carteira</span>
-                <b>t</b><span>período</span>
-                <b>a<sub>c</sub>, b<sub>c</sub></b><span>intercepto e inclinação de recalibração, encolhidos para (0, 1) conforme o número de eventos da carteira</span>
-                <b>s<sub>c</sub>(t)</b><span>componente macroeconômico prospectivo por carteira-período</span>
-              </div>
-              <p class="small muted" style="margin:8px 0 0">Formulação conceitual, não estimada.</p>
-            </div>
-          </div>
-          <div>
-            <div class="card"><h3>Por que em dois estágios</h3><p class="small">Se o modelo-base incluísse identificadores de carteira, os parâmetros de recalibração duplicariam efeitos já aprendidos. Se o componente macro fosse livre por período, equivaleria a um efeito fixo de tempo e absorveria toda a macroeconomia, tornando a seleção de variáveis inidentificável. A separação em estágios mantém cada efeito identificável.</p></div>
-            <div class="card" style="margin-top:12px"><h3>Por que calibração e não AUC</h3><p class="small">Dois modelos podem ordenar os contratos igualmente bem e, ainda assim, atribuir níveis de PD muito diferentes. Para a provisão, o que importa é o nível. Métricas primárias: intercepto e inclinação de calibração, erro relativo de perdas agregadas e log-verossimilhança fora do tempo.</p></div>
-            <div class="card acc" style="margin-top:12px"><h3>Informação prospectiva sem vazamento</h3><p class="small">As expectativas do Focus são, por construção, a informação disponível em cada data. Isso evita reconstruir <i>vintages</i> de séries revisadas e atende ao requisito de previsões razoáveis e sustentáveis.</p></div>
-          </div>
-        </div>
-      </section>
-
-      <!-- 11 Desenho experimental -->
-      <section class="slide" id="s13" data-title="Experimentos">
-        <p class="eyebrow">12 · Desenho experimental</p>
-        <h2>Plano fatorial reduzido sob escassez controlada</h2>
-        <div class="grid g2">
-          <div>
-            <div class="tbl"><table>
-              <thead><tr class="rv" style="--i:0"><th>Eixo</th><th>Níveis</th><th>Hipóteses</th></tr></thead>
-              <tbody>
-                <tr class="rv" style="--i:1"><td>Algoritmo</td><td>logística regularizada · <i>gradient boosting</i> · (EBM, extensão)</td><td>H4</td></tr>
-                <tr class="rv" style="--i:2"><td>Regime</td><td>global · local · híbrido</td><td>H1, H3</td></tr>
-                <tr class="rv" style="--i:3"><td>Macro</td><td>M0 · M1 uniforme · M2 por carteira · (M3, extensão)</td><td>H2</td></tr>
-                <tr class="rv" style="--i:4"><td>Eventos no treino</td><td>25 · 50 · 100 · 200 · total</td><td>H1, H3, H4</td></tr>
-                <tr class="rv" style="--i:5"><td>Comparação regulatória</td><td>perda estimada × níveis mínimos, por carteira e período</td><td>H5</td></tr>
-              </tbody>
-            </table></div>
-            <p class="small muted" style="margin-top:8px">18 células principais (2 × 3 × 3), cada uma avaliada em cinco níveis de escassez, com repetições por sementes e intervalos de confiança por bootstrap agrupado por contrato e período.</p>
-          </div>
-          <div>
-            <div class="rv card" style="--i:6"><h3>Validação temporal</h3><ul class="clean small"><li class="rv" style="--i:7">Dados em ordem cronológica; últimos 12 meses reservados fora do tempo.</li><li class="rv" style="--i:8">Validação progressiva (janela expansiva) nos períodos anteriores.</li><li class="rv" style="--i:9">Imputação, seleção e hiperparâmetros ajustados só no treino de cada dobra.</li><li class="rv" style="--i:10">Embargo temporal quando os horizontes se sobrepõem.</li></ul></div>
-            <div class="rv card" style="--i:11;margin-top:12px"><h3>Inferência</h3><ul class="clean small"><li class="rv" style="--i:12">Métrica primária pré-registrada por hipótese, para evitar multiplicidade.</li><li class="rv" style="--i:13">Testes de acurácia preditiva (Diebold–Mariano) sobre perdas por período.</li><li class="rv" style="--i:14">H4 por teste de equivalência (TOST), não por ausência de significância.</li><li class="rv" style="--i:15">Logística com poucos eventos: estimação penalizada (Firth) para separação.</li></ul></div>
-          </div>
-        </div>
-      </section>
-
-      <!-- 12 Simulador -->
-      <section class="slide" id="s14" data-title="Simulador">
-        <p class="eyebrow">13 · Avaliação de suficiência</p>
-        <h2>Simulador: níveis mínimos versus perda esperada estimada</h2>
-        <p class="small muted">Exemplo ilustrativo da operação exigida pela norma. Percentuais do Anexo II conforme a minuta do Voto BCB 60/2023 (operações não inadimplidas, metodologia simplificada); conferir a norma vigente. Valores de saldo são fictícios e editáveis.</p>
-        <div class="sim">
-          <div>
-            <label for="cart">Carteira (classificação regulatória)</label>
-            <select id="cart">
-              <option value="0">C1</option><option value="1">C2</option><option value="2" selected>C3</option><option value="3">C4</option><option value="4">C5</option>
-            </select>
-            <p class="small muted" style="margin:10px 0 6px">Saldo por faixa de atraso (R$ mil)</p>
-            <div class="row"><span>0 a 14 dias</span><input type="number" id="b0" value="8000" min="0" step="100"><span class="pct" id="p0"></span></div>
-            <div class="row"><span>15 a 30 dias</span><input type="number" id="b1" value="900" min="0" step="50"><span class="pct" id="p1"></span></div>
-            <div class="row"><span>31 a 60 dias</span><input type="number" id="b2" value="500" min="0" step="50"><span class="pct" id="p2"></span></div>
-            <div class="row"><span>61 a 90 dias</span><input type="number" id="b3" value="300" min="0" step="50"><span class="pct" id="p3"></span></div>
-            <div class="row"><span>Ativo problemático, não inadimplido</span><input type="number" id="b4" value="200" min="0" step="50"><span class="pct" id="p4"></span></div>
-            <label for="ecl" style="margin-top:12px">Perda esperada estimada pelo modelo (% da carteira): <b id="eclv" class="mono"></b></label>
-            <input type="range" id="ecl" min="0" max="20" step="0.1" value="5.5">
-          </div>
-          <div>
-            <div class="kpi">
-              <div><span>Provisão mínima</span><b id="kmin"></b></div>
-              <div><span>Perda estimada</span><b id="kecl"></b></div>
-              <div class="c"><span>Complemento</span><b id="kcomp"></b></div>
-            </div>
-            <div class="bars">
-              <div class="b"><span>Provisão mínima</span><i id="barMin"></i><span class="v" id="vMin"></span></div>
-              <div class="b ecl"><span>Perda estimada</span><i id="barEcl"></i><span class="v" id="vEcl"></span></div>
-            </div>
-            <p class="note" style="margin-top:14px" id="simMsg"></p>
-            <p class="small muted" style="margin-top:10px">A pesquisa estima a barra laranja com modelos calibrados sob poucos dados (H1 a H4) e mede, carteira a carteira e mês a mês, quando e quanto ela excede a azul (H5).</p>
-          </div>
-        </div>
-      </section>
-
-      <!-- 13 Dados: mapa -->
-      <section class="slide" id="s15" data-title="Dados">
-        <p class="eyebrow">14 · Dados necessários</p>
-        <h2>Sete camadas de dados <span class="muted small" style="font-family:var(--font-body);font-weight:400">(passe o cursor para ver campos e fontes)</span></h2>
-        <figure>
-          <svg class="dg" viewBox="0 0 1000 400" role="img" aria-label="Mapa das camadas de dados, com granularidade, finalidade e fonte">
-            
-            <text x="20" y="22" font-size="11" class="t-mono t-muted">CAMADA · GRANULARIDADE</text>
-            <text x="560" y="22" font-size="11" class="t-mono t-muted">FONTE PROVÁVEL</text>
-            <text x="820" y="22" font-size="11" class="t-mono t-muted">ALIMENTA</text>
-            <!-- rows -->
-            <g class="node" tabindex="0" data-tip="Campos: id do contrato; modalidade; datas de contratação e vencimento; valor original; saldo; taxa e indexador; amortização; tipo e valor de garantia; carteira C1–C5; dias de atraso; estágio; renegociação, reestruturação, baixa, cessão, liquidação."><rect class="bx-p" x="20" y="36" width="500" height="44" rx="7"/><text x="34" y="55" font-size="13" font-weight="600">Operação</text><text x="34" y="72" font-size="11.5" class="t-muted">contrato-mês · 36 a 60 meses · a restrição crítica é o número de eventos</text></g>
-            <rect class="bx" x="560" y="36" width="240" height="44" rx="7"/><text x="680" y="55" text-anchor="middle" font-size="12">core banking · documento 3040</text><text x="680" y="72" text-anchor="middle" font-size="11" class="t-muted">histórico padronizado do SCR</text>
-            <text x="820" y="62" font-size="12" class="t-muted">PD · EAD · evento · mínimos</text>
-
-            <g class="node" tabindex="0" data-tip="Campos: natureza PF/PJ; porte; CNAE ou ocupação; UF e município; renda ou faturamento declarado quando disponível; tempo de relacionamento; classificação interna."><rect class="bx-p" x="20" y="88" width="500" height="44" rx="7"/><text x="34" y="107" font-size="13" font-weight="600">Tomador</text><text x="34" y="124" font-size="11.5" class="t-muted">tomador-mês · atributos cadastrais e econômicos legalmente utilizáveis</text></g>
-            <rect class="bx" x="560" y="88" width="240" height="44" rx="7"/><text x="680" y="107" text-anchor="middle" font-size="12">cadastro · documento 3040</text><text x="680" y="124" text-anchor="middle" font-size="11" class="t-muted">anonimizado por hash</text>
-            <text x="820" y="114" font-size="12" class="t-muted">PD · segmentação</text>
-
-            <g class="node" tabindex="0" data-tip="Derivada da camada de operação: modalidade agregada, concentração, composição por garantia, coorte de originação, saldo total. Define os grupos dos regimes local e híbrido e a agregação da suficiência."><rect class="bx-p" x="20" y="140" width="500" height="44" rx="7"/><text x="34" y="159" font-size="13" font-weight="600">Carteira</text><text x="34" y="176" font-size="11.5" class="t-muted">carteira-mês · grupos dos regimes local e híbrido</text></g>
-            <rect class="bx" x="560" y="140" width="240" height="44" rx="7"/><text x="680" y="159" text-anchor="middle" font-size="12">derivada da operação</text><text x="680" y="176" text-anchor="middle" font-size="11" class="t-muted">agregação mensal</text>
-            <text x="820" y="166" font-size="12" class="t-muted">regimes · suficiência</text>
-
-            <g class="node" tabindex="0" data-tip="Segmento prudencial; tipo (cooperativa singular, SCFI, banco); sistema cooperativo; UF; políticas de crédito relevantes e datas de mudança. Necessária para heterogeneidade entre instituições no cenário A."><rect class="bx-p" x="20" y="192" width="500" height="44" rx="7"/><text x="34" y="211" font-size="13" font-weight="600">Instituição</text><text x="34" y="228" font-size="11.5" class="t-muted">por instituição · segmento, tipo, sistema, políticas</text></g>
-            <rect class="bx" x="560" y="192" width="240" height="44" rx="7"/><text x="680" y="211" text-anchor="middle" font-size="12">institucional · IF.data</text><text x="680" y="228" text-anchor="middle" font-size="11" class="t-muted">público para o segmento</text>
-            <text x="820" y="218" font-size="12" class="t-muted">heterogeneidade (cenário A)</text>
-
-            <g class="node" tabindex="0" data-tip="Data do evento; fluxos recebidos e datas; custos de recuperação; valor realizado de garantias. Exige ao menos 24 meses após os eventos para maturação."><rect class="bx-p" x="20" y="244" width="500" height="44" rx="7"/><text x="34" y="263" font-size="13" font-weight="600">Recuperação</text><text x="34" y="280" font-size="11.5" class="t-muted">evento-fluxo · 24 meses de maturação após o evento</text></g>
-            <rect class="bx" x="560" y="244" width="240" height="44" rx="7"/><text x="680" y="263" text-anchor="middle" font-size="12">sistema de cobrança</text><text x="680" y="280" text-anchor="middle" font-size="11" class="t-muted">frequentemente incompleto</text>
-            <text x="820" y="270" font-size="12" class="t-muted">LGD segmentada</text>
-
-            <g class="node" tabindex="0" data-tip="Selic; IPCA; IBC-Br; desemprego (PNAD); rendimento real; câmbio; inadimplência agregada por modalidade (SGS); preços agrícolas (CEPEA); precipitação (INMET); expectativas Focus para as mesmas variáveis, com calendário de divulgação."><rect class="bx-p" x="20" y="296" width="500" height="44" rx="7"/><text x="34" y="315" font-size="13" font-weight="600">Macroeconomia e expectativas</text><text x="34" y="332" font-size="11.5" class="t-muted">mês ou trimestre · realizações defasadas e expectativas Focus</text></g>
-            <rect class="bx" x="560" y="296" width="240" height="44" rx="7"/><text x="680" y="315" text-anchor="middle" font-size="12">BCB/SGS · Focus · IBGE</text><text x="680" y="332" text-anchor="middle" font-size="11" class="t-muted">CEPEA · INMET</text>
-            <text x="820" y="322" font-size="12" class="t-muted">ajuste prospectivo</text>
-
-            <g class="node" tabindex="0" data-tip="Percentuais dos níveis mínimos vigentes em cada data, por carteira C1–C5 e faixa de atraso, e regras de classificação das operações nas carteiras."><rect class="bx-a" x="20" y="348" width="500" height="44" rx="7"/><text x="34" y="367" font-size="13" font-weight="600">Regulatório</text><text x="34" y="384" font-size="11.5" class="t-muted">carteira × faixa de atraso · percentuais vigentes à data</text></g>
-            <rect class="bx" x="560" y="348" width="240" height="44" rx="7"/><text x="680" y="367" text-anchor="middle" font-size="12">Res. BCB 309/2023 e alterações</text><text x="680" y="384" text-anchor="middle" font-size="11" class="t-muted">texto consolidado</text>
-            <text x="820" y="374" font-size="12" class="t-muted">provisão mínima (H5)</text>
-          </svg>
-          <figcaption>Figura 6. O histórico do documento 3040 enviado ao SCR é a fonte mais padronizada entre instituições, o que favorece o cenário A.</figcaption>
-        </figure>
-      </section>
-
-      <!-- 14 Volume e cenários -->
-      <section class="slide" id="s16" data-title="Cenários">
-        <p class="eyebrow">15 · Volume mínimo e cenários de acesso</p>
-        <h2>Quanto dado é preciso, e o que fazer se faltar</h2>
-        <div class="grid g3" style="margin-bottom:14px">
-          <div class="rv card" style="--i:0"><span class="tag">Profundidade</span><p class="small" style="margin-top:8px"><b>36 meses</b> de posições mensais no mínimo, dos quais 12 reservados fora do tempo; <b>60 meses</b> desejáveis para que o componente macro observe mais de uma fase do ciclo.</p></div>
-          <div class="rv card" style="--i:1"><span class="tag">Eventos</span><p class="small" style="margin-top:8px">Ao menos <b>10 eventos por parâmetro</b> (Peduzzi et al., 1996): 100 a 150 eventos por modelo local com 10 a 15 variáveis. Ao menos uma carteira com <b>mais de 200 eventos</b> para simular escassez por subamostragem. Carteiras menores não são excluídas; são as que motivam o híbrido.</p></div>
-          <div class="rv card" style="--i:2"><span class="tag">Recuperações</span><p class="small" style="margin-top:8px"><b>24 meses</b> de observação após os eventos para a LGD segmentada maturar. Sem esse histórico, LGD por parâmetros documentados com limitação declarada.</p></div>
-        </div>
-        <div class="tabs" role="tablist">
-          <button role="tab" aria-selected="true" data-tab="A">Cenário A · múltiplas instituições</button>
-          <button role="tab" aria-selected="false" data-tab="B">Cenário B · uma instituição</button>
-          <button role="tab" aria-selected="false" data-tab="C">Cenário C · sem microdados</button>
-        </div>
-        <div class="panel" data-panel="A">
-          <div class="rv card hi" style="--i:3"><h3>Preferencial</h3><p class="small">Um sistema cooperativo (central ou confederação) reúne singulares S4 e S5 com dados padronizados pelo mesmo sistema de informação. Permite testar H1 e H3 entre instituições e aplicar validação <i>leave-one-institution-out</i>. Exige acordo de acesso com a central, padronização de definições e verificação de representatividade. Inferência entre instituições é descritiva se o número de singulares for pequeno.</p></div>
-        </div>
-        <div class="panel" data-panel="B" hidden>
-          <div class="rv card" style="--i:4"><h3>Plenamente viável</h3><p class="small">Uma instituição com múltiplas carteiras (consignado, capital de giro, rural). A pergunta se ajusta para personalização entre carteiras dentro da instituição; não se afirma generalização entre instituições. H5 permanece integral, porque a comparação com os mínimos é por carteira.</p></div>
-        </div>
-        <div class="panel" data-panel="C" hidden>
-          <div class="rv card acc" style="--i:5"><h3>Viabilidade condicionada</h3><p class="small">Bases públicas estrangeiras de crédito permitem a prova de conceito metodológica (H1 a H4), mas não a avaliação de suficiência (H5), que depende das carteiras C1 a C5 e dos níveis mínimos brasileiros. H5 seria reformulada para o nível agregado por modalidade, com séries de inadimplência do SGS, com perda substancial de granularidade.</p></div>
-        </div>
-        <p class="note" style="margin-top:14px"><b>Regra de decisão.</b> Dados confirmados até o mês 3. Sem cenário A, migra-se ao B com a pergunta ajustada; sem microdados brasileiros, migra-se ao C e H5 é reformulada. A regra consta do protocolo e do repositório.</p>
-      </section>
-
-      <!-- 15 Cronograma e riscos -->
-      <section class="slide" id="s17" data-title="Cronograma">
-        <p class="eyebrow">16 · Cronograma e riscos</p>
-        <h2>Doze meses, com a decisão de dados no mês 3</h2>
-        <div class="tl" aria-label="Cronograma em 12 meses">
-          <div class="m">1</div><div class="m">2</div><div class="m">3</div><div class="m">4</div><div class="m">5</div><div class="m">6</div><div class="m">7</div><div class="m">8</div><div class="m">9</div><div class="m">10</div><div class="m">11</div><div class="m">12</div>
-          <div class="rv ph" style="--i:0;--span:2">RSL e revisão normativa consolidada; problema e hipóteses congelados</div>
-          <div class="rv ph a" style="--i:1;--span:1">Dados: acesso, dicionário, evento, decisão de cenário</div>
-          <div class="rv ph" style="--i:2;--span:2">Modelos de referência; validação temporal; calibração</div>
-          <div class="rv ph" style="--i:3;--span:2">Regimes local e híbrido; seleção macro; escassez (H1–H4)</div>
-          <div class="rv ph a" style="--i:4;--span:2">LGD/EAD; perda esperada; mínimos; suficiência (H5)</div>
-          <div class="rv ph" style="--i:5;--span:1">Testes; explicabilidade; limitações</div>
-          <div class="rv ph" style="--i:6;--span:2">Redação, revisão e defesa</div>
-        </div>
-        <div class="tbl" style="margin-top:16px"><table>
-          <thead><tr class="rv" style="--i:7"><th>Risco</th><th>Consequência</th><th>Mitigação</th></tr></thead>
-          <tbody>
-            <tr class="rv" style="--i:8"><td>Sem acesso a microdados</td><td>inviabiliza PD individual e H5</td><td>regra de decisão; cenário B ou C</td></tr>
-            <tr class="rv" style="--i:9"><td>Poucos eventos em todas as carteiras</td><td>impossível simular escassez</td><td>agrupar carteiras; reduzir níveis; relatar</td></tr>
-            <tr class="rv" style="--i:10"><td>Vazamento temporal</td><td>desempenho artificial</td><td>janelas cronológicas; Focus; pipeline aninhado</td></tr>
-            <tr class="rv" style="--i:11"><td>Mudança dos níveis mínimos</td><td>comparação inconsistente</td><td>percentuais vigentes à data de cada observação</td></tr>
-            <tr class="rv" style="--i:12"><td>Multiplicidade de comparações</td><td>falsos positivos</td><td>métrica primária pré-registrada; plano reduzido</td></tr>
-            <tr class="rv" style="--i:13"><td>Confusão estimativa × provisão exigida</td><td>conclusão contábil indevida</td><td>separação explícita; o estudo não substitui os mínimos</td></tr>
-          </tbody>
-        </table></div>
-      </section>
-
-      <!-- 16 Contribuições -->
-      <section class="slide" id="s18" data-title="Contribuições">
-        <p class="eyebrow">17 · Contribuições, impacto e próximos passos</p>
-        <h2>O que a pesquisa entrega, e para quem</h2>
-        <div class="grid g4">
-          <div class="rv card" style="--i:0"><span class="tag p">Teórica</span><p class="small" style="margin-top:8px">Testa, em PD de crédito, as previsões da teoria de agrupamento parcial e a tensão entre especificidade macro e sobreajuste em séries curtas.</p></div>
-          <div class="rv card" style="--i:1"><span class="tag p">Metodológica</span><p class="small" style="margin-top:8px">Desenho de avaliação de estimadores sob escassez controlada por número de eventos, com métrica primária pré-registrada e foco em calibração; replicável.</p></div>
-          <div class="rv card" style="--i:2"><span class="tag p">Empírica</span><p class="small" style="margin-top:8px">Magnitudes: ganho de personalização, limiar de eventos, valor da seleção macro, razão entre perda estimada e mínimos por carteira e fase do ciclo.</p></div>
-          <div class="rv card acc" style="--i:3"><span class="tag a">Prática</span><p class="small" style="margin-top:8px">Procedimento documentado de avaliação de suficiência executável por S4 e S5 com os dados de que dispõem; para o S4, histórico gerencial exigido pela IN BCB 487/2024.</p></div>
-        </div>
-        <div class="grid g2" style="margin-top:14px">
-          <div class="rv card hi" style="--i:4"><h3>Impacto esperado</h3><p class="small">Ao regulador, evidência para a revisão dos percentuais mínimos por carteira, revisão que o próprio BCB declarou periódica. Às instituições, um caminho viável para cumprir a norma. À literatura contábil, evidência sobre a tempestividade comparada de provisões mínimas e estimadas. Um resultado nulo em H4 também contribui: indicaria que a avaliação de suficiência não exige infraestrutura complexa.</p></div>
-          <div class="rv card" style="--i:5"><h3>Decisões pendentes para a orientação</h3><ul class="clean small"><li class="rv" style="--i:6">Acesso a dados: sistema cooperativo (A) ou instituição única (B)? Há histórico do documento 3040 e de recuperações?</li><li class="rv" style="--i:7">Horizonte: PD em 12 meses ou extensão multiperíodo?</li><li class="rv" style="--i:8">Parâmetros pré-registrados: <span class="mono">k</span> (eventos), <span class="mono">δ</span> (equivalência), níveis de escassez.</li><li class="rv" style="--i:9">Redação vigente da Res. BCB 309/2023 e critérios de classificação C1–C5.</li><li class="rv" style="--i:10">Necessidade de comitê de ética para dados secundários anonimizados.</li></ul></div>
-        </div>
-        <p class="small muted" style="margin-top:12px">Fontes normativas: Res. CMN 4.966/2021 (texto consolidado); Voto BCB 60/2023 e Res. BCB 309/2023; IN BCB 487/2024. Referências completas e cadeias de busca para Web of Science, Scopus e SPELL constam do documento da proposta.</p>
-      </section>
-
-      <!-- 18 Referências: grafo -->
-      <section class="slide" id="s19" data-title="Referências">
-        <p class="eyebrow">18 · Referências</p>
-        <h2>Grafo das referências <span class="muted small" style="font-family:var(--font-body);font-weight:400">(arraste os nós; passe o cursor; clique para fixar os detalhes)</span></h2>
-        <div class="gtools">
-          <div class="chips" id="gfilters" role="group" aria-label="Filtrar por tipo">
-            <button data-type="contabil" aria-pressed="true"><i style="background:var(--g-contabil)"></i>Contábil</button>
-            <button data-type="estat" aria-pressed="true"><i style="background:var(--g-estat)"></i>Estatística e ML</button>
-            <button data-type="ecl" aria-pressed="true"><i style="background:var(--g-ecl)"></i>ECL / IFRS 9</button>
-            <button data-type="norma" aria-pressed="true"><i style="background:var(--g-norma)"></i>Normativo</button>
-            <button data-type="hub" aria-pressed="true"><i style="background:var(--g-hub)"></i>Hipóteses e seções</button>
-          </div>
-          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-            <input type="search" id="gsearch" placeholder="Buscar autor ou tema" aria-label="Buscar no grafo">
-            <button id="gfit" title="Reajustar o enquadramento">Reajustar</button>
-            <button id="gview" aria-pressed="false">Ver lista APA</button>
-          </div>
-        </div>
-        <div class="gwrap" id="gwrap">
-          <canvas id="gcanvas" aria-label="Grafo interativo das referências da proposta" role="img"></canvas>
-          <aside class="gdetail idle" id="gdetail" aria-live="polite">
-            <p class="small muted" style="margin:0"><b>Como usar.</b> Passe o cursor sobre um nó para ver a referência. Clique em um nó para focá-lo e fixar os detalhes; clique nas ligações para navegar; Esc ou clique no fundo para soltar.</p>
-          </aside>
-        </div>
-        <div class="glist" id="glist" hidden></div>
-        <p class="small muted" style="margin-top:10px">Ligações: referência → hipótese ou seção em que é usada; referência ↔ referência quando há relação direta (mesmo grupo de pesquisa, atualização, norma que regulamenta outra). Metadados conferidos em 6/11/2026 nas fontes primárias; os itens marcados "a conferir" dependem do arquivo em mãos.</p>
-      </section>
-
-    </main>
-
-    <nav class="nav" aria-label="Navegação dos slides">
-      <button id="prev" aria-label="Slide anterior">← Anterior</button>
-      <div class="dots" id="dots"></div>
-      <div style="display:flex;gap:10px;align-items:center">
-        <span class="count" id="count"></span>
-        <button id="next" class="primary" aria-label="Próximo slide">Próximo →</button>
-      </div>
-    </nav>
-  </div>
-  <p class="foot">Projeto preliminar para discussão com a orientação. Os percentuais e dispositivos citados devem ser conferidos no texto normativo vigente; as referências listadas devem ter seus metadados confirmados nas fontes primárias.</p>
-</div>
-<div class="tip" id="tip" role="tooltip"></div>
-
+<div class="deck-viewport"><div class="scroll-area"></div><main class="deck-stage"><section class="slide cover" aria-label="Projeto de dissertação"><p class="eyebrow">Projeto de dissertação</p><h2>Transferência e recalibração de probabilidades de inadimplência entre carteiras de crédito</h2><div class="content"><p class="lead">Disponibilidade de dados, heterogeneidade e viés na mensuração de perdas esperadas em instituições financeiras brasileiras</p><div class="rule"></div><p>Controladoria e Contabilidade · Linha Usuários Externos</p><p class="note">Proposta para discussão com a orientação.<br>Sem resultados empíricos; acesso a microdados e mini revisão sistemática pendentes.</p></div><footer>Arthur · PPGCONT/UFRGS · Proposta v4 · 14/11/2026<span>01</span></footer></section><section class="slide " aria-label="01 · Motivação"><p class="eyebrow">01 · Motivação</p><h2>Uma estimativa que o leitor não pode auditar</h2><div class="content"><div class="three"><article><b>Provisão é estimativa</b><p>A perda esperada depende da PD, verificável só depois de decorrido o horizonte.</p></article><article><b>Pouca informação própria</b><p>Com histórico curto, a PD estimada só com dados locais é instável.</p></article><article><b>Informação de outras carteiras</b><p>Reduz a instabilidade e pode importar viés de uma população diferente.</p></article></div><p class="callout">Segmento prudencial não mede disponibilidade de dados: as carteiras são classificadas pelos dados observados.</p></div><footer>Arthur · PPGCONT/UFRGS · Proposta v4 · 14/11/2026<span>02</span></footer></section><section class="slide " aria-label="02 · Problema"><p class="eyebrow">02 · Problema</p><h2>Até onde a informação transferida ajuda?</h2><div class="content"><div class="cols"><div><p class="lead">Dados externos reduzem a variância da estimativa local.</p><p>Populações diferentes introduzem viés. Quando o modelo transferido fica pior que o local, há transferência negativa.</p></div><div><h3>Em aberto</h3><p>O volume local e o grau de diferença entre carteiras a partir dos quais transferir deixa de compensar.</p><h3>Interesse contábil</h3><p>Neutralidade e incerteza da PD que alimenta a provisão.</p></div></div></div><footer>Arthur · PPGCONT/UFRGS · Proposta v4 · 14/11/2026<span>03</span></footer></section><section class="slide " aria-label="03 · Questão de pesquisa"><p class="eyebrow">03 · Questão de pesquisa</p><h2>Uma questão, uma variável dependente</h2><div class="content"><blockquote>Como a disponibilidade de dados locais e a heterogeneidade entre carteiras de origem e de destino afetam, em comparação com modelos locais e agrupados, a qualidade das probabilidades de inadimplência de 12 meses estimadas por transferência com recalibração em carteiras de crédito de instituições financeiras brasileiras?</blockquote><p class="note">Qualidade: pontuação probabilística, calibração e viés monetário. Disponibilidade e heterogeneidade são as variáveis independentes.</p></div><footer>Arthur · PPGCONT/UFRGS · Proposta v4 · 14/11/2026<span>04</span></footer></section><section class="slide " aria-label="04 · Objetivos"><p class="eyebrow">04 · Objetivos</p><h2>Do desempenho relativo ao critério de adequação</h2><div class="content"><ol class="steps"><li>Comparar pontuação probabilística e calibração dos regimes ao longo de uma malha de disponibilidade local.</li><li>Mensurar o efeito da heterogeneidade, induzida e observada, sobre o desempenho relativo dos regimes.</li><li>Mensurar o viés monetário das PDs sob premissas comuns de LGD e EAD.</li><li>Delimitar as combinações de disponibilidade e heterogeneidade em que cada regime é adequado.</li></ol></div><footer>Arthur · PPGCONT/UFRGS · Proposta v4 · 14/11/2026<span>05</span></footer></section><section class="slide " aria-label="05 · Teoria de base"><p class="eyebrow">05 · Teoria de base</p><h2>Representação fidedigna em medidas verificáveis</h2><div class="content"><div class="four"><article><h3>Neutralidade</h3><p>Intercepto de calibração e viés monetário.</p></article><article><h3>Ausência de erro no processo</h3><p>Inclinação e curva de calibração.</p></article><article><h3>Incerteza de mensuração</h3><p>Intervalos de confiança e classe inconclusiva.</p></article><article><h3>Verificabilidade</h3><p>Protocolo e registro de execução.</p></article></div><p class="callout">PD neutra é condição necessária, e não suficiente, para provisão neutra: LGD, EAD, cenários e desconto também a determinam.</p><p class="small">CPC 00 (R2) (2019); Beatty e Liao (2014).</p></div><footer>Arthur · PPGCONT/UFRGS · Proposta v4 · 14/11/2026<span>06</span></footer></section><section class="slide " aria-label="06 · Lacuna"><p class="eyebrow">06 · Lacuna</p><h2>Lacuna candidata, com critérios de refutação</h2><div class="content"><div class="cols"><div><h3>Antecedentes</h3><p>Suryanto et al. (2022): transferência em crédito.<br>Kiefer (2009) e Blümke (2020): poucos ou nenhum evento.</p><h3>Em aberto</h3><p>A fronteira entre transferência útil e negativa, avaliada por calibração; a magnitude monetária do viés.</p></div><div><h3>A revisão refuta a lacuna se encontrar</h3><ul><li>Estimativa da fronteira em crédito, com calibração.</li><li>Efeito monetário do erro de PD sob escassez.</li><li>Ausência de associação entre distância e desempenho.</li></ul></div></div><p class="note">A mini revisão sistemática ainda não foi executada.</p></div><footer>Arthur · PPGCONT/UFRGS · Proposta v4 · 14/11/2026<span>07</span></footer></section><section class="slide " aria-label="07 · Hipóteses"><p class="eyebrow">07 · Hipóteses</p><h2>Cinco testes em uma família fechada</h2><div class="content"><div class="hyp"><b>H1</b><p>A vantagem do adaptado sobre o local diminui com o volume de dados locais.</p><b>H2</b><p>A vantagem do adaptado sobre o local diminui com a distância entre origem e destino.</p><b>H3</b><p>A distância deteriora mais o modelo transferido do que o adaptado.</p><b>H4</b><p>Com poucos dados locais, o viés monetário absoluto do adaptado é menor que o do local.</p><b>C1</b><p>Adaptado versus agrupado, com poucos dados locais: contraste bilateral.</p></div><p class="note">Métrica primária: log-loss. Regressão logística regularizada. Ajuste de Holm.</p></div><footer>Arthur · PPGCONT/UFRGS · Proposta v4 · 14/11/2026<span>08</span></footer></section><section class="slide " aria-label="08 · Fronteira de utilidade"><p class="eyebrow">08 · Fronteira de utilidade</p><h2>O resultado principal: n* em função da distância</h2><div class="content"><div class="cols"><div><p class="lead">n* é o volume local em que o modelo próprio iguala o modelo adaptado.</p><p>H1 e H2 implicam que n* diminui quando a distância aumenta.</p><p class="note">Esquema ilustrativo, sem dados.</p></div><div><svg viewBox="0 0 720 470" width="720" height="470" role="img" aria-label="Esquema: a fronteira n* decresce com a distância; abaixo dela adaptar é preferível, acima dela o modelo local é preferível"><line x1="90" y1="30" x2="90" y2="400" stroke="#16313b" stroke-width="3"/><line x1="90" y1="400" x2="700" y2="400" stroke="#16313b" stroke-width="3"/><path d="M100 70 C 250 120, 420 300, 690 360" fill="none" stroke="#0d5260" stroke-width="6"/><text x="395" y="450" font-size="27" text-anchor="middle" fill="#16313b">Distância entre origem e destino</text><text x="38" y="215" font-size="27" text-anchor="middle" fill="#16313b" transform="rotate(-90 38 215)">Volume de dados locais</text><text x="470" y="130" font-size="29" font-weight="600" text-anchor="middle" fill="#16313b">Modelo local</text><text x="250" y="330" font-size="29" font-weight="600" text-anchor="middle" fill="#16313b">Adaptado</text><text x="600" y="305" font-size="27" text-anchor="middle" fill="#0d5260">n*(d)</text></svg></div></div></div><footer>Arthur · PPGCONT/UFRGS · Proposta v4 · 14/11/2026<span>09</span></footer></section><section class="slide " aria-label="09 · Regimes"><p class="eyebrow">09 · Regimes</p><h2>Seis regimes, o mesmo teste</h2><div class="content"><div class="three"><article><h3>Taxa base</h3><p>PD constante: referência ingênua.</p></article><article><h3>Local</h3><p>Só o desenvolvimento do destino.</p></article><article><h3>Local reduzido</h3><p>Poucas variáveis pré-especificadas.</p></article><article><h3>Agrupado</h3><p>Origem e destino em um ajuste.</p></article><article><h3>Transferido</h3><p>Modelo da origem, sem ajuste.</p></article><article><h3>Adaptado</h3><p>Modelo da origem recalibrado no destino.</p></article></div><p class="note">Algoritmo principal: regressão logística regularizada. Gradient boosting como análise de robustez.</p></div><footer>Arthur · PPGCONT/UFRGS · Proposta v4 · 14/11/2026<span>10</span></footer></section><section class="slide " aria-label="10 · Fatores experimentais"><p class="eyebrow">10 · Fatores experimentais</p><h2>Dois fatores manipulados por sorteio</h2><div class="content"><div class="cols"><div><h3>Disponibilidade local</h3><ul><li>Sorteio de tomadores do desenvolvimento: 5% a 100%, em seis níveis candidatos.</li><li>Vinte repetições por nível; teste idêntico em todos.</li><li>Sem seleção por classe.</li></ul></div><div><h3>Distância induzida</h3><ul><li>Subamostragem da origem por classificador de domínio, em cinco níveis.</li><li>Tamanho da origem constante.</li><li>Altera a composição, não a relação entre características e risco.</li></ul></div></div><p class="note">A distância observada entre carteiras reais é descrita por taxa base, separabilidade e desajuste condicional.</p></div><footer>Arthur · PPGCONT/UFRGS · Proposta v4 · 14/11/2026<span>11</span></footer></section><section class="slide " aria-label="11 · Critério de adequação"><p class="eyebrow">11 · Critério de adequação</p><h2>Adequada, inadequada ou inconclusiva</h2><div class="content"><div class="three"><article><b>Adequada</b><p>Intervalos do intercepto e da inclinação contidos nas faixas; log-loss menor que o da taxa base.</p></article><article><b>Inadequada</b><p>Algum intervalo inteiramente fora da faixa.</p></article><article><b>Inconclusiva</b><p>Precisão insuficiente para decidir.</p></article></div><p class="callout">O intervalo deve estar contido na faixa. Incluir o valor ideal não basta: estimativas imprecisas não são aprovadas por falta de evidência.</p><p class="small">Faixas candidatas: ±0,2 para o intercepto (logito) e 0,8 a 1,2 para a inclinação, a fixar antes do teste.</p></div><footer>Arthur · PPGCONT/UFRGS · Proposta v4 · 14/11/2026<span>12</span></footer></section><section class="slide " aria-label="12 · Validação e inferência"><p class="eyebrow">12 · Validação e inferência</p><h2>Teste no futuro, conclusões condicionais</h2><div class="content"><div class="timeline"><div><b>1. Desenvolvimento</b><p>Treino e validação cronológica aninhada</p></div><div><b>2. Exclusão</b><p>Doze meses entre treino e validação</p></div><div><b>3. Teste futuro</b><p>Horizonte completo, sem reutilização</p></div></div><ul><li>Evento: primeiro atraso superior a 90 dias em 12 meses. Seguimento incompleto é censura.</li><li>Efeitos fixos por par e janela; reamostragem de sorteios e de tomadores em blocos temporais.</li><li>Inferência condicional às carteiras estudadas; diferenças entre carteiras reais são descritivas.</li></ul></div><footer>Arthur · PPGCONT/UFRGS · Proposta v4 · 14/11/2026<span>13</span></footer></section><section class="slide " aria-label="13 · Viés monetário"><p class="eyebrow">13 · Viés monetário</p><h2>O erro da PD em unidades monetárias</h2><div class="content"><p class="formula">VM = Σ (PD − y) · LGD · EAD / Σ EAD</p><p>Em pontos-base da exposição; y indica a ocorrência do evento; LGD e EAD são comuns a todos os regimes.</p><div class="cols"><div><h3>O que mede</h3><p>O erro da PD ponderado por exposição e severidade. Um modelo calibrado em número de contratos pode errar nos de maior valor.</p></div><div><h3>O que não mede</h3><p>A perda realizada nem a suficiência da provisão. A diferença de LP12 entre regimes é só análise de sensibilidade.</p></div></div></div><footer>Arthur · PPGCONT/UFRGS · Proposta v4 · 14/11/2026<span>14</span></footer></section><section class="slide " aria-label="14 · Exemplo ilustrativo"><p class="eyebrow">14 · Exemplo ilustrativo</p><h2>Viés monetário de uma carteira fictícia</h2><div class="content"><div class="cols"><div><p>Exposição: <b>R$ 1.000.000</b><br>LGD comum: <b>40%</b><br>Frequência observada do evento: <b>2%</b></p><label for="pd">PD média estimada: <strong id="pdLabel">3,0%</strong></label><input id="pd" type="range" min="0" max="10" step="0.1" value="3" aria-describedby="simNote"><p class="note" id="simNote">Valores fictícios, com exposições iguais. Sem trajetórias ou cenários.</p></div><div class="result"><p>Viés monetário</p><output id="delta" for="pd">R$ 4.000,00</output><p id="bps">40,0 pontos-base da exposição</p><p class="small">Positivo indica superestimação; negativo, subestimação. O exemplo não calcula provisão.</p></div></div></div><footer>Arthur · PPGCONT/UFRGS · Proposta v4 · 14/11/2026<span>15</span></footer></section><section class="slide " aria-label="15 · Contexto normativo"><p class="eyebrow">15 · Contexto normativo</p><h2>Enquadramento por instituição, ativo e data</h2><div class="content"><ul><li>Resolução CMN 4.966/2021 e Resolução BCB 352/2023: critérios e procedimentos da provisão para perdas esperadas.</li><li>Metodologia simplificada para S4 e S5; autorização da completa disciplinada pela IN BCB 487/2024.</li><li>C1 a C5 não são, por definição, populações homogêneas para modelagem.</li><li>Estimativa experimental, provisão pelas regras e provisão registrada são grandezas distintas.</li></ul><p class="callout">Pendência: confirmar a exigência de estimativa própria sob a metodologia simplificada.</p><p class="small">Fontes e limites da conferência: <a href="normativo/notas-verificacao-normativa.md">nota normativa</a>.</p></div><footer>Arthur · PPGCONT/UFRGS · Proposta v4 · 14/11/2026<span>16</span></footer></section><section class="slide " aria-label="16 · Dados"><p class="eyebrow">16 · Dados</p><h2>O acesso define o alcance das conclusões</h2><div class="content"><div class="three"><article><b>A · Várias instituições</b><p>Transferência entre instituições; conclusões restritas às participantes.</p></article><article><b>B · Uma instituição</b><p>Transferência entre carteiras internas; desenho integralmente executável.</p></article><article><b>C · Base pública</b><p>Demonstração do método; título e conclusões revistos.</p></article></div><p class="note">Estudo-piloto em base pública nos meses 1 a 3, para validar o código. Decisão de cenário até o mês 3.</p></div><footer>Arthur · PPGCONT/UFRGS · Proposta v4 · 14/11/2026<span>17</span></footer></section><section class="slide " aria-label="17 · Pendências"><p class="eyebrow">17 · Pendências</p><h2>O que falta para a qualificação</h2><div class="content"><ol class="steps"><li>Acesso a microdados de contratos.</li><li>Execução da mini revisão sistemática: a lacuna é candidata.</li><li>Faixas do critério, margem de irrelevância e limiar de materialidade.</li><li>Conferência normativa por instituição e data-base.</li></ol><p class="note">Cronograma indicativo: revisão, acesso e piloto (1–3); protocolo (3–4); regimes (4–6); fatores (6–8); viés monetário (8–9); inferência (9–10); redação (10–12).</p></div><footer>Arthur · PPGCONT/UFRGS · Proposta v4 · 14/11/2026<span>18</span></footer></section><section class="slide " aria-label="18 · Documentos e fontes"><p class="eyebrow">18 · Documentos e fontes</p><h2>Proposta corrente e histórico preservado</h2><div class="content"><div class="cols"><div><h3>Documentos do projeto</h3><p><a href="proposta/proposta-dissertacao-v4-2026-11-14.md">Proposta v4</a></p><p><a href="parecer/parecer-metodologico-v3-2026-11-14.md">Parecer sobre a v3</a></p><p><a href="metodologia/protocolo-experimental-v4.md">Protocolo experimental v4</a></p><p><a href="metodologia/mini-revisao-protocolo-wos-2026-11-14.md">Protocolo de mini revisão sistemática</a></p><p><a href="historico/README.md">Histórico preservado</a></p></div><div><h3>Referências principais</h3><p><a href="https://doi.org/10.3389/frai.2022.868232">Suryanto et al. (2022)</a> · transferência em crédito</p><p><a href="https://doi.org/10.1186/s12916-019-1466-7">Van Calster et al. (2019)</a> · calibração</p><p><a href="https://doi.org/10.1002/sim.9025">Riley et al. (2021)</a> · tamanho de amostra</p><p><a href="https://doi.org/10.1016/j.jacceco.2014.08.009">Beatty e Liao (2014)</a> · contabilidade bancária</p></div></div></div><footer>Arthur · PPGCONT/UFRGS · Proposta v4 · 14/11/2026<span>19</span></footer></section></main></div>
+<nav class="deck-controls" aria-label="Navegação da apresentação"><button id="prev" aria-label="Slide anterior">←</button><span id="counter" aria-live="polite"></span><button id="next" aria-label="Próximo slide">→</button><select id="sections" aria-label="Escolher seção"></select><button id="mode" aria-pressed="false">Modo contínuo</button></nav>
 <script>
-(function(){
-  var app=document.getElementById('app');
-  var slides=Array.prototype.slice.call(document.querySelectorAll('.slide'));
-  var dots=document.getElementById('dots'), count=document.getElementById('count'), prog=document.getElementById('prog');
-  var cur=0;
-  slides.forEach(function(s,i){
-    var b=document.createElement('button'); b.type='button'; b.textContent=String(i+1); b.title=s.getAttribute('data-title')||('Slide '+(i+1));
-    b.addEventListener('click',function(){go(i);}); dots.appendChild(b);
-  });
-  function go(i,fromHash){
-    if(i<0||i>=slides.length) return; cur=i;
-    slides.forEach(function(s,j){s.classList.toggle('active',j===i); if(j!==i) s.classList.remove('play');});
-    var cs=slides[i]; cs.classList.remove('play'); void cs.offsetWidth; cs.classList.add('play');
-    if(i===0&&window.__coverfx) window.__coverfx(true); else if(window.__coverfx) window.__coverfx(false);
-    Array.prototype.forEach.call(dots.children,function(b,j){ if(j===i){b.setAttribute('aria-current','true');}else{b.removeAttribute('aria-current');} });
-    count.textContent=(i+1)+' / '+slides.length;
-    prog.style.width=((i+1)/slides.length*100)+'%';
-    if(!fromHash){ try{ if(location.hash!=='#'+slides[i].id) history.replaceState(null,'','#'+slides[i].id);}catch(e){} }
-    if(!app.classList.contains('doc')){ var m=document.getElementById('deck'); if(m) m.scrollTop=0; slides[i].scrollTop=0; }
-  }
-  function fromHash(){ var h=(location.hash||'').replace('#',''); var idx=slides.findIndex(function(s){return s.id===h;}); go(idx>=0?idx:0,true); }
-  document.getElementById('prev').addEventListener('click',function(){go(cur-1);});
-  document.getElementById('next').addEventListener('click',function(){go(cur+1);});
-  document.addEventListener('keydown',function(e){
-    var t=e.target; if(t&&(t.tagName==='INPUT'||t.tagName==='SELECT'||t.tagName==='TEXTAREA')) return;
-    if(e.key==='ArrowRight'||e.key==='PageDown'||e.key===' '){e.preventDefault();go(cur+1);}
-    if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();go(cur-1);}
-    if(e.key==='Home'){go(0);} if(e.key==='End'){go(slides.length-1);}
-  });
-  window.addEventListener('hashchange',fromHash);
-  var modeBtn=document.getElementById('modeBtn');
-  function setMode(doc){
-    app.classList.toggle('doc',doc); modeBtn.setAttribute('aria-pressed',doc?'true':'false');
-    modeBtn.textContent=doc?'Modo apresentação':'Modo contínuo';
-    try{localStorage.setItem('ecl-deck-mode',doc?'doc':'deck');}catch(e){}
-    if(doc){ var el=slides[cur]; if(el) el.scrollIntoView({block:'start'}); }
-  }
-  modeBtn.addEventListener('click',function(){setMode(!app.classList.contains('doc'));});
-  var saved=null; try{saved=localStorage.getItem('ecl-deck-mode');}catch(e){}
-  fromHash(); if(saved==='doc') setMode(true);
-
-  // Tooltips on diagram nodes
-  var tip=document.getElementById('tip');
-  function showTip(el,x,y){ tip.textContent=el.getAttribute('data-tip')||''; tip.classList.add('on'); var w=tip.offsetWidth,h=tip.offsetHeight; var px=Math.min(Math.max(8,x+12),window.innerWidth-w-8); var py=y+16; if(py+h>window.innerHeight-8) py=y-h-12; tip.style.left=px+'px'; tip.style.top=py+'px'; }
-  function hideTip(){ tip.classList.remove('on'); }
-  Array.prototype.forEach.call(document.querySelectorAll('.node[data-tip]'),function(n){
-    n.addEventListener('mousemove',function(e){showTip(n,e.clientX,e.clientY);});
-    n.addEventListener('mouseleave',hideTip);
-    n.addEventListener('focus',function(){var r=n.getBoundingClientRect();showTip(n,r.left+r.width/2,r.bottom);});
-    n.addEventListener('blur',hideTip);
-    n.addEventListener('touchstart',function(e){var t=e.touches[0];showTip(n,t.clientX,t.clientY);setTimeout(hideTip,3500);},{passive:true});
-  });
-
-  // Tabs
-  Array.prototype.forEach.call(document.querySelectorAll('.tabs [role=tab]'),function(b){
-    b.addEventListener('click',function(){
-      var k=b.getAttribute('data-tab'); var box=b.closest('.slide');
-      Array.prototype.forEach.call(box.querySelectorAll('.tabs [role=tab]'),function(x){x.setAttribute('aria-selected',x===b?'true':'false');});
-      Array.prototype.forEach.call(box.querySelectorAll('.panel'),function(p){p.hidden=(p.getAttribute('data-panel')!==k);});
-    });
-  });
-
-  // Sufficiency simulator (Anexo II, minuta Voto BCB 60/2023; performing loans, simplified methodology)
-  var floors=[[1.4,1.4,1.9,1.9,1.9],[3.5,3.5,3.5,3.5,7.5],[4.5,6,13,13,15],[5,17,32,32,38],[10,33.4,48.7,39.5,53.4]];
-  var cart=document.getElementById('cart'), ecl=document.getElementById('ecl');
-  var bal=[0,1,2,3,4].map(function(i){return document.getElementById('b'+i);});
-  var pcts=[0,1,2,3,4].map(function(i){return document.getElementById('p'+i);});
-  function fmt(v){ return 'R$ '+Math.round(v).toLocaleString('pt-BR')+' mil'; }
-  function sim(){
-    var c=parseInt(cart.value,10); var total=0,minv=0;
-    for(var i=0;i<5;i++){ var b=parseFloat(bal[i].value)||0; total+=b; var p=floors[i][c]; pcts[i].textContent=p.toFixed(1).replace('.',',')+'%'; minv+=b*p/100; }
-    var rate=parseFloat(ecl.value); document.getElementById('eclv').textContent=rate.toFixed(1).replace('.',',')+'%';
-    var e=total*rate/100; var comp=Math.max(0,e-minv);
-    if(window.__tween) window.__tween([minv,e,comp]); else { document.getElementById('kmin').textContent=fmt(minv); document.getElementById('kecl').textContent=fmt(e); document.getElementById('kcomp').textContent=fmt(comp); }
-    var mx=Math.max(minv,e,1);
-    document.getElementById('barMin').style.width=(minv/mx*100)+'%'; document.getElementById('barEcl').style.width=(e/mx*100)+'%';
-    document.getElementById('vMin').textContent=total?(minv/total*100).toFixed(2).replace('.',',')+'%':'0%'; document.getElementById('vEcl').textContent=rate.toFixed(2).replace('.',',')+'%';
-    var msg=document.getElementById('simMsg');
-    if(total===0){ msg.textContent='Informe saldos para calcular.'; }
-    else if(comp>0){ msg.innerHTML='<b>Mínimos insuficientes.</b> A instituição deve registrar de forma segregada a parcela complementar de '+fmt(comp)+' ('+(comp/total*100).toFixed(2).replace('.',',')+'% da carteira). Provisão mínima: '+(minv/total*100).toFixed(2).replace('.',',')+'% da carteira.'; }
-    else { msg.innerHTML='<b>Mínimos suficientes.</b> A provisão mínima ('+(minv/total*100).toFixed(2).replace('.',',')+'% da carteira) cobre a perda esperada estimada; não há complemento, e a provisão não pode ficar abaixo dos mínimos.'; }
-  }
-  [cart,ecl].concat(bal).forEach(function(el){ el.addEventListener('input',sim); el.addEventListener('change',sim); });
-  sim();
-
-
-  // ---------- Cover: drifting network background ----------
-  (function(){
-    var c=document.getElementById('coverfx'); if(!c) return; var cx=c.getContext('2d'); var P=[], run=false, raf=0;
-    var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    function size(){ var r=c.getBoundingClientRect(); c.width=r.width*dprc(); c.height=r.height*dprc(); cx.setTransform(dprc(),0,0,dprc(),0,0); return r; }
-    function dprc(){ return Math.min(2,window.devicePixelRatio||1); }
-    function init(){ var r=size(); P=[]; for(var i=0;i<42;i++) P.push({x:Math.random()*r.width,y:Math.random()*r.height,vx:(Math.random()-.5)*.25,vy:(Math.random()-.5)*.25,r:1.5+Math.random()*2}); }
-    function frame(){ if(!run) return; var r=c.getBoundingClientRect(); var W=r.width,H=r.height; cx.clearRect(0,0,W,H);
-      var col=getComputedStyle(document.documentElement).getPropertyValue('--primary').trim(), acc=getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
-      for(var i=0;i<P.length;i++){ var p=P[i]; if(!reduce){ p.x+=p.vx; p.y+=p.vy; } if(p.x<0||p.x>W) p.vx*=-1; if(p.y<0||p.y>H) p.vy*=-1; }
-      cx.lineWidth=.8;
-      for(var i=0;i<P.length;i++) for(var j=i+1;j<P.length;j++){ var dx=P[i].x-P[j].x, dy=P[i].y-P[j].y, d=Math.sqrt(dx*dx+dy*dy); if(d<150){ cx.globalAlpha=(1-d/150)*.28; cx.strokeStyle=col; cx.beginPath(); cx.moveTo(P[i].x,P[i].y); cx.lineTo(P[j].x,P[j].y); cx.stroke(); } }
-      for(var i=0;i<P.length;i++){ cx.globalAlpha=.75; cx.fillStyle=i%7===0?acc:col; cx.beginPath(); cx.arc(P[i].x,P[i].y,P[i].r,0,Math.PI*2); cx.fill(); }
-      cx.globalAlpha=1; if(!reduce) raf=requestAnimationFrame(frame); }
-    window.__coverfx=function(on){ if(on){ if(!P.length||c.width===0) init(); run=true; cancelAnimationFrame(raf); frame(); } else { run=false; cancelAnimationFrame(raf); } };
-    window.addEventListener('resize',function(){ if(run){ init(); } });
-  })();
-  if(cur===0&&window.__coverfx) window.__coverfx(true);
-
-  // ---------- Architecture: narrated play-through ----------
-  (function(){
-    var btn=document.getElementById('archPlay'), cap=document.getElementById('archCap'), dots=document.getElementById('archDots'), svg=document.getElementById('archSvg'); if(!btn) return;
-    var nodes=Array.prototype.slice.call(svg.querySelectorAll('.node')), paths=Array.prototype.slice.call(svg.querySelectorAll('path'));
-    var caps=[
-      ['1 · ENTRADAS','Posições mensais por contrato, atributos da instituição e da carteira, séries macro e expectativas Focus, e recuperações pós-evento. Tudo ordenado no tempo, com 12 meses finais reservados.'],
-      ['2 · PD EM TRÊS REGIMES','O mesmo conjunto de dados treina um modelo global, modelos locais por carteira e o híbrido, que recalibra o global por carteira com encolhimento. O ajuste macro entra em separado, por carteira-período.'],
-      ['3 · COMPARAÇÃO SOB ESCASSEZ','Cada regime é avaliado com 25, 50, 100, 200 e todos os eventos, fora do tempo, pela calibração e pelo erro de perdas. Daqui saem as evidências para H1 a H4.'],
-      ['4 · PERDA ESPERADA','A PD calibrada combina-se com LGD segmentada e EAD contratual, contrato a contrato, e é agregada por carteira e mês.'],
-      ['5 · SUFICIÊNCIA','A perda esperada estimada é confrontada com os níveis mínimos da Res. BCB 309. A diferença positiva é a provisão complementar: razão, magnitude e defasagem respondem H5.']
-    ];
-    var timer=null, k=0, playing=false;
-    function setStep(i){ nodes.forEach(function(n){ var st=parseInt(n.getAttribute('data-step'),10); n.classList.toggle('lit',st===i); n.classList.toggle('dim',st>i); }); Array.prototype.forEach.call(dots.children,function(d,j){ d.classList.toggle('on',j===i-1); }); cap.innerHTML='<b>'+caps[i-1][0]+'</b>'+caps[i-1][1]; }
-    function reset(){ nodes.forEach(function(n){ n.classList.remove('lit','dim'); }); paths.forEach(function(p){ p.classList.remove('flowing'); }); Array.prototype.forEach.call(dots.children,function(d){ d.classList.remove('on'); }); btn.textContent='▶ Reproduzir o fluxo'; playing=false; }
-    function play(){ if(playing){ clearTimeout(timer); reset(); cap.innerHTML='<b>FLUXO</b>Clique em reproduzir para acompanhar o caminho dos dados até a provisão complementar.'; return; }
-      playing=true; btn.textContent='■ Parar'; paths.forEach(function(p){ if(p.getAttribute('class')&&p.getAttribute('class').indexOf('ln')>=0) p.classList.add('flowing'); }); k=1; setStep(1);
-      (function next(){ timer=setTimeout(function(){ k++; if(k>5){ nodes.forEach(function(n){ n.classList.remove('lit','dim'); }); paths.forEach(function(p){ p.classList.remove('flowing'); }); btn.textContent='↻ Reproduzir de novo'; playing=false; cap.innerHTML='<b>FIM</b>A saída metodológica (H1–H4) alimenta a saída contábil (H5). Passe o cursor sobre cada bloco para os detalhes.'; return; } setStep(k); next(); },3200); })();
-    }
-    btn.addEventListener('click',play);
-    Array.prototype.forEach.call(dots.children,function(d,j){ d.style.cursor='pointer'; d.addEventListener('click',function(){ clearTimeout(timer); playing=false; btn.textContent='▶ Reproduzir o fluxo'; paths.forEach(function(p){ p.classList.remove('flowing'); }); setStep(j+1); }); });
-  })();
-
-  // ---------- Shrinkage demo ----------
-  (function(){
-    var sl=document.getElementById('nev'), hyb=document.getElementById('hyb'), hybt=document.getElementById('hybt'), out=document.getElementById('nevout'), lab=document.getElementById('nevv'); if(!sl) return;
-    var K=50, gx=180, lx=800;
-    function upd(){ var n=parseInt(sl.value,10); var w=n/(n+K); var x=gx+w*(lx-gx); hyb.setAttribute('cx',x.toFixed(1)); hybt.setAttribute('x',x.toFixed(1)); lab.textContent=n; out.innerHTML='<div style="font-family:var(--font-mono);font-size:.9rem">peso do local: <b>'+Math.round(w*100)+'%</b> · peso do global: <b>'+Math.round((1-w)*100)+'%</b></div><div class="math sm" style="justify-content:flex-start"><i>w</i><span class="op">=</span><span class="frac"><span><i>n</i></span><span><i>n</i> + <i>k</i></span></span><span class="op">,</span><span><i>k</i> = '+K+'</span><span class="muted" style="font-family:var(--font-body);font-size:.75rem">(ilustrativo)</span></div>'; }
-    sl.addEventListener('input',upd); upd();
-  })();
-
-  // ---------- Simulator count-up ----------
-  (function(){
-    var els=['kmin','kecl','kcomp'].map(function(id){return document.getElementById(id);}); var last=[0,0,0], raf=0;
-    var orig=window.__simfmtHook;
-    window.__tween=function(vals){ var start=performance.now(), from=last.slice(); cancelAnimationFrame(raf); (function f(t){ var u=Math.min(1,(t-start)/450); var e=1-Math.pow(1-u,3); els.forEach(function(el,i){ var v=from[i]+(vals[i]-from[i])*e; el.textContent='R$ '+Math.round(v).toLocaleString('pt-BR')+' mil'; }); if(u<1) raf=requestAnimationFrame(f); else last=vals.slice(); })(start); };
-  })();
-
-  sim();
-  // Theme toggle: light by default; the viewer's own theme is used only if the person has not chosen here
-  var root=document.documentElement, themeBtn=document.getElementById('themeBtn');
-  function applyTheme(t){ root.setAttribute('data-theme',t); themeBtn.setAttribute('aria-pressed',t==='dark'?'true':'false'); themeBtn.textContent=t==='dark'?'Tema claro':'Tema escuro'; try{localStorage.setItem('ecl-deck-theme',t);}catch(e){} if(window.__drawGraph) window.__drawGraph(); }
-  var savedTheme=null; try{savedTheme=localStorage.getItem('ecl-deck-theme');}catch(e){}
-  applyTheme(savedTheme==='dark'?'dark':'light');
-  themeBtn.addEventListener('click',function(){applyTheme(root.getAttribute('data-theme')==='dark'?'light':'dark');});
-
-  // ---------- Reference graph ----------
-  var N=[
-    // Contábil
-    {id:'cpc00',t:'contabil',l:'CPC 00 (R2)',apa:'Comitê de Pronunciamentos Contábeis. (2019). <i>CPC 00 (R2): Estrutura conceitual para relatório financeiro</i>.',use:'Critério de qualidade da informação: relevância e representação fidedigna da provisão. Fundamenta a lente contábil e H5.'},
-    {id:'beatty2011',t:'contabil',l:'Beatty & Liao (2011)',apa:'Beatty, A., & Liao, S. (2011). Do delays in expected loss recognition affect banks\' willingness to lend? <i>Journal of Accounting and Economics, 52</i>(1), 1–20.',use:'Atrasos no reconhecimento de perdas esperadas reduzem a disposição a emprestar em recessões. Sustenta a métrica de tempestividade (H5).'},
-    {id:'beatty2014',t:'contabil',l:'Beatty & Liao (2014)',apa:'Beatty, A., & Liao, S. (2014). Financial accounting in the banking industry: A review of the empirical literature. <i>Journal of Accounting and Economics, 58</i>(2–3), 339–383.',use:'Revisão da literatura contábil bancária; situa a provisão como objeto de pesquisa em qualidade da informação.'},
-    {id:'bushman2012',t:'contabil',l:'Bushman & Williams (2012)',apa:'Bushman, R. M., & Williams, C. D. (2012). Accounting discretion, loan loss provisioning, and discipline of banks\' risk-taking. <i>Journal of Accounting and Economics, 54</i>(1), 1–18.',use:'Tempestividade da provisão e disciplina sobre a tomada de risco. Lente contábil; H5.'},
-    {id:'lopez2021',t:'contabil',l:'López-Espinosa et al. (2021)',apa:'López-Espinosa, G., Ormazabal, G., & Sakasai, Y. (2021). Switching from incurred to expected loan loss provisioning: Early evidence. <i>Journal of Accounting Research, 59</i>(3), 757–804. https://doi.org/10.1111/1475-679X.12354',use:'Evidência inicial de que a transição para perda esperada está associada a provisões mais tempestivas. Contextualiza a mudança de regime.'},
-    {id:'lu2022',t:'contabil',l:'Lu & Nikolaev (2022)',apa:'Lu, Y., & Nikolaev, V. V. (2022). Expected loan loss provisioning: An empirical model. <i>The Accounting Review, 97</i>(7), 319–346. https://doi.org/10.2308/TAR-2019-0128',use:'Modelo empírico de provisão esperada; referência para tratar a estimativa modelada como benchmark não discricionário (H5).'},
-    {id:'novotny2016',t:'contabil',l:'Novotny-Farkas (2016)',apa:'Novotny-Farkas, Z. (2016). The interaction of the IFRS 9 expected loss approach with supervisory rules and implications for financial stability. <i>Accounting in Europe, 13</i>(2), 197–227.',use:'Interação entre perda esperada e regras prudenciais; apoia o enquadramento normativo e a discussão de pisos.'},
-    // Estatística e ML
-    {id:'efron1975',t:'estat',l:'Efron & Morris (1975)',apa:'Efron, B., & Morris, C. (1975). Data analysis using Stein\'s estimator and its generalizations. <i>Journal of the American Statistical Association, 70</i>(350), 311–319.',use:'Teoria de encolhimento: estimadores que puxam grupos pequenos para a média dominam em erro quadrático. Deriva H1 e H3.'},
-    {id:'gelman2007',t:'estat',l:'Gelman & Hill (2007)',apa:'Gelman, A., & Hill, J. (2007). <i>Data analysis using regression and multilevel/hierarchical models</i>. Cambridge University Press.',use:'Modelos hierárquicos e agrupamento parcial; especificação do regime híbrido com recalibração encolhida. H1 e H3.'},
-    {id:'hastie2009',t:'estat',l:'Hastie et al. (2009)',apa:'Hastie, T., Tibshirani, R., & Friedman, J. (2009). <i>The elements of statistical learning: Data mining, inference, and prediction</i> (2nd ed.). Springer.',use:'Dilema viés-variância e regularização; base dos algoritmos comparados. Lente estatística.'},
-    {id:'lessmann2015',t:'estat',l:'Lessmann et al. (2015)',apa:'Lessmann, S., Baesens, B., Seow, H.-V., & Thomas, L. C. (2015). Benchmarking state-of-the-art classification algorithms for credit scoring: An update of research. <i>European Journal of Operational Research, 247</i>(1), 124–136.',use:'Protocolo de benchmark comparativo em crédito; evidência de ganhos modestos de algoritmos complexos. Lacuna, método e H4.'},
-    {id:'gunnarsson2021',t:'estat',l:'Gunnarsson et al. (2021)',apa:'Gunnarsson, B. R., vanden Broucke, S., Baesens, B., Óskarsdóttir, M., & Lemahieu, W. (2021). Deep learning for credit scoring: Do or don\'t? <i>European Journal of Operational Research, 295</i>(1), 292–305.',use:'Atualização do benchmark: redes profundas não superam gradient boosting em crédito. Lacuna e H4.'},
-    {id:'vancalster2019',t:'estat',l:'Van Calster et al. (2019)',apa:'Van Calster, B., McLernon, D. J., van Smeden, M., Wynants, L., & Steyerberg, E. W. (2019). Calibration: The Achilles heel of predictive analytics. <i>BMC Medicine, 17</i>, Article 230.',use:'Calibração como dimensão negligenciada da análise preditiva; justifica a métrica primária. Lacuna e método.'},
-    {id:'peduzzi1996',t:'estat',l:'Peduzzi et al. (1996)',apa:'Peduzzi, P., Concato, J., Kemper, E., Holford, T. R., & Feinstein, A. R. (1996). A simulation study of the number of events per variable in logistic regression analysis. <i>Journal of Clinical Epidemiology, 49</i>(12), 1373–1379.',use:'Regra de dez eventos por parâmetro; define o volume mínimo de dados e os níveis de escassez.'},
-    {id:'pluto2005',t:'estat',l:'Pluto & Tasche (2005)',apa:'Pluto, K., & Tasche, D. (2005). Thinking positively. <i>Risk, 18</i>(8), 72–78.',use:'Estimação de PD em carteiras com poucos defaults (low default portfolios). Lacuna.'},
-    {id:'vasicek2002',t:'estat',l:'Vasicek (2002)',apa:'Vasicek, O. (2002). The distribution of loan portfolio value. <i>Risk, 15</i>(12), 160–162.',use:'Fundamento do ajuste macroeconômico sobre o log-odds da PD (fator sistemático). H2.'},
-    {id:'nori2019',t:'estat',l:'Nori et al. (2019)',apa:'Nori, H., Jenkins, S., Koch, P., & Caruana, R. (2019). <i>InterpretML: A unified framework for machine learning interpretability</i> (arXiv:1909.09223). arXiv.',use:'Explainable Boosting Machine, alternativa interpretável ao gradient boosting. Método.'},
-    // ECL / IFRS 9
-    {id:'ifrs9',t:'ecl',l:'IFRS 9 (2014)',apa:'IFRS Foundation. (2014). <i>IFRS 9 Financial instruments</i>.',use:'Origem do regime de perdas esperadas; estágios e horizonte vitalício. Enquadramento.'},
-    {id:'schutte2020',t:'ecl',l:'Schutte et al. (2020)',apa:'Schutte, W. D., Verster, T., Doody, D., Raubenheimer, H., & Coetzee, P. J. (2020). A proposed benchmark model using a modularised approach to calculate IFRS 9 expected credit loss. <i>Cogent Economics &amp; Finance, 8</i>(1), Article 1735681. https://doi.org/10.1080/23322039.2020.1735681',use:'Arquitetura modular PD × LGD × EAD e formulação multiperíodo. Método.'},
-    {id:'joubert2021',t:'ecl',l:'Joubert et al. (2021)',apa:'Joubert, M., Verster, T., Raubenheimer, H., & Schutte, W. D. (2021). Adapting the default weighted survival analysis modelling approach to model IFRS 9 LGD. <i>Risks, 9</i>(6), Article 103. https://doi.org/10.3390/risks9060103',use:'LGD por sobrevivência sob IFRS 9; referência para a extensão de LGD modelada. Método.'},
-    {id:'breed2023',t:'ecl',l:'Breed et al. (2023)',apa:'Breed, D. G., Hurter, J., Marimo, M., Raletjene, M., Raubenheimer, H., Tomar, V., & Verster, T. (2023). A forward-looking IFRS 9 methodology, focussing on the incorporation of macroeconomic and macroprudential information into expected credit loss calculation. <i>Risks, 11</i>(3), Article 59. https://doi.org/10.3390/risks11030059',use:'Incorporação de informação macro à ECL com ajustes uniformes; ponto de contraste para a seleção por carteira. Lacuna e H2.'},
-    {id:'moodley2025',t:'ecl',l:'Moodley et al. (2025)',apa:'Moodley, S., Verster, T., & Raubenheimer, H. (2025). A pragmatic macroeconomic default risk adjustment in developing countries. <i>South African Journal of Economic and Management Sciences, 28</i>(1), Article a5958. https://doi.org/10.4102/sajems.v28i1.5958',use:'Escalar macro pragmático para PD em economias em desenvolvimento com dados escassos; contraste direto com M2. Lacuna e H2.'},
-    {id:'saavedra2024',t:'ecl',l:'Saavedra et al. (2024)',apa:'Saavedra, C. A. P. B., et al. (2024). Probability of default for lifetime credit loss for IFRS 9 using machine learning competing risks survival analysis models. <i>Expert Systems with Applications</i>, Article 123607. https://doi.org/10.1016/j.eswa.2024.123607 <span class="muted">[autores e volume a conferir]</span>',use:'PD vitalícia por sobrevivência com riscos competitivos e ML; referência para a extensão multiperíodo. Método.'},
-    // Normativo
-    {id:'res4966',t:'norma',l:'Res. CMN 4.966/2021',apa:'Conselho Monetário Nacional. (2021). <i>Resolução CMN nº 4.966, de 25 de novembro de 2021</i> (texto consolidado). Banco Central do Brasil.',use:'Regime de perdas esperadas; art. 50 (S4 e S5, metodologia simplificada; S4 com autorização); art. 67, IV (níveis mínimos delegados ao BCB).'},
-    {id:'res4553',t:'norma',l:'Res. CMN 4.553/2017',apa:'Conselho Monetário Nacional. (2017). <i>Resolução CMN nº 4.553, de 30 de janeiro de 2017</i>. Banco Central do Brasil.',use:'Segmentação prudencial S1 a S5; define a população do estudo.'},
-    {id:'resbcb309',t:'norma',l:'Res. BCB 309/2023',apa:'Banco Central do Brasil. (2023). <i>Resolução BCB nº 309, de 28 de março de 2023</i>. https://www.bcb.gov.br',use:'Níveis mínimos por carteira C1–C5 e atraso (Anexos I e II); suficiência para a totalidade da perda esperada; registro segregado do excedente; revisão mensal. Núcleo de H5. Redação vigente a conferir.'},
-    {id:'voto60',t:'norma',l:'Voto BCB 60/2023',apa:'Banco Central do Brasil. (2023). <i>Voto 60/2023–BCB, de 28 de março de 2023</i>. https://normativos.bcb.gov.br',use:'Fundamenta a Res. BCB 309; fonte dos percentuais da minuta usados no simulador e da declaração de revisão periódica dos níveis.'},
-    {id:'in487',t:'norma',l:'IN BCB 487/2024',apa:'Banco Central do Brasil. (2024). <i>Instrução Normativa BCB nº 487, de 5 de julho de 2024</i>. https://www.bcb.gov.br',use:'Autorização do S4 para metodologia completa; dois anos de uso gerencial de perdas esperadas (art. 6º). Relevância prática.'},
-    {id:'lgpd',t:'norma',l:'LGPD (2018)',apa:'Lei nº 13.709, de 14 de agosto de 2018 (Lei Geral de Proteção de Dados Pessoais). (2018). Diário Oficial da União.',use:'Base legal para o uso de dados anonimizados em pesquisa (art. 7º, IV). Dados e ética.'},
-    // Hubs
-    {id:'H1',t:'hub',l:'H1 Personalização',hub:true,use:'Híbrido supera global e local em carteiras com menos de k eventos.'},
-    {id:'H2',t:'hub',l:'H2 Seleção macro',hub:true,use:'Seleção por carteira só agrega com períodos suficientes; em séries curtas, não supera o conjunto uniforme.'},
-    {id:'H3',t:'hub',l:'H3 Escassez',hub:true,use:'Híbrido degrada menos que o local quando os eventos diminuem.'},
-    {id:'H4',t:'hub',l:'H4 Parcimônia',hub:true,use:'Logística e gradient boosting equivalentes (TOST) em carteiras pequenas.'},
-    {id:'H5',t:'hub',l:'H5 Suficiência',hub:true,use:'Perda estimada excede os mínimos em carteiras de dinâmica distinta e em fases de piora; antecede a provisão mínima.'},
-    {id:'LAC',t:'hub',l:'Lacuna',hub:true,use:'Calibração com poucos eventos; magnitude do agrupamento parcial; pisos uniformes mais obrigação de suficiência.'},
-    {id:'TEO',t:'hub',l:'Lentes teóricas',hub:true,use:'Qualidade e tempestividade da informação; agrupamento parcial e viés-variância.'},
-    {id:'MET',t:'hub',l:'Método',hub:true,use:'Benchmark comparativo; validação temporal; escassez controlada; métrica primária.'},
-    {id:'DAD',t:'hub',l:'Dados',hub:true,use:'Sete camadas; volume mínimo; cenários A, B e C; anonimização.'},
-    {id:'NOR',t:'hub',l:'Enquadramento normativo',hub:true,use:'Res. CMN 4.966; Res. BCB 309; IN BCB 487; segmentação S1–S5.'}
-  ];
-  var E=[
-    ['beatty2011','beatty2014'],['bushman2012','beatty2011'],['lopez2021','novotny2016'],['lu2022','beatty2014'],['cpc00','lu2022'],
-    ['efron1975','gelman2007'],['gelman2007','hastie2009'],['lessmann2015','gunnarsson2021'],['vancalster2019','lessmann2015'],['pluto2005','vasicek2002'],['nori2019','hastie2009'],['peduzzi1996','pluto2005'],
-    ['schutte2020','joubert2021'],['schutte2020','breed2023'],['breed2023','moodley2025'],['saavedra2024','schutte2020'],['ifrs9','schutte2020'],
-    ['ifrs9','res4966'],['res4966','resbcb309'],['res4966','in487'],['res4553','res4966'],['voto60','resbcb309'],['novotny2016','ifrs9'],
-    ['LAC','lessmann2015'],['LAC','gunnarsson2021'],['LAC','vancalster2019'],['LAC','pluto2005'],['LAC','efron1975'],['LAC','gelman2007'],['LAC','breed2023'],['LAC','moodley2025'],
-    ['TEO','cpc00'],['TEO','beatty2011'],['TEO','beatty2014'],['TEO','bushman2012'],['TEO','lopez2021'],['TEO','efron1975'],['TEO','gelman2007'],['TEO','hastie2009'],
-    ['H1','efron1975'],['H1','gelman2007'],['H3','efron1975'],['H3','gelman2007'],['H3','hastie2009'],['H2','breed2023'],['H2','moodley2025'],['H2','vasicek2002'],['H4','lessmann2015'],['H4','gunnarsson2021'],
-    ['H5','cpc00'],['H5','beatty2011'],['H5','bushman2012'],['H5','lu2022'],['H5','resbcb309'],['H5','lopez2021'],
-    ['MET','lessmann2015'],['MET','peduzzi1996'],['MET','nori2019'],['MET','schutte2020'],['MET','joubert2021'],['MET','saavedra2024'],['MET','vancalster2019'],
-    ['DAD','peduzzi1996'],['DAD','lgpd'],['DAD','res4553'],['DAD','resbcb309'],
-    ['NOR','res4966'],['NOR','res4553'],['NOR','resbcb309'],['NOR','in487'],['NOR','voto60'],['NOR','ifrs9'],['NOR','novotny2016'],
-    ['TEO','H1'],['TEO','H2'],['TEO','H3'],['TEO','H4'],['TEO','H5'],['LAC','TEO'],['MET','DAD'],['NOR','H5']
-  ];
-  var byId={}; N.forEach(function(n){byId[n.id]=n; n.deg=0;});
-  E.forEach(function(e){byId[e[0]].deg++; byId[e[1]].deg++;});
-  var canvas=document.getElementById('gcanvas'), ctx=canvas.getContext('2d'), detail=document.getElementById('gdetail');
-  var W=0,H=0,dpr=1, userView=false, hovered=null, pinned=null, dragging=null, panning=false, px0=0,py0=0, view={x:0,y:0,k:1}, visible={contabil:1,estat:1,ecl:1,norma:1,hub:1}, query='';
-  function cssVar(n){ return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); }
-  function color(n){ return cssVar('--g-'+n.t); }
-  function resize(){ var r=canvas.getBoundingClientRect(); if(r.width===0) return; dpr=window.devicePixelRatio||1; W=r.width; H=r.height; canvas.width=W*dpr; canvas.height=H*dpr; ctx.setTransform(dpr,0,0,dpr,0,0); }
-  // initial positions by type sector
-  var sectors={hub:0,contabil:1,estat:2,ecl:3,norma:4};
-  N.forEach(function(n,i){ var a=(sectors[n.t]/5)*Math.PI*2+(i%7)*0.15; var r=n.hub?60:170; n.x=400+Math.cos(a)*r+Math.random()*30; n.y=230+Math.sin(a)*r+Math.random()*30; n.vx=0; n.vy=0; n.r=n.hub?(n.id.length===2?9:11):(5+Math.min(6,n.deg)*0.8); });
-  function isOn(n){ return visible[n.t]===1; }
-  function matches(n){ if(!query) return true; var q=query.toLowerCase(); return (n.l+' '+(n.apa||'')+' '+(n.use||'')).toLowerCase().indexOf(q)>=0; }
-  var alpha=1;
-  function step(){
-    var cx=W/2, cy=H/2;
-    for(var i=0;i<N.length;i++){ var a=N[i]; if(!isOn(a)) continue;
-      for(var j=i+1;j<N.length;j++){ var b=N[j]; if(!isOn(b)) continue;
-        var dx=b.x-a.x, dy=b.y-a.y, d2=dx*dx+dy*dy+0.01, d=Math.sqrt(d2); var f=2100/d2; var fx=dx/d*f, fy=dy/d*f;
-        a.vx-=fx; a.vy-=fy; b.vx+=fx; b.vy+=fy; } }
-    E.forEach(function(e){ var a=byId[e[0]], b=byId[e[1]]; if(!isOn(a)||!isOn(b)) return; var dx=b.x-a.x, dy=b.y-a.y, d=Math.sqrt(dx*dx+dy*dy)+0.01; var L=(a.hub||b.hub)?150:105; var f=(d-L)*0.012; a.vx+=dx/d*f; a.vy+=dy/d*f; b.vx-=dx/d*f; b.vy-=dy/d*f; });
-    N.forEach(function(n){ if(!isOn(n)) return; n.vx+=(cx-n.x)*0.0022; n.vy+=(cy-n.y)*0.0022; if(n===dragging){n.vx=0;n.vy=0;return;} n.vx*=0.82; n.vy*=0.82; n.x+=n.vx*alpha; n.y+=n.vy*alpha; });
-  }
-  function neighbors(n){ var s={}; E.forEach(function(e){ if(e[0]===n.id) s[e[1]]=1; if(e[1]===n.id) s[e[0]]=1; }); return s; }
-  function draw(){
-    if(!W) resize(); if(!W) return;
-    ctx.clearRect(0,0,W,H);
-    if(focusTarget){ view.k+=(focusTarget.k-view.k)*0.12; view.x+=(focusTarget.x-view.x)*0.12; view.y+=(focusTarget.y-view.y)*0.12; if(pinned){ focusTarget.x=W/2-pinned.x*focusTarget.k; focusTarget.y=H/2-pinned.y*focusTarget.k; } }
-    else if(!userView){ var xs=[],ys=[]; N.forEach(function(n){ if(isOn(n)){xs.push(n.x);ys.push(n.y);} }); if(xs.length){ var x0=Math.min.apply(null,xs)-40,x1=Math.max.apply(null,xs)+40,y0=Math.min.apply(null,ys)-30,y1=Math.max.apply(null,ys)+40; var k=Math.min((W-20)/(x1-x0),(H-20)/(y1-y0),1.3); var tx=(W-(x1-x0)*k)/2-x0*k, ty=(H-(y1-y0)*k)/2-y0*k; view.k+= (k-view.k)*0.1; view.x+=(tx-view.x)*0.1; view.y+=(ty-view.y)*0.1; } }
-    ctx.save(); ctx.translate(view.x,view.y); ctx.scale(view.k,view.k);
-    var focus=pinned||hovered, nb=focus?neighbors(focus):null;
-    var lineC=cssVar('--line'), fg=cssVar('--fg'), muted=cssVar('--muted');
-    E.forEach(function(e){ var a=byId[e[0]], b=byId[e[1]]; if(!isOn(a)||!isOn(b)) return; var hi=focus&&(a===focus||b===focus); ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.strokeStyle=hi?cssVar('--accent'):muted; ctx.lineWidth=hi?1.8:0.7; ctx.globalAlpha=focus&&!hi?0.15:0.45; ctx.stroke(); ctx.globalAlpha=1; });
-    N.forEach(function(n){ if(!isOn(n)) return; var dim=(focus&&n!==focus&&!nb[n.id])||(query&&!matches(n)); ctx.globalAlpha=dim?0.22:1; var rr=n.r*Math.min(1,ticks/35); ctx.beginPath(); ctx.arc(n.x,n.y,rr,0,Math.PI*2); ctx.fillStyle=color(n); ctx.fill(); if(n===focus){ ctx.lineWidth=2.5; ctx.strokeStyle=fg; ctx.stroke(); } if(n.hub){ ctx.lineWidth=1.5; ctx.strokeStyle=fg; ctx.globalAlpha=dim?0.22:0.6; ctx.stroke(); ctx.globalAlpha=dim?0.22:1; }
-      ctx.font=(n.hub?'600 ':'')+((n.hub?11.5:10.5)/Math.max(.75,Math.min(1,view.k)))+'px '+(n.hub?'Archivo, Arial, sans-serif':'"IBM Plex Sans", Arial, sans-serif'); ctx.fillStyle=n.hub?fg:muted; if(n===focus||nb&&nb[n.id]) ctx.fillStyle=fg; ctx.textAlign='center'; ctx.fillText(n.l,n.x,n.y+n.r+12); ctx.globalAlpha=1; });
-    ctx.restore();
-  }
-  window.__drawGraph=draw;
-  var running=false, ticks=0;
-  function loop(){ if(!running) return; step(); draw(); ticks++; if(ticks>400 && !dragging){ alpha=Math.max(0.2,alpha*0.995);} requestAnimationFrame(loop); }
-  function start(){ if(running) return; running=true; resize(); requestAnimationFrame(loop); }
-  function stop(){ running=false; }
-  function toWorld(ev){ var r=canvas.getBoundingClientRect(); var x=(ev.clientX-r.left-view.x)/view.k, y=(ev.clientY-r.top-view.y)/view.k; return {x:x,y:y}; }
-  function hit(p){ var best=null,bd=1e9; N.forEach(function(n){ if(!isOn(n)) return; var dx=n.x-p.x, dy=n.y-p.y, d=Math.sqrt(dx*dx+dy*dy); if(d<n.r+6&&d<bd){best=n;bd=d;} }); return best; }
-  function showDetail(n){ if(!n){ detail.classList.add('idle'); detail.innerHTML='<p class="small muted" style="margin:0"><b>Como usar.</b> Passe o cursor sobre um nó para ver a referência. Clique em um nó para focá-lo e fixar os detalhes; clique nas ligações para navegar; Esc ou clique no fundo para soltar.</p>'; return; }
-    detail.classList.remove('idle');
-    var nb=neighbors(n), tags=Object.keys(nb).map(function(k){return '<span data-ref="'+k+'" title="Ir para '+byId[k].l+'">'+byId[k].l+'</span>';}).join('');
-    var kind={contabil:'Contábil',estat:'Estatística e ML',ecl:'ECL / IFRS 9',norma:'Normativo',hub:n.id.length===2?'Hipótese':'Seção da proposta'}[n.t];
-    detail.innerHTML=(pinned===n?'<button class="close" aria-label="Fechar">✕</button>':'')+'<span class="tag" style="border-color:'+color(n)+';color:'+color(n)+'">'+kind+'</span><h3 style="margin-top:8px">'+n.l+'</h3>'+(n.apa?'<p class="apa">'+n.apa+'</p>':'')+'<div class="use"><b>Na proposta:</b> '+n.use+'</div><div class="links">'+tags+'</div>'+'<p class="small muted" style="margin:8px 0 0">'+(pinned===n?'Fixado. Clique nas ligações para navegar; Esc para soltar.':'Clique para focar e fixar.')+'</p>'; }
-  canvas.addEventListener('pointermove',function(ev){ var p=toWorld(ev); if(dragging){ dragging.x=p.x; dragging.y=p.y; alpha=1; return; } if(panning){ userView=true; view.x+=ev.clientX-px0; view.y+=ev.clientY-py0; px0=ev.clientX; py0=ev.clientY; return; } var h=hit(p); if(h!==hovered){ hovered=h; if(!pinned) showDetail(h); canvas.style.cursor=h?'pointer':'grab'; } });
-  var focusTarget=null;
-  function focusNode(n){ pinned=n; showDetail(n); userView=true; var k=1.55; focusTarget={k:k,x:W/2-n.x*k,y:H/2-n.y*k}; alpha=1; if(!running) draw(); }
-  window.__focusRef=function(id){ var n=byId[id]; if(n){ visible[n.t]=1; var fb=document.querySelector('#gfilters button[data-type="'+n.t+'"]'); if(fb) fb.setAttribute('aria-pressed','true'); focusNode(n); } };
-  canvas.addEventListener('pointerdown',function(ev){ canvas.setPointerCapture(ev.pointerId); var h=hit(toWorld(ev)); if(h){ dragging=h; dragging._sx=ev.clientX; dragging._sy=ev.clientY; } else { panning=true; px0=ev.clientX; py0=ev.clientY; panStart=[ev.clientX,ev.clientY]; canvas.classList.add('drag'); focusTarget=null; } });
-  var panStart=[0,0];
-  canvas.addEventListener('pointerup',function(ev){ if(dragging){ var h=dragging; dragging=null; var moved=Math.abs(ev.clientX-h._sx)>3||Math.abs(ev.clientY-h._sy)>3; if(!moved){ if(pinned===h){ pinned=null; focusTarget=null; showDetail(h); } else { focusNode(h); } } } else if(panning){ panning=false; canvas.classList.remove('drag'); if(Math.abs(ev.clientX-panStart[0])<3&&Math.abs(ev.clientY-panStart[1])<3){ pinned=null; focusTarget=null; showDetail(hovered); } } });
-  document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&pinned){ pinned=null; focusTarget=null; showDetail(null); } });
-  detail.addEventListener('click',function(e){ var t=e.target; if(t.classList.contains('close')){ pinned=null; focusTarget=null; showDetail(null); } else if(t.dataset&&t.dataset.ref){ window.__focusRef(t.dataset.ref); } });
-  canvas.addEventListener('pointerleave',function(){ if(!dragging){ hovered=null; if(!pinned) showDetail(null); } });
-  canvas.addEventListener('wheel',function(ev){ ev.preventDefault(); userView=true; var r=canvas.getBoundingClientRect(); var mx=ev.clientX-r.left, my=ev.clientY-r.top; var k=Math.min(2.5,Math.max(0.5,view.k*(ev.deltaY<0?1.1:0.9))); view.x=mx-(mx-view.x)*k/view.k; view.y=my-(my-view.y)*k/view.k; view.k=k; draw(); },{passive:false});
-  Array.prototype.forEach.call(document.querySelectorAll('#gfilters button'),function(b){ b.addEventListener('click',function(){ var t=b.getAttribute('data-type'); visible[t]=visible[t]?0:1; b.setAttribute('aria-pressed',visible[t]?'true':'false'); alpha=1; }); });
-  document.getElementById('gfit').addEventListener('click',function(){ userView=false; focusTarget=null; pinned=null; showDetail(null); alpha=1; draw(); });
-  document.getElementById('gsearch').addEventListener('input',function(e){ query=e.target.value.trim(); draw(); });
-  // APA list
-  var listEl=document.getElementById('glist'), viewBtn=document.getElementById('gview');
-  function buildList(){ var refs=N.filter(function(n){return n.apa;}).slice().sort(function(a,b){ return a.apa.replace(/<[^>]+>/g,'').localeCompare(b.apa.replace(/<[^>]+>/g,''),'pt'); }); listEl.innerHTML=refs.map(function(n){return '<p>'+n.apa+'</p>';}).join(''); }
-  buildList();
-  viewBtn.addEventListener('click',function(){ var show=listEl.hidden; listEl.hidden=!show; document.getElementById('gwrap').hidden=show; viewBtn.setAttribute('aria-pressed',show?'true':'false'); viewBtn.textContent=show?'Ver grafo':'Ver lista APA'; if(!show){ resize(); start(); } });
-  // run the simulation only while the slide is visible
-  var refSlide=document.getElementById('s19');
-  function checkVisible(){ var r=refSlide.getBoundingClientRect(); var vis=refSlide.classList.contains('active')||app.classList.contains('doc'); if(vis&&r.width>0){ if(!listEl.hidden) return; resize(); start(); } else { stop(); } }
-  var mo=new MutationObserver(checkVisible); mo.observe(refSlide,{attributes:true,attributeFilter:['class']}); mo.observe(app,{attributes:true,attributeFilter:['class']});
-  window.addEventListener('resize',function(){ resize(); draw(); });
-  checkVisible();
-})();
+/* === Navigation, fixed stage and reading mode === */
+const slides=[...document.querySelectorAll('.slide')],stage=document.querySelector('.deck-stage'),viewport=document.querySelector('.deck-viewport'),spacer=document.querySelector('.scroll-area'),select=document.querySelector('#sections');
+let current=0,continuous=false;
+slides.forEach((slide,i)=>{const option=document.createElement('option');option.value=i;option.textContent=slide.getAttribute('aria-label');select.append(option)});
+function fit(){const scale=Math.min(innerWidth/1920,(innerHeight-62)/1080);const x=(innerWidth-1920*scale)/2;const y=continuous?0:Math.max(0,(innerHeight-62-1080*scale)/2);stage.style.transform=`translate(${x}px,${y}px) scale(${scale})`;spacer.style.height=(continuous?slides.length*1080*scale+70:innerHeight)+'px';}
+function show(index){current=Math.max(0,Math.min(slides.length-1,index));slides.forEach((slide,i)=>{slide.classList.toggle('active',i===current);slide.setAttribute('aria-hidden',String(!continuous&&i!==current));slide.inert=!continuous&&i!==current});select.value=current;document.querySelector('#counter').textContent=`${current+1} / ${slides.length}`;document.querySelector('#prev').disabled=current===0;document.querySelector('#next').disabled=current===slides.length-1;if(continuous){const scale=Math.min(innerWidth/1920,(innerHeight-62)/1080);viewport.scrollTop=current*1080*scale;}}
+function mode(){continuous=!continuous;document.body.classList.toggle('continuous',continuous);document.querySelector('#mode').textContent=continuous?'Modo slides':'Modo contínuo';document.querySelector('#mode').setAttribute('aria-pressed',String(continuous));fit();show(current);if(!continuous)viewport.scrollTop=0;}
+document.querySelector('#prev').onclick=()=>show(current-1);document.querySelector('#next').onclick=()=>show(current+1);document.querySelector('#mode').onclick=mode;select.onchange=()=>show(Number(select.value));
+addEventListener('resize',fit);addEventListener('keydown',event=>{if(event.target.matches('input,select,button,a'))return;if(['ArrowRight','PageDown',' '].includes(event.key)){event.preventDefault();show(current+1)}if(['ArrowLeft','PageUp'].includes(event.key)){event.preventDefault();show(current-1)}if(event.key==='Home')show(0);if(event.key==='End')show(slides.length-1);if(event.key.toLowerCase()==='m')mode()});
+/* === Illustrative monetary bias, no regulatory decision === */
+const pd=document.querySelector('#pd');function simulate(){const value=Number(pd.value),delta=(value/100-.02)*.4*1000000;document.querySelector('#pdLabel').textContent=value.toLocaleString('pt-BR',{minimumFractionDigits:1})+'%';document.querySelector('#delta').textContent=delta.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});document.querySelector('#bps').textContent=(delta/1000000*10000).toLocaleString('pt-BR',{minimumFractionDigits:1})+' pontos-base da exposição';}pd.addEventListener('input',simulate);simulate();fit();show(0);
 </script>
 
 </body>

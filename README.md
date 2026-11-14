@@ -1,60 +1,75 @@
-# Estimação de perdas esperadas com dados limitados
+# Transferência e recalibração de probabilidades de inadimplência entre carteiras de crédito
 
-Modelos de aprendizado de máquina para a avaliação de suficiência da provisão para perdas esperadas em instituições financeiras brasileiras dos segmentos S4 e S5 (Resolução CMN nº 4.966/2021).
+**Disponibilidade de dados, heterogeneidade e viés na mensuração de perdas esperadas em instituições financeiras brasileiras.**
 
-Projeto de dissertação de mestrado em Controladoria e Contabilidade, PPGCONT/UFRGS, linha de pesquisa Usuários Externos.
+Projeto de dissertação em Controladoria e Contabilidade, PPGCONT/UFRGS, linha Usuários Externos. Versão documental **0.4.0 — 14/11/2026**.
 
-> **Status:** proposta em discussão com a orientação. Nenhum resultado empírico foi produzido ainda. Os dispositivos normativos citados devem ser conferidos no texto consolidado vigente e as referências bibliográficas nas fontes primárias.
+> Proposta para discussão com a orientação. Não há resultados empíricos nem acesso a microdados confirmado, e a mini revisão sistemática da literatura não foi executada. O código é um esqueleto experimental.
 
-## O problema em uma frase
+## Questão de pesquisa
 
-As instituições dos segmentos S4 e S5 apuram a provisão pela metodologia simplificada, cujos percentuais por carteira e faixa de atraso são níveis mínimos; a norma exige, ainda assim, montantes suficientes para a totalidade da perda esperada e o registro segregado do excedente. Para cumprir essa avaliação de suficiência, a instituição precisa estimar a perda esperada com histórico curto, poucos eventos de inadimplência e equipe reduzida. A pesquisa investiga em que condições modelos de probabilidade de inadimplência, com personalização por carteira e informação macroeconômica prospectiva, produzem estimativas calibradas para esse fim, e, como desdobramento aplicado, em que carteiras e fases do ciclo essas estimativas excedem os níveis mínimos.
+Como a disponibilidade de dados locais e a heterogeneidade entre carteiras de origem e de destino afetam, em comparação com modelos locais e agrupados, a qualidade das probabilidades de inadimplência de 12 meses estimadas por transferência com recalibração em carteiras de crédito de instituições financeiras brasileiras?
 
-## Conteúdo do repositório
+Qualidade designa pontuação probabilística, calibração e viés monetário. O estudo compara seis regimes (taxa base, local, local reduzido, agrupado, transferido e adaptado), manipula por sorteio o volume de dados locais e a distância entre origem e destino e classifica cada combinação como adequada, inadequada ou inconclusiva segundo critério fixado antes do teste. A teoria de base é a representação fidedigna da informação contábil para o usuário externo.
 
-| Caminho | Conteúdo |
-|---|---|
-| `docs/index.html` | Apresentação interativa da proposta (abre no navegador; publicável via GitHub Pages) |
-| `docs/proposta/` | Proposta de dissertação, versão 1 (28/10/2026) e versão 2 reformulada (06/11/2026) |
-| `docs/parecer/` | Parecer metodológico sobre a versão 1, que motivou a reformulação |
-| `docs/normativo/` | Notas de verificação do enquadramento normativo |
-| `docs/apresentacao/` | Fonte da apresentação (fragmento publicado como artefato) e script de construção |
-| `src/ecl_suficiencia/` | Esqueleto do protótipo computacional, organizado conforme a seção 8 da proposta |
-| `configs/` | Configuração declarativa dos experimentos (exemplo) |
-| `data_dictionary/` | Modelo de dicionário de dados e critérios de qualidade |
-| `experiments/`, `notebooks/`, `tests/` | Reservados para os experimentos, as análises exploratórias e os testes |
-| `data/` | Ignorado pelo Git. Dados de instituições nunca são versionados |
+## Documentos correntes
 
-## Como abrir a apresentação
+- [Proposta v4](docs/proposta/proposta-dissertacao-v4-2026-11-14.md): problema, questão, objetivos, referencial, hipóteses H1–H4 e contraste C1, método, cenários de dados e pendências.
+- [Parecer sobre a v3](docs/parecer/parecer-metodologico-v3-2026-11-14.md): avaliação que motivou a v4, com quadro de atendimento.
+- [Protocolo experimental v4](docs/metodologia/protocolo-experimental-v4.md): decisões a fixar antes do teste, fatores, regimes, medidas e análise.
+- [Protocolo de mini revisão sistemática](docs/metodologia/mini-revisao-protocolo-wos-2026-11-14.md) e [consultas Web of Science](docs/metodologia/mini-revisao-queries-wos-2026-11-14.txt): busca, seleção, extração e síntese. O [adendo da v4](docs/revisao/protocolo-revisao-literatura.md) registra a correspondência com a v4, os critérios de refutação da lacuna e a situação de leitura das referências.
+- [Notas normativas](docs/normativo/notas-verificacao-normativa.md), [dicionário de dados](data_dictionary/README.md) e [configuração ilustrativa](configs/experimento-exemplo.yaml).
+- [Apresentação](docs/index.html): síntese da proposta em slides.
+- [Registro da revisão de 14/11](docs/registro-atualizacao-2026-11-14.md): mudanças, decisões e verificações.
 
-Abra `docs/index.html` em qualquer navegador. Navegação pelas setas do teclado ou pelos pontos no rodapé; o botão "Modo contínuo" empilha todos os slides. Com o GitHub Pages apontado para a pasta `docs/`, a apresentação fica disponível em `https://<usuário>.github.io/<repositório>/`.
+## Pendências que condicionam a qualificação
 
-## Arquitetura do protótipo (prevista)
+1. Acesso a microdados de contratos.
+2. Execução da mini revisão sistemática; a lacuna é candidata.
+3. Faixas do critério de adequação, margem de irrelevância e limiar de materialidade.
+4. Conferência normativa por instituição e data-base.
 
+## Histórico
+
+As propostas [v1](docs/proposta/proposta-dissertacao-v1-2026-10-28.md), [v2](docs/proposta/proposta-dissertacao-v2-2026-11-06.md) e [v3](docs/proposta/proposta-dissertacao-v3-2026-11-13.md), o [parecer de 05/11](docs/parecer/parecer-metodologico-v1-2026-11-05.md), o [protocolo v3](docs/metodologia/protocolo-experimental-v3.md) e o [registro de 13/11](docs/registro-atualizacao-2026-11-13.md) permanecem nos caminhos originais e contêm formulações superadas. O [acervo histórico](docs/historico/README.md) indica como recuperar cada estado anterior. O [CHANGELOG](CHANGELOG.md) resume a evolução.
+
+## Desenho analítico
+
+```mermaid
+flowchart LR
+    O[Origem] -->|subamostragem: distância induzida| M[Modelo da origem]
+    L[Desenvolvimento do destino] -->|sorteio: disponibilidade| R[Taxa base, local, local reduzido]
+    O --> G[Agrupado]
+    L --> G
+    M --> T[Transferido]
+    M --> A[Adaptado: recalibração penalizada]
+    L --> A
+    R --> X[Teste futuro do destino]
+    G --> X
+    T --> X
+    A --> X
+    X --> Q[Log-loss, calibração, viés monetário]
+    Q --> F[Fronteira de utilidade e mapa de adequação]
 ```
-microdados de contratos ─┐
-instituição e carteira ──┼─▶ modelo global ─▶ recalibração híbrida por carteira ─┐
-macro e expectativas ────┼─▶ modelo local ──────────────────────────────────────┼─▶ comparação sob escassez controlada ─▶ PD calibrada
-                         └─▶ ajuste macro prospectivo (M0 · M1 · M2) ────────────┘                                          │
-recuperações ──▶ LGD segmentada ─┐                                                                                         ▼
-EAD contratual ──────────────────┼─▶ perda esperada estimada ─▶ avaliação de suficiência ◀── níveis mínimos (C1–C5 × atraso)
-                                 └──────────────────────────────────────────────────▶ provisão complementar por carteira e período
+
+## Organização e estado de implementação
+
+`src/ecl_suficiencia/` conserva o nome técnico por compatibilidade. Estão implementados apenas auxiliares aritméticos (produto PD × LGD × EAD, peso heurístico, faixas de atraso e diferenças); estimadores, recalibração, fatores experimentais, medidas e validação são interfaces com `NotImplementedError`. Veja o [mapa do protótipo](docs/metodologia/prototipo-e-limites.md).
+
+`configs/` descreve o desenho; não existe executor para o YAML. `experiments/` e `notebooks/` estão reservados. Dados privados em `data/` não são versionados.
+
+## Ambiente e apresentação
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\python -m pip install -e ".[dev]"
+.\.venv\Scripts\python -m pytest
 ```
 
-Os módulos em `src/ecl_suficiencia/` contêm apenas a interface prevista (docstrings e assinaturas). A implementação começa após a confirmação do acesso aos dados, conforme a regra de decisão do item 7.4 da proposta.
+Em Linux/macOS, usar `.venv/bin/python`. Os testes verificam apenas os auxiliares existentes.
 
-## Ambiente
+Abra `docs/index.html` no navegador. Para reconstruir: `python docs/apresentacao/build.py`. A fonte e as instruções estão em [docs/apresentacao](docs/apresentacao/README.md).
 
-```bash
-python -m venv .venv && source .venv/bin/activate
-pip install -e ".[dev]"
-pytest
-```
+## Licenças e citação
 
-## Licenças
-
-Código sob licença MIT (`LICENSE`). Textos, figuras e apresentação sob CC BY 4.0 (`docs/LICENSE-CC-BY-4.0.md`). Os textos normativos citados pertencem aos seus emissores.
-
-## Citação
-
-Veja `CITATION.cff`.
+Código sob [MIT](LICENSE). Textos e apresentação sob [CC BY 4.0](docs/LICENSE-CC-BY-4.0.md). As licenças não concedem direitos sobre dados de terceiros. Metadados em [CITATION.cff](CITATION.cff).

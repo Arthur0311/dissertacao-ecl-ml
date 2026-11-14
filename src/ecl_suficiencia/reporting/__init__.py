@@ -1,4 +1,10 @@
-"""Relatórios: calibração (intercepto e inclinação), log-loss, erro relativo de perdas, TOST, Diebold–Mariano e explicabilidade."""
+"""Relatórios previstos na proposta v4: contrastes H1–H4 e C1, calibração e viés monetário.
+
+Previstos e não implementados: intercepto e inclinação de calibração com intervalos,
+viés monetário em pontos-base, critério de adequação (adequada, inadequada,
+inconclusiva) e fronteira de utilidade. Erro de perdas monetárias requer perdas
+realizadas comparáveis; o viés monetário usa apenas a ocorrência do evento.
+"""
 from __future__ import annotations
 import numpy as np
 
