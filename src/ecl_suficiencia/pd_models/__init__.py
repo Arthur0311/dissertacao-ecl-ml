@@ -1,8 +1,10 @@
 """Interfaces de PD: logística regularizada e gradient boosting; EBM é extensão histórica.
 
-A proposta v4 compara seis regimes: taxa base, local, local reduzido, agrupado,
-transferido e adaptado. O chamador deve definir explicitamente a população de treino;
-ainda não há executor desses regimes nem interface para taxa base e local reduzido.
+A proposta v4 compara sete regimes (taxa base, local, local reduzido, agrupado,
+transferido, adaptado por recalibração e adaptado por reponderação), com logística
+regularizada e gradient boosting em paridade. O chamador deve definir explicitamente a
+população de treino; ainda não há executor desses regimes nem interface para taxa base,
+local reduzido e pesos de importância.
 """
 from __future__ import annotations
 from typing import Literal

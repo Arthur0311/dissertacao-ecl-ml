@@ -1,6 +1,6 @@
 # Apresentação da proposta v4
 
-A apresentação corrente é [../index.html](../index.html). Resume a [proposta v4](../proposta/proposta-dissertacao-v4-2026-11-14.md), sem resultados empíricos. O exemplo interativo calcula o viés monetário de uma carteira fictícia sob LGD e EAD comuns; não avalia provisão.
+A apresentação corrente é [../index.html](../index.html). Resume a [proposta v4](../proposta/proposta-dissertacao-v4-2026-11-14.md), sem resultados empíricos. O exemplo interativo calcula o viés monetário de uma carteira fictícia sob LGD e EAD comuns; não avalia provisão. A apresentação tem 21 slides.
 
 ## Fonte e construção
 

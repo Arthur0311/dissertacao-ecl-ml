@@ -9,12 +9,12 @@ O protocolo operativo de busca, seleção, extração e síntese é o da [mini r
 | Item do protocolo de mini revisão | Leitura sob a v4 |
 |---|---|
 | Pergunta principal ("qualidade probabilística das PDs" e "repercussões na mensuração de ECL") | Mantida. A variável dependente da v4 tem três atributos: pontuação probabilística, calibração e viés monetário |
-| Quatro regimes (local, agrupado, transferido, adaptado) | Seis regimes: acrescentam-se taxa base e local reduzido |
-| Formulário de extração, item 12 ("relevância para H1, H2, H3") | Hipóteses H1–H4 e contraste C1 da v4; a numeração da v3 não se conserva |
+| Quatro regimes (local, agrupado, transferido, adaptado) | Sete regimes: acrescentam-se taxa base, local reduzido e adaptação por reponderação; dois algoritmos em paridade |
+| Formulário de extração, item 12 ("relevância para H1, H2, H3") | Hipóteses H1–H5 e contrastes C1–C2 da v4; a numeração da v3 não se conserva |
 | Formulário de extração, item 10 (ECL) | Acrescentar: o estudo reporta erro monetário da PD com base em eventos observados, ou apenas propaga premissas? |
 | Formulário de extração, item 5 (domínios) | Acrescentar: a distância entre domínios é observada ou manipulada? Qual componente (taxa base, composição, relação condicional)? |
-| Síntese ("implicações para os quatro regimes e H1–H3 da v3") | Implicações para a fronteira de utilidade e para o critério de adequação da v4 |
-| Rota Q5 (capacidade operacional) | Fora do núcleo da v4; manter como complementar, sem objetivo correspondente |
+| Síntese ("implicações para os quatro regimes e H1–H3 da v3") | Implicações para a fronteira de utilidade, o critério de adequação e a regra de seleção de regime da v4 |
+| Rota Q5 (capacidade operacional) | Complementar; sustenta a medida descritiva de custo operacional e o desempate da regra de seleção |
 
 ## 2. Rota adicional requerida pela v4
 
@@ -35,7 +35,9 @@ Referências metodológicas de outros campos (calibração, tamanho de amostra p
 2. Estudo que quantifique o efeito monetário do erro de PD sob escassez de dados.
 3. Evidência de que a distância entre carteiras não se associa ao desempenho da transferência.
 
-A ocorrência de (1) ou (2) converte a pesquisa em replicação no contexto brasileiro; a de (3) exige rever H2 e H3. O protocolo de mini revisão registra que Suryanto et al. (2022) já reportam configurações em que a adaptação reduz a discriminação: a ocorrência de falha da adaptação não é, por si, a lacuna.
+4. Estudo que derive e valide fora do tempo, em crédito, uma regra de seleção de estratégia de estimação conforme a informação disponível.
+
+A ocorrência de (1), (2) ou (4) converte a parte correspondente da pesquisa em replicação no contexto brasileiro; a de (3) exige rever H2 e H3. Para H5, verificar o que a literatura de comparação de classificadores em crédito reporta sobre desempenho por tamanho de amostra. O protocolo de mini revisão registra que Suryanto et al. (2022) já reportam configurações em que a adaptação reduz a discriminação: a ocorrência de falha da adaptação não é, por si, a lacuna.
 
 ## 4. Situação de leitura das referências da proposta v4
 

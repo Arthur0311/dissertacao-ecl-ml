@@ -1,6 +1,6 @@
 # Protocolo experimental — proposta v4
 
-**Estado:** planejamento em 14/11/2026. Sem pré-registro concluído, sem microdados confirmados e sem experimentos executados. Operacionaliza as seções 4 e 6 a 9 da [proposta v4](../proposta/proposta-dissertacao-v4-2026-11-14.md). Os valores da [configuração](../../configs/experimento-exemplo.yaml) são candidatos. O [protocolo v3](protocolo-experimental-v3.md) permanece como referência histórica.
+**Estado:** planejamento em 14/11/2026 (revisão 2: algoritmo como fator, adaptação por reponderação, custo operacional e regra de seleção). Sem pré-registro concluído, sem microdados confirmados e sem experimentos executados. Operacionaliza as seções 4 e 6 a 9 da [proposta v4](../proposta/proposta-dissertacao-v4-2026-11-14.md). Os valores da [configuração](../../configs/experimento-exemplo.yaml) são candidatos. O [protocolo v3](protocolo-experimental-v3.md) permanece como referência histórica.
 
 ## 1. Registro anterior ao teste
 
@@ -20,6 +20,9 @@ Serão fixados antes do teste:
 | Limiar de materialidade do viés monetário (pb da exposição) | a definir com a orientação |
 | Mínimo de destinos independentes para testar heterogeneidade observada | a definir por simulação |
 | Variáveis do regime local reduzido | a definir no desenvolvimento |
+| Limite dos pesos de importância | a definir no desenvolvimento |
+| Orçamento de ajuste por algoritmo | equivalente; a definir |
+| Janelas de teste para derivar e para avaliar a regra de seleção | a definir conforme os dados |
 
 Alteração posterior é emenda datada, com justificativa e indicação do que já havia sido observado.
 
@@ -40,9 +43,10 @@ Alteração posterior é emenda datada, com justificativa e indicação do que j
 | Local reduzido | Desenvolvimento do destino | Variáveis pré-especificadas |
 | Agrupado | Origem e desenvolvimento do destino | Ajuste único |
 | Transferido | Origem | Sem ajuste local |
-| Adaptado | Origem; recalibração no desenvolvimento do destino | Intercepto e inclinação penalizados em direção a (0, 1) |
+| Adaptado por recalibração | Origem; recalibração no desenvolvimento do destino | Intercepto e inclinação penalizados em direção a (0, 1) |
+| Adaptado por reponderação | Origem com pesos de importância e(x)/(1 − e(x)), limitados; recalibração como acima | Avaliado só com a origem em composição observada |
 
-Algoritmo principal: regressão logística regularizada. Gradient boosting em árvores nos regimes local, agrupado, transferido e adaptado, como robustez, com orçamento de busca equivalente e documentado. Penalização e hiperparâmetros escolhidos em validação cronológica aninhada. Tomadores presentes em origem e destino são atribuídos a um único domínio.
+Dois algoritmos em paridade nos regimes local, agrupado, transferido e adaptados: regressão logística regularizada e gradient boosting em árvores, com orçamento de busca equivalente e documentado. Ajuste fino do modelo da origem e modelos hierárquicos são extensões. Penalização e hiperparâmetros escolhidos em validação cronológica aninhada. Tomadores presentes em origem e destino são atribuídos a um único domínio.
 
 ## 4. Medidas
 
@@ -51,12 +55,15 @@ Algoritmo principal: regressão logística regularizada. Gradient boosting em á
 - **Viés monetário:** VM = Σ (PD − y) × LGD × EAD / Σ EAD, em pontos-base, com LGD e EAD comuns aos regimes e de origem documentada.
 - **Área sob a curva ROC**, descritiva, quando as duas classes existirem no teste.
 - **Cobertura de execução:** proporção de sorteios estimáveis por regime e célula.
+- **Custo operacional** (descritivo), por regime e algoritmo, em equipamento identificado: tempo de treinamento e de inferência, memória, número de decisões de ajuste e necessidade de acesso aos dados da origem na reestimação.
 
 **Critério de adequação por célula e regime:** adequada se (i) IC 95% do intercepto contido em ±δa, (ii) IC 95% da inclinação contido em [1 − δb, 1 + δb] e (iii) limite superior do IC 95% da diferença de log-loss em relação à taxa base negativo; inadequada se algum intervalo estiver inteiramente fora da faixa; inconclusiva nos demais casos.
 
+**Regra de seleção de regime:** por célula, entre os regimes e algoritmos adequados, o de menor log-loss; com diferença contida na margem de irrelevância, o de menor custo operacional. Derivar nas janelas de teste iniciais; avaliar na janela final contra o regime local e contra o melhor regime observado. Análise secundária; requer ao menos duas janelas de teste.
+
 ## 5. Hipóteses, contrastes e análise
 
-Família confirmatória, algoritmo principal, ajuste de Holm sobre cinco testes, intervalos de 95%.
+Duas famílias confirmatórias, com ajuste de Holm em cada uma e intervalos de 95%. Família A (transferência): H1 a H4 e C1, com os dois algoritmos em paridade e cada contraste calculado dentro do mesmo algoritmo. Família B (Machine Learning): H5 e C2. "Adaptado" designa a adaptação por recalibração.
 
 | Identificação | Contraste | Estimando | Sinal esperado |
 |---|---|---|---|
@@ -65,14 +72,18 @@ Família confirmatória, algoritmo principal, ajuste de Holm sobre cinco testes,
 | H3 | log-loss(transferido) − log-loss(adaptado) | Coeficiente do nível de distância | Positivo |
 | H4 | \|VM(adaptado)\| − \|VM(local)\|, dois níveis inferiores da malha | Diferença média | Negativo |
 | C1 | log-loss(adaptado) − log-loss(agrupado), dois níveis inferiores | Diferença média | Bilateral |
+| H5 | log-loss(gradient boosting) − log-loss(logística), regime local | Coeficiente de log2(n local) | Negativo |
+| C2 | log-loss(adaptado por reponderação) − log-loss(adaptado por recalibração), origem em composição observada | Diferença média ao longo da malha | Bilateral |
 
-H1 e H2 são estimadas no mesmo modelo linear da diferença por célula, com efeitos fixos por par origem–destino e janela. Fronteira de utilidade derivada: n\*(d), volume local em que a diferença ajustada se anula no nível de distância d; reportar com intervalo e indicar quando estiver fora da malha. Examinar resíduos quanto a não linearidade em log2(n) e reportar a especificação por níveis categóricos.
+H1 e H2 são estimadas no mesmo modelo linear da diferença por célula, com efeitos fixos por par origem–destino, janela e algoritmo; reportar as interações com o algoritmo. H5 usa modelo análogo, sem o efeito de algoritmo; reportar o volume em que o contraste se anula. Fronteira de utilidade derivada: n\*(d), volume local em que a diferença ajustada se anula no nível de distância d, por algoritmo; reportar com intervalo e indicar quando estiver fora da malha. Examinar resíduos quanto a não linearidade em log2(n) e reportar a especificação por níveis categóricos.
 
 Incerteza: reamostragem que combina os sorteios de desenvolvimento com bootstrap de tomadores do teste em blocos temporais; algoritmo e tamanho dos blocos fixados antes do teste. Comparações pareadas apenas onde os dois regimes são estimáveis, com a fração excluída reportada.
 
 A inferência é condicional às carteiras estudadas. A associação entre distância observada e desempenho é descritiva; torna-se teste, com reamostragem por destino, somente se o número de destinos independentes atingir o mínimo registrado. Efeito nulo só é afirmado com intervalo contido na margem de irrelevância.
 
-Análises fora da família (gradient boosting, definição alternativa de evento, ausência de variáveis macroeconômicas, janelas curtas, subgrupos) são identificadas como exploratórias ou de robustez.
+A reponderação não é avaliada sob distância induzida, porque desfaria a manipulação produzida pelo mesmo classificador de domínio.
+
+Análises fora das famílias (regra de seleção, definição alternativa de evento, ausência de variáveis macroeconômicas, janelas curtas, subgrupos) são identificadas como exploratórias ou de robustez.
 
 ## 6. Cronologia
 
@@ -90,4 +101,4 @@ Viés monetário por regime e célula, com a origem de LGD e EAD identificada (e
 
 - **Mês 3:** decisão de cenário (A, B ou C); estudo-piloto em base pública concluído; mini revisão sistemática executada.
 - **Mês 4:** registro da seção 1 completo.
-- **Entregas:** manifesto de dados sem conteúdo privado; configuração fixada; métricas por célula e sorteio; registro de falhas de estimação; contrastes com intervalos; fronteira de utilidade; mapa de adequação; viés monetário; limitações. Resultados são gravados em `experiments/` apenas após execução real.
+- **Entregas:** manifesto de dados sem conteúdo privado; configuração fixada; métricas por célula e sorteio; registro de falhas de estimação; contrastes com intervalos; fronteira de utilidade; mapa de adequação; regra de seleção; viés monetário; custo operacional; protótipo reprodutível; limitações. Resultados são gravados em `experiments/` apenas após execução real.
