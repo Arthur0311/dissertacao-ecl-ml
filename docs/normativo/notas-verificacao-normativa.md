@@ -1,6 +1,6 @@
-# Notas de verificação normativa — 13/11/2026
+# Notas de verificação normativa
 
-Documento corrente da proposta v3. A [nota de 06/11](../historico/2026-11-06-v2/docs/normativo/notas-verificacao-normativa.md) foi preservada integralmente. Esta revisão é direcionada ao enquadramento da pesquisa, não uma consolidação jurídica exaustiva nem uma validação de conformidade do software.
+Verificação de 13/11/2026, com adendo de 14/11/2026 (seção 6). Documento vigente para a [proposta v4](../proposta/proposta-dissertacao-v4-2026-11-14.md). A [nota de 06/11](../historico/2026-11-06-v2/docs/normativo/notas-verificacao-normativa.md) foi preservada integralmente. Esta revisão é direcionada ao enquadramento da pesquisa, não uma consolidação jurídica exaustiva nem uma validação de conformidade do software.
 
 ## 1. Correções verificadas
 
@@ -39,3 +39,12 @@ A comparação exige perímetros e horizontes compatíveis. Na ausência de dado
 ## 5. Sigilo, proteção de dados e ética
 
 O acesso depende de autorização institucional, finalidade e condições documentadas. Não se considera um hash como prova de anonimização nem se presume que a base legal de pesquisa autorize qualquer compartilhamento ou comercialização posterior. A escolha da base legal e a necessidade de apreciação ética permanecem decisões dos responsáveis institucionais, anteriores ao acesso. A presente revisão não emite parecer jurídico sobre esses pontos.
+
+## 6. Adendo de 14/11/2026 — proposta v4
+
+A v4 não altera a interpretação normativa das seções 1 a 5. Acrescenta uma pendência e registra conferências de data.
+
+- **Pendência nova, anterior à qualificação:** confirmar no texto vigente em que medida a instituição sujeita à metodologia simplificada deve manter estimativa própria da perda esperada além dos níveis mínimos (arts. 76–81 da Resolução BCB nº 352/2023 e art. 50 da Resolução CMN nº 4.966/2021). A resposta delimita o público para o qual os resultados da pesquisa têm aplicação direta (proposta v4, seções 1.3 e 5).
+- **IN BCB nº 487/2024:** a proposta v4 a cita como disciplina do pedido de autorização da metodologia completa por instituições do Segmento 4. A leitura integral permanece pendente, como registrado na seção 3.
+- **Datas conferidas em 14/11/2026 por busca em fontes secundárias, sem releitura dos dispositivos:** Resolução CMN nº 4.966, de 25/11/2021; Resolução BCB nº 352, de 23/11/2023; Resolução CMN nº 5.146, de 26/6/2024; Instrução Normativa BCB nº 487, de 5/7/2024.
+- O parecer de 14/11 sobre a v3 não conferiu os dispositivos citados; as ressalvas da seção 2 continuam válidas.

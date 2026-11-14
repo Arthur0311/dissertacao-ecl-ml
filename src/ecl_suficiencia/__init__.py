@@ -1,7 +1,7 @@
-"""Modelagem adaptativa de ECL: transferência entre carteiras e validação de PD.
+"""Transferência e recalibração de PD entre carteiras de crédito (proposta v4).
 
-Nome técnico preservado. Proposta v3: dados e heterogeneidade são dimensões observadas,
-não consequências do segmento S4/S5. Há auxiliares aritméticos e interfaces pendentes;
-não há pipeline adaptativo ou motor regulatório validado. Ver docs/metodologia/.
+Nome técnico preservado. Há auxiliares aritméticos e interfaces pendentes; não há
+pipeline de estimação, fatores experimentais ou critério de adequação implementados.
+Ver docs/metodologia/prototipo-e-limites.md.
 """
-__version__ = "0.3.0"
+__version__ = "0.4.0"

@@ -1,22 +1,22 @@
 cff-version: 1.2.0
 message: "Se utilizar este material, cite-o conforme abaixo."
-title: "Modelagem adaptativa de perdas esperadas de crédito com Machine Learning: disponibilidade de dados e heterogeneidade entre carteiras de instituições financeiras brasileiras"
+title: "Transferência e recalibração de probabilidades de inadimplência entre carteiras de crédito: disponibilidade de dados, heterogeneidade e viés na mensuração de perdas esperadas em instituições financeiras brasileiras"
 authors:
   - given-names: Arthur
     family-names: ""
     alias: Arthur0311
 type: software
-version: "0.3.0"
-date-released: "2026-11-13"
+version: "0.4.0"
+date-released: "2026-11-14"
 repository-code: "https://github.com/Arthur0311/dissertacao-ecl-ml"
 license: MIT
 keywords:
   - perdas esperadas de crédito
   - Resolução CMN 4.966/2021
-  - transferência de aprendizado
-  - adaptação de domínio
   - probabilidade de inadimplência
-  - aprendizado de máquina
+  - transferência de aprendizado
+  - recalibração
   - calibração
-  - heterogeneidade entre carteiras
+  - representação fidedigna
+  - viés de mensuração
   - instituições financeiras brasileiras

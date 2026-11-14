@@ -1,6 +1,6 @@
-# Dicionário de dados — proposta v3
+# Dicionário de dados — proposta v4
 
-Modelo a preencher após confirmação de acesso. Referências: [proposta](../docs/proposta/proposta-dissertacao-v3-2026-11-13.md) e [protocolo](../docs/metodologia/protocolo-experimental-v3.md). Nenhuma base foi validada por este documento.
+Modelo a preencher após confirmação de acesso. Referências: [proposta](../docs/proposta/proposta-dissertacao-v4-2026-11-14.md) e [protocolo](../docs/metodologia/protocolo-experimental-v4.md). Nenhuma base foi validada por este documento.
 
 ## Registro obrigatório de cada campo
 
@@ -28,6 +28,13 @@ Por carteira, janela e amostra, derivar `n_contratos`, `n_tomadores`, `n_eventos
 
 Definir campos comuns entre origem e destino antes do experimento. Registrar diferenças de política, modalidade, composição e distância de covariáveis estimada no desenvolvimento; guardar escala, pesos e tratamento de categorias novas. Taxas de default e respectivos intervalos entram separadamente. C1–C5 não definem automaticamente o domínio estatístico.
 
+Campos dos fatores experimentais da proposta v4, gravados por sorteio:
+
+- `nivel_disponibilidade`, `fracao_tomadores`, `semente`, `n_local` (tomadores distintos no desenvolvimento) e indicador de regime não estimável.
+- `nivel_distancia`, `lambda_subamostragem`, `prob_destino` (saída do classificador de domínio, estimada só no desenvolvimento) e `separabilidade_nivel` (verificação da manipulação). O tamanho da origem é constante entre níveis.
+- Distância observada por par: `dif_taxa_base_logito`, `auc_dominio`, `dist_composicao` e `desajuste_condicional` (excesso de log-loss do modelo da origem no desenvolvimento do destino após correção do intercepto).
+- `variaveis_local_reduzido`: lista fixada antes do teste.
+
 ## 4. Recuperação, exposição e ECL
 
 - `data_evento`, `data_fluxo_recuperacao`, `valor_recuperado`, `custo_recuperacao`, `garantia_realizada`, `fim_observacao_recuperacao`: necessários à LGD estimada e ao tratamento de censura.
@@ -37,6 +44,8 @@ Definir campos comuns entre origem e destino antes do experimento. Registrar dif
 - `origem_parametro`, intervalo e justificativa: distinguir estimado com dados, externo e arbitrado para sensibilidade. Premissa comum aos modelos isola PD, mas não valida a ECL integral.
 
 Sem recuperações comparáveis e maturadas, reportar LP12/sensibilidade; não usar defaults como perda monetária realizada. Não fixar 24 meses como maturação universal sem avaliar o perfil de recuperação.
+
+Para o viés monetário (proposta v4, seção 6.6), registrar por contrato do teste `lgd_comum`, `ead_comum` e `origem_parametro`; os valores são idênticos entre regimes. O resultado por regime e célula é gravado em `vies_monetario_pb`, com o limiar de materialidade vigente. O viés monetário usa a ocorrência do evento, não a perda realizada.
 
 ## 5. Informações prospectivas
 
@@ -50,7 +59,7 @@ Separar `provisao_regras`, `provisao_registrada` e `ecl_experimental`. O cálcul
 
 ## 7. Dicionário de eventos a congelar
 
-1. **Evento candidato principal:** primeiro atraso superior a 90 dias dentro de 12 meses, sem evento presente na data-base. Identificar como proxy quando não abranger a definição de ativo problemático.
+1. **Evento principal:** primeiro atraso superior a 90 dias dentro de 12 meses, sem evento presente na data-base. É aproximação da definição regulatória de ativo problemático e é denominado evento de inadimplência.
 2. **Ativo problemático:** definição alternativa com critérios, datas e qualidade documentados; avaliar separadamente. Sua equivalência ao proxy precisa de evidência.
 3. **Cura e recorrência:** definir janela e requisitos; não apagar evento ocorrido nem tratar reentrada como nova observação independente sem regra prévia.
 4. **Renegociação:** manter trilha do contrato e evento anterior; verificar se há reestruturação e alteração do risco, em vez de reiniciar automaticamente atraso/histórico.

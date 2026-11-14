@@ -1,7 +1,9 @@
-"""Relatórios previstos: H1–H3 em log-loss, calibração, incerteza e transferência negativa.
+"""Relatórios previstos na proposta v4: contrastes H1–H4 e C1, calibração e viés monetário.
 
-Erro monetário requer perdas realizadas comparáveis; não confundir defaults com ECL.
-TOST e Diebold–Mariano não são requisitos automáticos do protocolo v3.
+Previstos e não implementados: intercepto e inclinação de calibração com intervalos,
+viés monetário em pontos-base, critério de adequação (adequada, inadequada,
+inconclusiva) e fronteira de utilidade. Erro de perdas monetárias requer perdas
+realizadas comparáveis; o viés monetário usa apenas a ocorrência do evento.
 """
 from __future__ import annotations
 import numpy as np

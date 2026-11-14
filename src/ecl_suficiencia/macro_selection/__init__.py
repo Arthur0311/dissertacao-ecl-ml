@@ -1,6 +1,6 @@
 """Interface histórica de extensões macro (M0–M3), ainda não implementada.
 
-O núcleo v3 usa conjunto parcimonioso comum; seleção por carteira é extensão.
+O núcleo da proposta usa conjunto parcimonioso comum; seleção por carteira é extensão.
 Exigir vintage e data de publicação, inclusive para expectativas Focus.
 """
 from __future__ import annotations

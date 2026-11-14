@@ -1,8 +1,8 @@
 """Interface histórica de recalibração e auxiliar heurístico de encolhimento.
 
-V3 prevê modelo da origem e recalibração local regularizada para (0, 1), ajustada
-apenas no desenvolvimento. O peso n/(n+k) não implementa essa estimação nem um
-modelo bayesiano. Informação macro comum é tratada separadamente; ver protocolo.
+O regime adaptado da proposta v4 recalibra o modelo da origem com intercepto e
+inclinação penalizados em direção a (0, 1), ajustados apenas no desenvolvimento do
+destino. O peso n/(n+k) não implementa essa estimação nem um modelo bayesiano.
 """
 from __future__ import annotations
 import numpy as np
