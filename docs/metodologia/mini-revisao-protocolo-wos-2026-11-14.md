@@ -1,5 +1,7 @@
 # Mini revisão sistemática — protocolo proposto e consultas Web of Science
 
+**Nota de vigência — 15/11/2026:** protocolo antecedente da v3/v4, preservado. A execução corrente segue o [protocolo Q0–Q6 da v5](../revisao/protocolo-busca-wos-q0-q6.md). As queries antigas têm significados diferentes e devem manter identificação de versão.
+
 **Projeto:** Modelagem adaptativa de perdas esperadas de crédito com Machine Learning.  
 **Base:** proposta de dissertação v3, de 13/11/2026, especialmente seções 1–4, 6–7 e 10.  
 **Data deste documento:** 14/11/2026.  
