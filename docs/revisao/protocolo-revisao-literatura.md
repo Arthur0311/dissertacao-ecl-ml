@@ -1,5 +1,7 @@
 # Revisão da literatura — adendo da proposta v4 e situação das referências
 
+**Nota de vigência — 15/11/2026:** adendo histórico da v4. O [protocolo Q0–Q6](protocolo-busca-wos-q0-q6.md) rege a operação da mini RSL sob a v5; critérios críticos e rota contábil deste adendo permanecem complementares. Não transferir a numeração antiga das queries para o registro corrente.
+
 **Estado em 14/11/2026:** revisão não executada. A lacuna da seção 3.4 da [proposta v4](../proposta/proposta-dissertacao-v4-2026-11-14.md) é candidata até a conclusão da revisão.
 
 O protocolo operativo de busca, seleção, extração e síntese é o da [mini revisão sistemática](../metodologia/mini-revisao-protocolo-wos-2026-11-14.md), com as [consultas para a Web of Science](../metodologia/mini-revisao-queries-wos-2026-11-14.txt). Aquele protocolo foi elaborado com base na proposta v3. Este adendo registra apenas o que a v4 acrescenta ou altera; não o substitui nem o modifica.

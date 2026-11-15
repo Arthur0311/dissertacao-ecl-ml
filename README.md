@@ -2,56 +2,58 @@
 
 **Transferência de modelos de probabilidade de inadimplência, disponibilidade de dados e heterogeneidade entre carteiras de instituições financeiras brasileiras.**
 
-Projeto de dissertação em Controladoria e Contabilidade, PPGCONT/UFRGS, linha Usuários Externos. Versão documental **0.4.1 — 14/11/2026**.
+Projeto de dissertação em Controladoria e Contabilidade, PPGCONT/UFRGS, linha Usuários Externos. Base científica: **proposta v5 — 14/11/2026**. Estrutura bibliográfica atualizada em **15/11/2026**.
 
 > Proposta para discussão com a orientação. Não há resultados empíricos nem acesso a microdados confirmado, e a mini revisão sistemática da literatura não foi executada. O código é um esqueleto experimental.
 
 ## Questão de pesquisa
 
-Como a disponibilidade de dados locais, a heterogeneidade entre carteiras de origem e de destino e a complexidade do algoritmo afetam, em comparação com modelos locais e agrupados, a qualidade das probabilidades de inadimplência de 12 meses estimadas por estratégias adaptativas de Machine Learning em carteiras de crédito de instituições financeiras brasileiras?
+Em que condições a disponibilidade de dados locais, a heterogeneidade entre carteiras de origem e destino e a complexidade dos algoritmos influenciam a qualidade das estimativas de PD produzidas por estratégias de Machine Learning com transferência e adaptação?
 
-Qualidade designa pontuação probabilística, calibração e viés monetário. O estudo compara sete regimes (taxa base, local, local reduzido, agrupado, transferido, adaptado por recalibração e adaptado por reponderação) com dois algoritmos em paridade (regressão logística regularizada e gradient boosting), manipula por sorteio o volume de dados locais e a distância entre origem e destino e classifica cada combinação como adequada, inadequada ou inconclusiva segundo critério fixado antes do teste. Dessa classificação deriva uma regra de seleção de regime conforme a informação disponível. A teoria de base é a representação fidedigna da informação contábil para o usuário externo.
-
-A dissertação entrega o método validado e um protótipo reprodutível. A ferramenta de mensuração para instituições com pouca informação própria ou pouca capacidade de modelagem é aplicação posterior, fora do escopo.
+O desenho corrente usa simulação de Monte Carlo e instituições virtuais, com PD verdadeira conhecida sob múltiplos mecanismos geradores. O Documento 3040 orienta a estrutura; SCR.data e, quando útil, IF.data apoiam a calibração agregada. Compara R0 referência ingênua, R1 local, R2 agrupado, R3 transferido e R4 transferido com recalibração, usando logística regularizada e gradient boosting quando aplicáveis. A repercussão em ECL é sintética e condicional às premissas de LGD, EAD e desconto. Validação com dados reais é complementar, não pré-requisito do desenho principal. A ferramenta comercial permanece fora do escopo.
 
 ## Documentos correntes
 
-- [Proposta v4](docs/proposta/proposta-dissertacao-v4-2026-11-14.md): problema, questão, objetivos, referencial, hipóteses H1–H5 e contrastes C1–C2, método, cenários de dados e pendências.
+- [Proposta v5](docs/proposta/proposta-dissertacao-v5-2026-11-14.md): desenho científico corrente, ainda sujeito à orientação.
+- [Roadmap v5](docs/roadmap-dissertacao-ecl-ml-v5.md): etapas E01–E12 e critérios de passagem.
 - [Parecer sobre a v3](docs/parecer/parecer-metodologico-v3-2026-11-14.md): avaliação que motivou a v4, com quadro de atendimento.
-- [Protocolo experimental v4](docs/metodologia/protocolo-experimental-v4.md): decisões a fixar antes do teste, fatores, regimes, medidas e análise.
-- [Protocolo de mini revisão sistemática](docs/metodologia/mini-revisao-protocolo-wos-2026-11-14.md) e [consultas Web of Science](docs/metodologia/mini-revisao-queries-wos-2026-11-14.txt): busca, seleção, extração e síntese. O [adendo da v4](docs/revisao/protocolo-revisao-literatura.md) registra a correspondência com a v4, os critérios de refutação da lacuna e a situação de leitura das referências.
+- [Protocolo experimental v4](docs/metodologia/protocolo-experimental-v4.md): antecedente a reconciliar com a v5 antes dos experimentos; não é o protocolo confirmatório do desenho sintético.
+- [Protocolo operacional da mini RSL Q0–Q6](docs/revisao/protocolo-busca-wos-q0-q6.md): buscas, seleção e rastreabilidade sob a v5.
 - [Notas normativas](docs/normativo/notas-verificacao-normativa.md), [dicionário de dados](data_dictionary/README.md) e [configuração ilustrativa](configs/experimento-exemplo.yaml).
 - [Apresentação](docs/index.html): síntese da proposta em slides.
 - [Registro da revisão de 14/11](docs/registro-atualizacao-2026-11-14.md): mudanças, decisões e verificações.
 
 ## Pendências que condicionam a qualificação
 
-1. Acesso a microdados de contratos.
+1. Aprovação do desenho sintético, DGPs e fontes públicas para calibração agregada.
 2. Execução da mini revisão sistemática; a lacuna é candidata.
 3. Faixas do critério de adequação, margem de irrelevância e limiar de materialidade.
 4. Conferência normativa por instituição e data-base.
+
+## Mini RSL
+
+Q0 faz o mapeamento; Q1–Q2 constituem o núcleo científico; Q3–Q4 sustentam simulação e calibração; Q5 sustenta a discussão contábil; Q6 reúne métodos gerais. Uma única revisão delimitada, ainda não executada.
+
+- [Registro de buscas](docs/revisao/registro-buscas.md) e [fluxo PRISMA](docs/revisao/fluxo-prisma.md).
+- [Organização bibliográfica e planilhas](literature/README.md), separadas de `data/`.
+- [Relatório da incorporação](docs/revisao/registro-incorporacao-2026-11-15.md).
 
 ## Histórico
 
 As propostas [v1](docs/proposta/proposta-dissertacao-v1-2026-10-28.md), [v2](docs/proposta/proposta-dissertacao-v2-2026-11-06.md) e [v3](docs/proposta/proposta-dissertacao-v3-2026-11-13.md), o [parecer de 05/11](docs/parecer/parecer-metodologico-v1-2026-11-05.md), o [protocolo v3](docs/metodologia/protocolo-experimental-v3.md) e o [registro de 13/11](docs/registro-atualizacao-2026-11-13.md) permanecem nos caminhos originais e contêm formulações superadas. O [acervo histórico](docs/historico/README.md) indica como recuperar cada estado anterior. O [CHANGELOG](CHANGELOG.md) resume a evolução.
 
+A [proposta v4](docs/proposta/proposta-dissertacao-v4-2026-11-14.md), os [protocolos v3/v4](docs/metodologia/mini-revisao-protocolo-wos-2026-11-14.md), o [adendo v4](docs/revisao/protocolo-revisao-literatura.md) e o [protocolo inicial v5](docs/mini-rsl-wos-ecl-ml-v5.md) foram preservados como antecedentes. A apresentação, a configuração ilustrativa e o protocolo experimental ainda precisam de revisão integral frente à v5.
+
 ## Desenho analítico
 
 ```mermaid
 flowchart LR
-    O[Origem] -->|subamostragem: distância induzida| M[Modelo da origem]
-    L[Desenvolvimento do destino] -->|sorteio: disponibilidade| R[Taxa base, local, local reduzido]
-    O --> G[Agrupado]
-    L --> G
-    M --> T[Transferido]
-    M --> A[Adaptado: recalibração ou reponderação]
-    L --> A
-    R --> X[Teste futuro do destino]
-    G --> X
-    T --> X
-    A --> X
-    X --> Q[Log-loss, calibração, viés monetário]
-    Q --> F[Fronteira de utilidade, mapa de adequação e regra de seleção]
+    F["3040 e estatísticas públicas"] --> D["Múltiplos DGPs e instituições virtuais"]
+    D --> M["Replicações de Monte Carlo"]
+    M --> R["Regimes R0 a R4"]
+    R --> T["Avaliação independente da PD"]
+    T --> C["Calibração, erro e transferência negativa"]
+    T --> E["Implicações condicionais para ECL sintética"]
 ```
 
 ## Organização e estado de implementação

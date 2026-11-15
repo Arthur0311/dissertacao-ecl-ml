@@ -33,3 +33,8 @@ Thumbs.db
 .vscode/
 .idea/
 *.log
+
+# Bibliografia: exceções restritas; data/ continua protegida
+!literature/raw/*.xlsx
+!literature/processed/*.xlsx
+!literature/analysis/*.xlsx
