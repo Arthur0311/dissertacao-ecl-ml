@@ -1,4 +1,4 @@
-"""Validação temporal: divisão fora do tempo, janela expansiva e embargo entre horizontes."""
+"""Validação temporal: desenvolvimento, validação cronológica interna e teste futuro, com maturação e embargo."""
 from __future__ import annotations
 from dataclasses import dataclass
 import pandas as pd

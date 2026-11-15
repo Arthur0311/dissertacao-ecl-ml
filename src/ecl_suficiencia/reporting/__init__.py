@@ -1,9 +1,10 @@
-"""Relatórios previstos na proposta v4: contrastes H1–H5, C1 e C2, calibração e viés monetário.
+"""Relatórios previstos na proposta v5: contrastes H1–H4 e C1, calibração e ECL sintética.
 
-Previstos e não implementados: intercepto e inclinação de calibração com intervalos,
-viés monetário em pontos-base, critério de adequação (adequada, inadequada,
-inconclusiva), fronteira de utilidade, custo operacional e regra de seleção de regime. Erro de perdas monetárias requer perdas
-realizadas comparáveis; o viés monetário usa apenas a ocorrência do evento.
+Previstos e não implementados: log-loss e Brier, intercepto e inclinação de calibração
+com intervalos, erro frente à PD verdadeira do DGP, frequência de transferência
+negativa, erro-padrão de Monte Carlo dos contrastes pareados, desvio da ECL sintética,
+critério de adequação (adequada, inadequada, inconclusiva), fronteira de utilidade,
+custo operacional e regra de seleção com arrependimento.
 """
 from __future__ import annotations
 import numpy as np

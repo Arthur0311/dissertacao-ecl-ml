@@ -1,5 +1,7 @@
 # Protocolo experimental — proposta v4
 
+> **Superado em 15/11/2026.** Descreve o desenho com microdados reais. O protocolo corrente é o [v5](protocolo-experimental-v5.md).
+
 **Estado:** planejamento em 14/11/2026 (revisão 2: algoritmo como fator, adaptação por reponderação, custo operacional e regra de seleção). Sem pré-registro concluído, sem microdados confirmados e sem experimentos executados. Operacionaliza as seções 4 e 6 a 9 da [proposta v4](../proposta/proposta-dissertacao-v4-2026-11-14.md). Os valores da [configuração](../../configs/experimento-exemplo.yaml) são candidatos. O [protocolo v3](protocolo-experimental-v3.md) permanece como referência histórica.
 
 ## 1. Registro anterior ao teste

@@ -1,4 +1,4 @@
-"""Interface para regras da Res. BCB 352/2023 e alterações por data e ativo.
+"""Interface legada para regras da Res. BCB 352/2023; fora do experimento confirmatório da v5.
 
 O auxiliar de faixas é incompleto para cálculo normativo: não cobre todos os períodos,
 componentes e exceções. A Res. BCB 309/2023 é referência histórica revogada.

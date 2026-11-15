@@ -1,5 +1,13 @@
 # Histórico
 
+## 0.5.0 — 2026-11-15
+- Documentos dependentes alinhados à proposta v5 (14/11/2026): simulação de Monte Carlo com carteiras sintéticas, mecanismos geradores explícitos e PD verdadeira conhecida, em substituição ao desenho baseado em microdados reais.
+- Título passa a "Modelagem adaptativa de probabilidades de inadimplência com Machine Learning: experimentos de transferência entre carteiras sintéticas e implicações para a mensuração de perdas esperadas de crédito".
+- Criado o protocolo experimental v5, no esquema ADEMP, ainda preliminar. Configuração, dicionário de dados, mapa do protótipo, notas normativas, metadados e docstrings reescritos para instituições virtuais, DGP-L/N/C/R/T, regimes R0–R4 e hipóteses H1–H4 e C1.
+- Apresentação refeita: modo documento e modo apresentação, justificativa de cada escolha metodológica com fonte, demonstrações interativas e grafo de referências. As referências de apoio que não constam na lista da v5 estão identificadas como tais.
+- Proposta v4, protocolo v4 e registro de 14/11 preservados nos caminhos originais; demais documentos da v4 preservados no histórico do Git.
+- Permanecem pendentes: mini revisão sistemática, versão do leiaute 3040, agregados do SCR.data, parâmetros dos DGPs, piloto e congelamento do protocolo. Nenhum simulador implementado e nenhum experimento executado.
+
 ## 0.4.1 — 2026-11-14
 - Proposta v4, revisão 2: Machine Learning restituído ao núcleo e objetivo de aplicação explicitado, por decisão do autor.
 - Título volta a "Modelagem adaptativa de perdas esperadas de crédito com Machine Learning"; a questão passa a incluir a complexidade do algoritmo como variável independente.

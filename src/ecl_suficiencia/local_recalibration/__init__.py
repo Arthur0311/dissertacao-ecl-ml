@@ -1,8 +1,8 @@
 """Interface histórica de recalibração e auxiliar heurístico de encolhimento.
 
-O regime adaptado da proposta v4 recalibra o modelo da origem com intercepto e
-inclinação penalizados em direção a (0, 1), ajustados apenas no desenvolvimento do
-destino. O peso n/(n+k) não implementa essa estimação nem um modelo bayesiano.
+O regime R4 da proposta v5 atualiza o modelo da origem com intercepto e, quando
+suportado, inclinação estimados no desenvolvimento do destino, com regularização;
+sem eventos locais, retorna a R3 ou a uma atualização por prior documentado. O peso n/(n+k) não implementa essa estimação nem um modelo bayesiano.
 """
 from __future__ import annotations
 import numpy as np

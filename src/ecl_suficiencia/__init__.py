@@ -1,7 +1,7 @@
-"""Modelagem adaptativa de perdas esperadas de crédito com Machine Learning (proposta v4).
+"""Modelagem adaptativa de probabilidades de inadimplência com Machine Learning (proposta v5).
 
 Nome técnico preservado. Há auxiliares aritméticos e interfaces pendentes; não há
-pipeline de estimação, fatores experimentais ou critério de adequação implementados.
+simulador, pipeline de estimação ou executor de Monte Carlo implementados.
 Ver docs/metodologia/prototipo-e-limites.md.
 """
-__version__ = "0.4.1"
+__version__ = "0.5.0"

@@ -1,4 +1,4 @@
-"""Aproximação experimental LP12 e interface multiperíodo ainda não implementada.
+"""Aproximação estática da ECL sintética (proposta v5, seção 7) e interface multiperíodo pendente.
 
 PD12 não é ECL integral: interpretação requer LGD/EAD, horizonte, cenários e desconto
 compatíveis. Perdas decorrentes de defaults em 12 meses podem ocorrer além desse prazo.

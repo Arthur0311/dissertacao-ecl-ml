@@ -1,165 +1,143 @@
-# Configuração declarativa da proposta v4; NÃO é um executor implementado.
-# Valores candidatos: fixar após diagnóstico, antes de abrir o teste.
-# Referência: docs/metodologia/protocolo-experimental-v4.md
-versao_proposta: '4'
-status: planejamento_nao_preregistrado
-nome: modelagem-adaptativa-pd-ml-v4
+# Configuração declarativa da proposta v5; NÃO é um executor implementado.
+# Valores candidatos: fixar após o piloto e antes das simulações confirmatórias.
+# Referências: docs/proposta/proposta-dissertacao-v5-2026-11-14.md
+#              docs/metodologia/protocolo-experimental-v5.md
+versao_proposta: '5'
+status: planejamento_nao_congelado
+nome: transferencia-pd-carteiras-sinteticas-v5
+delineamento: experimento_computacional_de_monte_carlo
+protocolo: ADEMP  # Morris, White e Crowther (2019)
 
-dados:
-  fonte: data/processed/contratos_mes.parquet
-  acesso_confirmado: false
-  cenario: a_definir  # A: várias instituições; B: uma instituição, várias carteiras; C: base pública ou estrangeira
-  piloto_base_publica: previsto_meses_1_a_3_sem_valor_de_conclusao
-  unidade: contrato-data_base
-  grupo_dependencia: id_tomador_pseudonimo
-  destino: a_definir
-  origens: []
-  segmento_prudencial_define_escassez: false
+fontes:
+  microdados_reais: nao_utilizados
+  leiaute_3040:
+    papel: referencia_estrutural_e_semantica
+    versao: a_congelar  # data-base regulatória e atos alteradores a identificar
+    xml_de_remessa: opcional_fora_da_evidencia_cientifica
+  scr_data:
+    papel: calibracao_e_verificacao_de_agregados
+    series_periodo_filtros: a_definir
+    inadimplencia_de_estoque_como_pd: false
+  macro:
+    fontes: [bcb_sgs, previsoes_historicas_datadas]
+    papel: analise_de_sensibilidade
+  proveniencia_parametros: [identificado, parcialmente_identificado, arbitrado]
 
 evento:
   definicao: primeiro_atraso_superior_90_dias
+  natureza: proxy_operacional_nao_equivalente_a_ativo_problematico
   horizonte_meses: 12
-  excluir_evento_presente_na_data_base: true
-  alternativa_ativo_problematico: analise_separada_se_disponivel
-  seguimento_incompleto: censurar_nao_rotular_zero
-  cura_renegociacao_baixa_cessao: regras_a_fixar_no_dicionario
+  horizontes_sensibilidade_meses: [3, 6]  # se o simulador e o cronograma permitirem
+  populacao: contratos_elegiveis_sem_evento_na_data_base
+  risco_competitivo_liquidacao: respeitar_ordem_dos_eventos
 
-validacao:
-  externa: temporal_com_rotulos_maturados
-  interna: cronologica_aninhada
-  teste_intocado: true
-  exclusao_entre_treino_e_validacao_meses: 12
-  tomador_em_um_unico_dominio: true
-  intervalo_confianca: 0.95
+instituicoes_virtuais:  # arquétipos experimentais, não empresas reais nem segmentos prudenciais
+  IF-A: {carteira: credito_pessoal_pf, condicao: historico_curto_poucos_eventos, papel: destino}
+  IF-B: {carteira: consignado_pf, condicao: historico_maior_publico_especifico, papel: destino}
+  IF-C: {carteira: capital_de_giro_pj, condicao: historico_medio_exposicao_heterogenea, papel: destino}
+  IF-D: {carteira: conjunto_de_carteiras_sinteticas, condicao: historico_longo_maior_volume, papel: possivel_origem}
+  atributos_confirmatorios: nucleo_comum_entre_origem_e_destino
+  identificadores: inteiramente_ficticios
+
+base_sintetica:
+  entidades: [instituicao_mes, tomador_mes, contrato, contrato_mes, ambiente_economico_mes, eventos_recuperacao, verdade_do_simulador]
+  classes_de_atributo: [inspirado_no_3040, analitico_adicional, latente_do_dgp, parametro_de_cenario]
+  verdade_do_simulador: inacessivel_ao_treino_e_ao_ajuste
+  restricoes: [saldos_nao_negativos, amortizacao_coerente, atraso_compativel_com_pagamentos, sem_fluxo_apos_extincao_salvo_recuperacao]
+
+dgps:
+  nucleo_obrigatorio:
+    DGP-L: relacoes_aproximadamente_logisticas
+    DGP-N: nao_linearidades_interacoes_e_limiares
+    DGP-C: heterogeneidade_de_composicao_com_relacao_condicional_compartilhada
+    DGP-R: heterogeneidade_condicional_inclusive_sem_suporte_comum
+  sensibilidade_condicionada_ao_piloto:
+    DGP-T: mudanca_temporal_de_taxa_base_macro_e_maturacao
+  cenarios_adicionais: [baixa_taxa_base, zero_eventos_locais, valores_ausentes, erro_de_mensuracao]
+  cruzamento_completo_das_familias: false
+  niveis_de_parametros: fixar_antes_do_experimento_final
+
+calibracao_do_simulador:
+  coerencia_estrutural: testes_unitarios_e_de_propriedades
+  plausibilidade_agregada: confronto_com_scr_data_com_tolerancias_previas
+  reserva_de_verificacao: outro_periodo_ou_recorte_publico_quando_possivel
+  denominacao: plausibilidade_agregada_nao_validacao_externa
 
 fatores:
-  disponibilidade:
-    fracao_tomadores_desenvolvimento: [0.05, 0.10, 0.20, 0.40, 0.70, 1.0]
-    amostragem: aleatoria_por_tomador_sem_selecao_por_classe
-    repeticoes: 20
-    semente_base: 2026
-    n_local: tomadores_distintos_no_desenvolvimento
-    teste: identico_em_todos_os_niveis
-    inicio_operacao: analise_separada_por_janelas_curtas
-  distancia_induzida:
-    metodo: subamostragem_da_origem_por_classificador_de_dominio
-    inclusao: proporcional_a_exp_lambda_vezes_logit_e_x
-    niveis: 5
-    lambdas: a_fixar_simetricos_em_torno_de_zero
-    tamanho_origem: constante_entre_niveis
-    verificacao: separabilidade_medida_por_nivel
-  distancia_observada:
-    dados: desenvolvimento_com_rotulos_maturados
-    taxa_base: diferenca_em_logito
-    separabilidade: auc_classificador_de_dominio_validacao_cruzada
-    composicao: [wasserstein_normalizada_numericas, variacao_total_categoricas]
-    desajuste_condicional: excesso_logloss_modelo_origem_apos_correcao_de_intercepto
-    tratamento: descritivo_salvo_minimo_de_destinos_independentes
+  disponibilidade_local:
+    eventos_maturados_candidatos: [0, 5, 20, 50, 200]  # piloto; níveis maiores a acrescentar
+    dimensoes_separadas: [numero_de_tomadores, numero_de_eventos, meses_de_historico]
+    eventos_realizados_diferentes_do_alvo: registrar_sem_forcar_numero_exato
+    zero_eventos: tratamento_explicito
+  heterogeneidade:
+    taxa_base: interceptos_ou_mecanismo_equivalente
+    composicao: parametros_das_distribuicoes_e_suporte
+    condicional: coeficientes_interacoes_ou_funcoes_diferentes
+    verdade_experimental: diferencas_de_parametros_do_dgp
+    indices_empiricos: calculados_apenas_no_desenvolvimento
+  algoritmo: [logistica_regularizada, gradient_boosting]
+  desenho: fracionario_dois_niveis_por_fator_com_ampliacao_pre_decidida
+  cenarios: [confirmatorios, exploratorios]
 
-modelos:
-  algoritmos: [logistica_regularizada, gradient_boosting]  # em paridade, orçamento equivalente
-  regimes:
-    - taxa_base
-    - local
-    - local_reduzido
-    - agrupado
-    - transferido
-    - adaptado_recalibracao
-    - adaptado_reponderacao
-  adaptado_recalibracao: intercepto_inclinacao_penalizados_para_identidade
-  adaptado_reponderacao: pesos_de_importancia_do_classificador_de_dominio_limitados_mais_recalibracao
-  limite_pesos_importancia: a_fixar_no_desenvolvimento
-  extensoes: [ajuste_fino_do_modelo_da_origem, modelo_hierarquico]
-  penalizacao: escolher_na_validacao_interna
-  local_reduzido_variaveis: a_fixar_no_desenvolvimento
-  nao_estimavel: registrar_e_reportar_cobertura
-  orcamento_ajuste: a_fixar
+regimes:
+  R0: {nome: referencia_ingenua, definicao: taxa_base_de_origem_ou_estimativa_suavizada, zero_eventos: executavel}
+  R1: {nome: local, definicao: apenas_desenvolvimento_do_destino, zero_eventos: pode_ser_nao_estimavel}
+  R2: {nome: agrupado, definicao: modelo_unico_origem_mais_destino, zero_eventos: executavel_com_eventos_na_origem}
+  R3: {nome: transferido, definicao: treinado_na_origem_sem_atualizacao, zero_eventos: executavel}
+  R4: {nome: transferido_recalibrado, definicao: intercepto_e_inclinacao_no_destino_com_regularizacao, zero_eventos: retornar_a_R3_ou_prior_documentado}
+  algoritmos_em_R1_a_R4: [logistica_regularizada, gradient_boosting]
+  hiperparametros: ajustados_somente_no_desenvolvimento
+  extensoes_condicionadas: [reponderacao_por_importancia, atualizacao_bayesiana, hierarquico_parcial, horizontes_adicionais]
 
-macro:
-  principal: conjunto_parcimonioso_comum
-  disponibilidade: versao_vigente_na_data_base
-  sem_macro: analise_de_sensibilidade
+validacao_temporal:
+  particoes: [desenvolvimento, validacao_cronologica_interna, teste_futuro_sem_reuso]
+  rotulos: maturacao_completa_ou_tratamento_explicito_de_censura
+  embargo: excluir_datas_base_cujas_janelas_invadam_validacao_ou_teste
+  tomador_em_um_unico_dominio: true
+  transformacoes_dentro_das_janelas_permitidas: true
 
 medidas:
-  primaria: logloss
-  complementares: [brier, intercepto_calibracao, inclinacao_calibracao, curvas_calibracao, auc_descritiva, cobertura_de_execucao]
-  custo_operacional_descritivo: [tempo_treino, tempo_inferencia, memoria, decisoes_de_ajuste, acesso_a_origem_na_reestimacao]
-  vies_monetario:
-    formula: soma_pd_menos_y_vezes_lgd_vezes_ead_sobre_soma_ead
-    unidade: pontos_base_da_exposicao
-    lgd_e_ead: comuns_aos_regimes_com_origem_documentada
+  primaria: logloss_no_destino
+  complementares: [brier, intercepto_calibracao, inclinacao_calibracao, curvas_calibracao, auc_roc]
+  contra_a_verdade: [erro_medio, erro_absoluto_medio, erro_quadratico_medio]  # frente à PD verdadeira do DGP
+  transferencia_negativa: proporcao_com_logloss_superior_ao_local_alem_da_margem
+  local_nao_estimavel: comparacao_indisponivel_sem_imputar_vantagem
+  monetaria: desvio_da_ecl_sintetica_em_moeda_simulada_e_pontos_base
+  custo_operacional_descritivo: [tempo_treino, memoria, tempo_inferencia, decisoes_de_ajuste, dependencia_da_origem]
 
 criterio_adequacao:
-  delta_intercepto_logito: 0.2   # candidato
-  delta_inclinacao: 0.2          # candidato
-  referencia: logloss_menor_que_taxa_base
-  regra: intervalo_contido_na_faixa
+  margens: a_fixar_apos_piloto_independente
   classes: [adequada, inadequada, inconclusiva]
+  ausencia_de_rejeicao_como_adequacao: false
 
-regra_selecao:
-  criterio: adequado_de_menor_logloss
-  desempate: menor_custo_operacional_dentro_da_margem_de_irrelevancia
-  derivacao: janelas_de_teste_iniciais
-  avaliacao: janela_de_teste_final_contra_local_e_melhor_observado
-  natureza: analise_secundaria
-
-precisao:
-  alvo_meia_largura_ic95_inclinacao: 0.2  # candidato
-  calculo: riley_et_al_2021_e_simulacao_no_desenvolvimento
-  celulas_abaixo_do_alvo: manter_e_classificar
+monte_carlo:
+  replicacoes_piloto_por_condicao: 100  # ilustrativo; não é dimensionamento definitivo
+  replicacoes_confirmatorias: definir_pelo_erro_padrao_de_monte_carlo_dos_contrastes
+  unidade_de_incerteza: replicacao_independente
+  comparacao: pareada_na_mesma_amostra_de_teste
+  multiplicidade: holm_quando_apropriado
+  sementes: versionadas
 
 hipoteses:
-  H1:
-    contraste: logloss_adaptado_menos_local
-    estimando: coeficiente_log2_n_local
-    sinal_esperado: positivo
-  H2:
-    contraste: logloss_adaptado_menos_local
-    estimando: coeficiente_nivel_distancia_induzida
-    sinal_esperado: positivo
-  H3:
-    contraste: logloss_transferido_menos_adaptado
-    estimando: coeficiente_nivel_distancia_induzida
-    sinal_esperado: positivo
-  H4:
-    contraste: vies_monetario_absoluto_adaptado_menos_local
-    celulas: dois_niveis_inferiores_da_malha
-    sinal_esperado: negativo
-  C1:
-    contraste: logloss_adaptado_menos_agrupado
-    celulas: dois_niveis_inferiores_da_malha
-    sinal_esperado: bilateral
-  H5:
-    contraste: logloss_gradient_boosting_menos_logistica_no_regime_local
-    estimando: coeficiente_log2_n_local
-    sinal_esperado: negativo
-  C2:
-    contraste: logloss_adaptado_reponderacao_menos_adaptado_recalibracao
-    condicao: origem_em_composicao_observada
-    sinal_esperado: bilateral
-  familias:
-    A_transferencia: [H1, H2, H3, H4, C1]
-    B_machine_learning: [H5, C2]
-  derivado: fronteira_de_utilidade_n_estrela_por_nivel_de_distancia
+  H1: {tema: disponibilidade_local, contraste: logloss_adaptado_menos_local, fator: eventos_locais}
+  H2: {tema: heterogeneidade_e_transferencia_negativa, contraste: logloss_transferido_ou_adaptado_menos_local, fator: composicao_e_diferenca_condicional}
+  H3: {tema: recalibracao, contraste: calibracao_media_R4_versus_R3, fator: diferenca_de_taxa_base_e_tamanho_local}
+  H4: {tema: especificacao_do_algoritmo, contraste: gradient_boosting_menos_logistica, fator: interacao_algoritmo_volume_dgp}
+  C1: {tema: desdobramento_contabil, contraste: desvio_da_ecl_estimada_frente_a_verdadeira, natureza: descritiva_com_intervalos_de_monte_carlo}
+  derivado: fronteira_de_utilidade_ou_nao_identificada_no_dominio_experimental
 
-inferencia:
-  escopo: condicional_as_carteiras_estudadas
-  modelo: efeitos_fixos_por_par_janela_e_algoritmo
-  incerteza: sorteios_de_desenvolvimento_e_bootstrap_de_tomadores_em_blocos_temporais
-  multiplicidade: holm_por_familia
-  efeito_nulo: somente_com_intervalo_contido_na_margem_de_irrelevancia
-  margem_irrelevancia_logloss: a_fixar_no_desenvolvimento
-  minimo_destinos_independentes: a_fixar_por_simulacao
+regra_selecao:
+  insumos: caracteristicas_disponiveis_antes_da_estimacao
+  ajuste: replicacoes_de_desenvolvimento
+  teste: novas_replicacoes_com_sementes_independentes
+  comparadores: [local, transferido, oraculo_retrospectivo]
+  medida: arrependimento
 
-desdobramento_contabil:
-  principal: vies_monetario
-  limiar_materialidade_pb: a_fixar_com_a_orientacao
-  lp12: aproximacao_PD12_vezes_LGD_vezes_EAD
-  diferenca_lp12_entre_regimes: analise_de_sensibilidade
-  comparacao_regulatoria:
-    habilitada: false
-    requer: classificacao_por_ativo_garantias_e_regras_por_data_base
-    norma_referencia: Res_BCB_352_2023_e_alteracoes_aplicaveis
+ecl_sintetica:
+  aproximacao_estatica: soma_pd_vezes_lgd_vezes_ead
+  lgd_e_ead: comuns_aos_metodos
+  versao_descontada_com_recuperacoes: condicionada_ao_piloto
+  perda_realizada: relatada_separadamente_da_ecl_verdadeira
+  comparacao_regulatoria: fora_do_objeto_confirmatorio
 
-aplicacao_posterior: ferramenta_de_mensuracao_baseada_na_regra_de_selecao_fora_do_escopo_da_dissertacao
-fora_do_escopo: [modelagem_lgd_ead, perda_esperada_vida_inteira, estagios, conformidade_regulatoria, sistema_comercial]
+fora_do_escopo: [modelagem_lgd_ead_por_ml, validacao_regulatoria, ecl_vida_inteira_em_dados_reais, piso_por_carteira_C1_C5, balanco_integral, produto_comercial]
