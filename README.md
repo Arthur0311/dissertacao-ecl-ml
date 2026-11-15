@@ -20,6 +20,9 @@ O desenho corrente usa simulação de Monte Carlo e instituições virtuais, com
 - [Protocolo experimental v5](docs/metodologia/protocolo-experimental-v5.md): ADEMP preliminar do desenho sintético; a congelar antes das simulações confirmatórias.
 - [Protocolo operacional da mini RSL Q0–Q6](docs/revisao/protocolo-busca-wos-q0-q6.md): buscas, seleção e rastreabilidade sob a v5.
 - [Notas normativas](docs/normativo/notas-verificacao-normativa.md), [dicionário de dados](data_dictionary/README.md) e [configuração ilustrativa](configs/experimento-exemplo.yaml).
+- [Projeto de dissertação em LaTeX](projeto/README.md): texto da qualificação no modelo do PPGCONT/UFRGS, a entregar até março de 2027.
+- [Dissertação em LaTeX](dissertacao/README.md): esqueleto do texto final, com tabelas e figuras geradas pelo código.
+- [Template LaTeX do PPGCONT](latex/README.md): formatação compartilhada pelo projeto e pela dissertação.
 - [Apresentação](docs/index.html): proposta v5 em modo documento e modo apresentação, com justificativa das escolhas metodológicas e grafo de referências.
 - [Registro de 15/11](docs/registro-atualizacao-2026-11-15.md): alinhamento dos documentos à v5 e verificações.
 

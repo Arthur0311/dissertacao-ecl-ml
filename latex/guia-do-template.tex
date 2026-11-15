@@ -1,0 +1,122 @@
+% Guia de uso do template ppgcont.sty: mostra cada elemento formatado.
+% Compilar: latexmk -pdf -outdir=build guia-do-template.tex
+\documentclass[12pt,a4paper]{article}
+\usepackage{ppgcont}
+\addbibresource{guia.bib}
+
+\titulo{Guia de uso do template do PPGCONT em \textit{LaTeX}}
+\autor{Nome e Sobrenome}
+\orientador{Orientador: Prof. Dr. Nome Sobrenome}
+\ano{2027}
+
+\begin{document}
+\capa
+\folhaderosto
+\sumario
+
+\section{Introdução}
+
+O texto corrido sai em Times 12, justificado, com entrelinhas 1,5 e recuo de
+1,25 cm na primeira linha. Termos estrangeiros vão em itálico, como
+\textit{disclosure}. A citação entre parênteses usa \verb|\parencite|
+\parencite{jensen1976,dickinson2011} e a citação no texto usa \verb|\textcite|:
+\textcite{jensen1976} tratam dos custos de agência. Página específica:
+\parencite[p.~310]{jensen1976}.
+
+\subsection{Problema de pesquisa}
+
+A seção secundária sai em maiúsculas, sem negrito. Basta usar o comando
+\verb|\subsection| com o título em caixa normal; as maiúsculas são automáticas.
+
+\subsection{Objetivos}
+
+\subsubsection{Objetivo Geral}
+
+A seção terciária sai em negrito, com a caixa que você digitar.
+
+\subsubsection{Objetivos Específicos}
+
+Os objetivos específicos entram em uma lista \verb|enumerate|:
+\begin{enumerate}
+  \item identificar as condições em que o primeiro item se aplica, com texto
+        longo o bastante para mostrar o alinhamento da segunda linha;
+  \item estimar o segundo item;
+  \item comparar o terceiro item.
+\end{enumerate}
+
+\paragraph{Seção quaternária}
+
+A seção quaternária (\verb|\paragraph|) sai sem destaque.
+
+\section{Referencial teórico}
+
+\subsection{Hipóteses de pesquisa}
+
+A hipótese usa \verb|\hipotese{1}{texto}|:
+
+\hipotese{1}{Há uma relação positiva entre a variável de interesse e a
+variável dependente.}
+
+\section{Procedimentos metodológicos}
+
+A Tabela~\ref{tab:exemplo} mostra o padrão de tabela e a
+Figura~\ref{fig:exemplo}, o de figura. A Equação~\ref{eq:ecl} é numerada à
+direita.
+
+\begin{table}[htbp]
+  \caption{Variáveis dependentes}
+  \label{tab:exemplo}
+  \begin{tabularx}{\textwidth}{l l X l}
+    \toprule
+    \textbf{Variável} & \textbf{Sigla} & \textbf{Métrica} & \textbf{Suporte teórico} \\
+    \midrule
+    Erro de calibração & ErrCal & Diferença entre a PD estimada e a PD
+      verdadeira do mecanismo gerador & \textcite{dickinson2011} \\
+    Perda esperada & ECL & Produto de PD, LGD e EAD & \textcite{jensen1976} \\
+    \bottomrule
+  \end{tabularx}
+  \nota{PD: probabilidade de inadimplência; LGD: perda dada a inadimplência;
+    EAD: exposição no momento da inadimplência.}
+  \fonte{Elaborada pelo autor (2027).}
+\end{table}
+
+\begin{equation}
+  \mathrm{ECL}_i = \mathrm{PD}_i \times \mathrm{LGD}_i \times \mathrm{EAD}_i
+  \label{eq:ecl}
+\end{equation}
+
+\begin{figure}[htbp]
+  \centering
+  \fbox{\parbox[c][3cm][c]{0.6\textwidth}{\centering (figura)}}
+  \caption{Desenho de pesquisa}
+  \label{fig:exemplo}
+  \fonte{Elaborada pelo autor (2027).}
+\end{figure}
+
+\section{Cronograma}
+
+\begin{table}[htbp]
+  \caption{Cronograma}
+  \label{tab:cronograma}
+  \begin{tabularx}{\textwidth}{X *{6}{c}}
+    \toprule
+    \multirow{2}{*}{\textbf{Etapas}} & \multicolumn{6}{c}{\textbf{2027}} \\
+    \cmidrule(l){2-7}
+     & \textbf{Abr} & \textbf{Maio} & \textbf{Jun} & \textbf{Jul} & \textbf{Ago} & \textbf{Set} \\
+    \midrule
+    Ajustes no projeto        & X &   &   &   &   &   \\
+    Execução dos experimentos &   & X & X & X &   &   \\
+    Redação dos resultados    &   &   &   & X & X &   \\
+    Defesa da dissertação     &   &   &   &   &   & X \\
+    \bottomrule
+  \end{tabularx}
+  \fonte{Elaborada pelo autor (2027).}
+\end{table}
+
+\section{Resultados esperados}
+
+As referências vêm logo depois desta seção, sem quebra de página, em APA,
+alinhadas à esquerda e separadas por uma linha em branco.
+
+\printbibliography
+\end{document}

@@ -1,0 +1,5 @@
+# Usado pelo latexmk quando executado dentro de dissertacao/
+$pdf_mode = 1;
+$bibtex_use = 2;       # roda biber e limpa o .bbl no -C
+$out_dir = 'build';
+$pdflatex = 'pdflatex -synctex=1 -interaction=nonstopmode -file-line-error %O %S';

@@ -38,3 +38,15 @@ def test_sufficiency():
 
 def test_relative_loss_error():
     assert relative_loss_error(100.0, 110.0) == pytest.approx(0.10)
+
+
+def test_tabela_latex_escapa_e_usa_virgula(tmp_path):
+    import pandas as pd
+
+    from ecl_suficiencia.reporting.latex import salvar_tabela
+
+    df = pd.DataFrame({"modelo_R1": ["a&b"], "erro": [0.1234]})
+    caminho = salvar_tabela(df, "teste", "Erro (%)", pasta=tmp_path)
+    texto = caminho.read_text(encoding="utf-8")
+    assert r"modelo\_R1" in texto and r"a\&b" in texto
+    assert "0,123" in texto and r"\label{tab:teste}" in texto

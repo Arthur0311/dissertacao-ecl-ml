@@ -1,0 +1,29 @@
+% Projeto de dissertação — PPGCONT/UFRGS (entrega: março de 2027)
+% Formatação: ../latex/ppgcont.sty (modelo do programa, 2024). Exemplos de uso
+% de tabela, figura, lista, citação e hipótese: ../latex/guia-do-template.tex
+\documentclass[12pt,a4paper]{article}
+\usepackage{../latex/ppgcont}
+\addbibresource{referencias/referencias.bib}
+\graphicspath{{figuras/}}
+\newcommand{\tabelagerada}[1]{\input{tabelas/#1.tex}}
+
+\titulo{Modelagem adaptativa de probabilidades de inadimplência com
+  \textit{Machine Learning}: experimentos de transferência entre carteiras
+  sintéticas e implicações para a mensuração de perdas esperadas de crédito}
+\autor{Nome e Sobrenome}                                % TODO: nome completo
+\orientador{Orientador: Prof. Dr. Nome Sobrenome}       % TODO: orientador(a)
+\ano{2027}
+
+\begin{document}
+\capa
+\folhaderosto
+\sumario
+
+\input{secoes/1-introducao}
+\input{secoes/2-referencial-teorico}
+\input{secoes/3-procedimentos-metodologicos}
+\input{secoes/4-cronograma}
+\input{secoes/5-resultados-esperados}
+
+\printbibliography
+\end{document}

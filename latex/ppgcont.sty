@@ -1,0 +1,180 @@
+% ============================================================================
+% ppgcont.sty — formatação do PPGCONT/UFRGS para projeto e dissertação
+%
+% Reproduz o MODELO_PROJETO_PPGCONT-UFRGS_2024.doc:
+%   - A4; margens: superior e esquerda 3 cm, inferior e direita 2 cm
+%   - Times 12 pt; entrelinhas 1,5; recuo de parágrafo 1,25 cm; justificado
+%   - seção primária em MAIÚSCULAS e negrito; secundária em MAIÚSCULAS sem
+%     negrito; terciária em negrito; quaternária sem destaque
+%   - número da página no canto superior direito, visível a partir da Introdução
+%     (a capa não conta; folha de rosto = 1, sumário = 2)
+%   - citações e referências em APA 7 (biblatex-apa + biber)
+%   - tabelas e figuras no padrão APA usado nos projetos do programa
+%
+% Uso: \usepackage{../latex/ppgcont}   (compilar com pdflatex + biber)
+% ============================================================================
+\NeedsTeXFormat{LaTeX2e}
+
+% ---------- Idioma e fonte ---------------------------------------------------
+\RequirePackage[T1]{fontenc}
+\RequirePackage[utf8]{inputenc}
+\RequirePackage{newtxtext,newtxmath}   % Times (equivalente ao Times New Roman)
+\renewcommand{\ttdefault}{lmtt}        % monoespaçada: Latin Modern (já instalada)
+\RequirePackage[brazilian]{babel}
+\RequirePackage{microtype}
+
+% ---------- Página -----------------------------------------------------------
+\RequirePackage[a4paper,top=3cm,left=3cm,bottom=2cm,right=2cm,
+                headheight=14.5pt,headsep=0.45cm]{geometry}
+\RequirePackage{setspace}
+\onehalfspacing
+\RequirePackage{indentfirst}
+\setlength{\parindent}{1.25cm}
+\setlength{\parskip}{0pt}
+\clubpenalty=10000 \widowpenalty=10000
+
+\RequirePackage{fancyhdr}
+\fancypagestyle{ppgcont}{%
+  \fancyhf{}\fancyhead[R]{\thepage}%
+  \renewcommand{\headrulewidth}{0pt}\renewcommand{\footrulewidth}{0pt}}
+\fancypagestyle{plain}{%
+  \fancyhf{}\fancyhead[R]{\thepage}%
+  \renewcommand{\headrulewidth}{0pt}\renewcommand{\footrulewidth}{0pt}}
+\pagestyle{empty}   % pré-textuais sem número; \sumario liga a numeração
+
+% ---------- Pacotes de conteúdo ---------------------------------------------
+\RequirePackage{amsmath}
+\RequirePackage{graphicx}
+\RequirePackage{booktabs,tabularx,longtable,multirow,array}
+\RequirePackage{float}
+\RequirePackage{enumitem}
+\RequirePackage{etoolbox}
+\RequirePackage{xcolor}
+\RequirePackage{siunitx}
+\sisetup{output-decimal-marker={,},group-separator={.},group-minimum-digits=4}
+
+% ---------- Títulos das seções ----------------------------------------------
+\RequirePackage{titlesec}
+\setcounter{secnumdepth}{4}
+\setcounter{tocdepth}{3}
+\titleformat{\section}
+  {\normalfont\normalsize\bfseries\raggedright}{\thesection}{0.5em}{\MakeUppercase}
+\titleformat{\subsection}
+  {\normalfont\normalsize\raggedright}{\thesubsection}{0.5em}{\MakeUppercase}
+\titleformat{\subsubsection}
+  {\normalfont\normalsize\bfseries\raggedright}{\thesubsubsection}{0.5em}{}
+\titleformat{\paragraph}
+  {\normalfont\normalsize\raggedright}{\theparagraph}{0.5em}{}
+% uma linha em branco (1,5) antes e depois de cada título
+\titlespacing*{\section}{0pt}{\baselineskip}{\baselineskip}
+\titlespacing*{\subsection}{0pt}{\baselineskip}{\baselineskip}
+\titlespacing*{\subsubsection}{0pt}{\baselineskip}{\baselineskip}
+\titlespacing*{\paragraph}{0pt}{\baselineskip}{\baselineskip}
+
+% ---------- Sumário ----------------------------------------------------------
+\RequirePackage{titletoc}
+\contentsmargin{1.5em}
+\newcommand{\ppg@pontos}{\titlerule*[0.45em]{.}\contentspage}
+\titlecontents{section}[0pt]{\bfseries}
+  {\thecontentslabel\ \MakeUppercase}{\MakeUppercase}{\ppg@pontos}
+\titlecontents{subsection}[0pt]{}
+  {\thecontentslabel\ \MakeUppercase}{\MakeUppercase}{\ppg@pontos}
+\titlecontents{subsubsection}[0pt]{\bfseries}
+  {\thecontentslabel\ }{}{\ppg@pontos}
+
+\newcommand{\sumario}{%
+  \clearpage
+  {\centering\bfseries SUMÁRIO\par}\vspace{\baselineskip}%
+  \@starttoc{toc}%
+  \clearpage\pagestyle{ppgcont}}
+
+% ---------- Listas: a) b) c) no recuo do parágrafo --------------------------
+\setlist{nosep}
+\setlist[enumerate,1]{label=\alph*),labelindent=\parindent,leftmargin=*,labelsep=0.5em}
+\setlist[enumerate,2]{label=\arabic*),leftmargin=*,labelsep=0.5em}
+\setlist[itemize,1]{label=--,labelindent=\parindent,leftmargin=*,labelsep=0.5em}
+
+% ---------- Tabelas e figuras (APA) -----------------------------------------
+% Tabela: "Tabela 1" numa linha, título em negrito na seguinte, acima da tabela.
+% Figura: "Figura 1." em negrito seguido do título, abaixo da figura.
+\RequirePackage{caption}
+\captionsetup{font=normalsize,justification=raggedright,singlelinecheck=false}
+\captionsetup[table]{position=top,labelsep=newline,labelfont=md,textfont=bf,skip=2pt}
+\captionsetup[figure]{position=bottom,labelsep=period,labelfont=bf,textfont=md,skip=6pt}
+\AtBeginEnvironment{table}{\footnotesize}      % corpo da tabela em 10 pt
+\AtBeginEnvironment{longtable}{\footnotesize}
+\newcommand{\fonte}[1]{\par\vspace{2pt}{\raggedright\footnotesize Fonte: #1\par}}
+\newcommand{\nota}[1]{\par\vspace{2pt}{\raggedright\footnotesize\textbf{Nota:} #1\par}}
+
+% ---------- Marcador de trecho pendente --------------------------------------
+% \aescrever  ou  \aescrever[conferir o período da amostra]
+% Aparece em vermelho no PDF; apagar quando o trecho estiver escrito.
+\newcommand{\aescrever}[1][A escrever]{\par\textcolor{red}{[#1]}\par}
+
+% ---------- Hipóteses --------------------------------------------------------
+% \hipotese{1}{Há uma relação positiva entre ...}
+\newcommand{\hipotese}[2]{\par\textbf{\textit{Hipótese #1 (H#1)}}\textit{: #2}\par}
+
+% ---------- Citações e referências (APA 7) ----------------------------------
+\RequirePackage{csquotes}
+\RequirePackage[backend=biber,style=apa,language=brazilian]{biblatex}
+\DeclareLanguageMapping{brazilian}{brazilian-apa}
+\setlength{\bibhang}{1.25cm}
+\setlength{\bibitemsep}{14.5pt}             % uma linha em branco entre referências
+\AtBeginBibliography{\singlespacing\raggedright}
+\RequirePackage[hidelinks]{hyperref}
+\defbibheading{bibliography}[REFERÊNCIAS]{%
+  \par\addvspace{\baselineskip}%
+  \phantomsection\addcontentsline{toc}{section}{Referências}%
+  {\centering\bfseries #1\par}\vspace{\baselineskip}}
+
+% ---------- Dados do trabalho -----------------------------------------------
+\newcommand{\titulo}[1]{\def\ppg@titulo{#1}}
+\newcommand{\autor}[1]{\def\ppg@autor{#1}}
+\newcommand{\orientador}[1]{\def\ppg@orientador{#1}}
+\newcommand{\local}[1]{\def\ppg@local{#1}}
+\newcommand{\ano}[1]{\def\ppg@ano{#1}}
+\newcommand{\natureza}[1]{\def\ppg@natureza{#1}}
+\titulo{Título do trabalho}
+\autor{Nome e Sobrenome}
+\orientador{Orientador: Prof. Dr. Nome Sobrenome}
+\local{Porto Alegre}
+\ano{\the\year}
+\natureza{Projeto de Dissertação submetido ao Programa de Pós-Graduação em
+  Controladoria e Contabilidade da Faculdade de Ciências Econômicas da
+  Universidade Federal do Rio Grande do Sul, como requisito parcial para a
+  obtenção do título de Mestre em Controladoria e Contabilidade.}
+
+% ---------- Capa e folha de rosto -------------------------------------------
+\newcommand{\capa}{%
+  \begin{titlepage}
+    \centering\bfseries
+    UNIVERSIDADE FEDERAL DO RIO GRANDE DO SUL\\
+    FACULDADE DE CIÊNCIAS ECONÔMICAS\\
+    PROGRAMA DE PÓS-GRADUAÇÃO EM CONTROLADORIA E CONTABILIDADE\par
+    \vspace{\stretch{1}}
+    \MakeUppercase{\ppg@autor}\par
+    \vspace{\stretch{1}}
+    \MakeUppercase{\ppg@titulo}\par
+    \vspace{\stretch{1.65}}
+    {\mdseries \ppg@local\\ \ppg@ano\par}
+  \end{titlepage}}
+
+\newcommand{\folhaderosto}{%
+  \clearpage
+  {\centering\bfseries
+    \MakeUppercase{\ppg@autor}\par
+    \vspace{\stretch{1.15}}
+    \MakeUppercase{\ppg@titulo}\par}
+  \vspace{\stretch{1.1}}
+  \noindent\hfill
+  \begin{minipage}{\dimexpr\textwidth-7cm\relax}
+    \singlespacing\setlength{\parindent}{0pt}
+    \ppg@natureza\par\vspace{2\baselineskip}
+    \ppg@orientador\par
+  \end{minipage}\par
+  \vspace{\stretch{1}}
+  {\centering \ppg@local\\ \ppg@ano\par}
+  \clearpage}
+
+\endinput
