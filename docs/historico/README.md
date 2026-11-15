@@ -1,6 +1,6 @@
 # Histórico preservado
 
-A proposta corrente é a [v4 de 14/11/2026](../proposta/proposta-dissertacao-v4-2026-11-14.md). Este acervo documenta a evolução das ideias; suas afirmações não representam o entendimento corrente.
+A proposta corrente é a [v5 de 14/11/2026](../proposta/proposta-dissertacao-v5-2026-11-14.md). Este acervo documenta a evolução das ideias; suas afirmações não representam o entendimento corrente.
 
 ## Originais mantidos no mesmo local
 
@@ -9,6 +9,11 @@ A proposta corrente é a [v4 de 14/11/2026](../proposta/proposta-dissertacao-v4-
 - [Proposta v2 — 06/11/2026](../proposta/proposta-dissertacao-v2-2026-11-06.md).
 - [Proposta v3 — 13/11/2026](../proposta/proposta-dissertacao-v3-2026-11-13.md), [protocolo v3](../metodologia/protocolo-experimental-v3.md) e [registro de 13/11](../registro-atualizacao-2026-11-13.md).
 - [Parecer sobre a v3 — 14/11/2026](../parecer/parecer-metodologico-v3-2026-11-14.md).
+- [Proposta v4 — 14/11/2026](../proposta/proposta-dissertacao-v4-2026-11-14.md), [protocolo v4](../metodologia/protocolo-experimental-v4.md) e [registro de 14/11](../registro-atualizacao-2026-11-14.md).
+
+## Estado documental da v4 (14/11/2026)
+
+Configuração, dicionário, mapa do protótipo, apresentação, metadados e docstrings da v4 foram atualizados no próprio local para a v5 em 15/11/2026. O estado integral da v4 está no histórico do Git, no commit `a0198fc` ("Proposta v4 (revisão 2)"). Para recuperar um arquivo: `git show a0198fc:<caminho>`.
 
 ## Estado documental da v3 (13/11/2026)
 
@@ -28,3 +33,4 @@ Os links relativos dentro das cópias reproduzem o contexto antigo e podem não 
 
 - **v2 → v3:** superadas a associação automática de S4/S5 com escassez de dados, a exclusão da Resolução BCB 352/2023, a referência corrente à 309/2023 e a identificação de diferença modelada com provisão obrigatória.
 - **v3 → v4:** substituídos o construto "confiável" por critério operacional de adequação; a questão dupla por questão única; a propagação aritmética da PD pelo viés monetário; a distância apenas observada por distância induzida, com inferência condicional às carteiras. Acrescentados teoria contábil de base, regimes de referência e precisão-alvo. Na revisão 2 da v4, o Machine Learning voltou ao núcleo (algoritmo como fator, adaptação por reponderação, regra de seleção) e a aplicação posterior foi explicitada. Detalhes no [registro de 14/11](../registro-atualizacao-2026-11-14.md).
+- **v4 → v5:** substituído o desenho com microdados reais por simulação de Monte Carlo com carteiras sintéticas, mecanismos geradores explícitos e PD verdadeira conhecida. O Documento 3040 passa a referência estrutural e o SCR.data a referência de calibração agregada. Sete regimes reduzidos a cinco (R0–R4); reponderação vira extensão. Hipóteses reescritas como H1–H4 e C1, sem presumir superioridade nem fronteira necessariamente existente. O viés monetário frente ao evento observado dá lugar ao desvio da ECL sintética frente à ECL verdadeira do simulador. Detalhes no [registro de 15/11](../registro-atualizacao-2026-11-15.md).

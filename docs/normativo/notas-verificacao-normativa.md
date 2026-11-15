@@ -1,6 +1,6 @@
 # Notas de verificação normativa
 
-Verificação de 13/11/2026, com adendo de 14/11/2026 (seção 6). Documento vigente para a [proposta v4](../proposta/proposta-dissertacao-v4-2026-11-14.md). A [nota de 06/11](../historico/2026-11-06-v2/docs/normativo/notas-verificacao-normativa.md) foi preservada integralmente. Esta revisão é direcionada ao enquadramento da pesquisa, não uma consolidação jurídica exaustiva nem uma validação de conformidade do software.
+Verificação de 13/11/2026, com adendos de 14/11/2026 (seção 6) e de 15/11/2026 (seção 7). Documento vigente para a [proposta v5](../proposta/proposta-dissertacao-v5-2026-11-14.md); as seções 3 e 5 tratam de dados reais e só se aplicam a uma eventual extensão de validação externa. A [nota de 06/11](../historico/2026-11-06-v2/docs/normativo/notas-verificacao-normativa.md) foi preservada integralmente. Esta revisão é direcionada ao enquadramento da pesquisa, não uma consolidação jurídica exaustiva nem uma validação de conformidade do software.
 
 ## 1. Correções verificadas
 
@@ -48,3 +48,26 @@ A v4 não altera a interpretação normativa das seções 1 a 5. Acrescenta uma 
 - **IN BCB nº 487/2024:** a proposta v4 a cita como disciplina do pedido de autorização da metodologia completa por instituições do Segmento 4. A leitura integral permanece pendente, como registrado na seção 3.
 - **Datas conferidas em 14/11/2026 por busca em fontes secundárias, sem releitura dos dispositivos:** Resolução CMN nº 4.966, de 25/11/2021; Resolução BCB nº 352, de 23/11/2023; Resolução CMN nº 5.146, de 26/6/2024; Instrução Normativa BCB nº 487, de 5/7/2024.
 - O parecer de 14/11 sobre a v3 não conferiu os dispositivos citados; as ressalvas da seção 2 continuam válidas.
+
+## 7. Adendo de 15/11/2026 — proposta v5
+
+A v5 substitui os microdados reais por carteiras sintéticas. A interpretação das seções 1, 2 e 4 permanece. Nenhum dispositivo foi relido nesta data; o adendo registra o que a v5 afirma e o que falta conferir.
+
+**O que muda no papel das normas**
+
+- As normas de perdas esperadas fundamentam a relevância do estudo. A simulação não reproduz os critérios de constituição de provisão por categoria regulatória, e a comparação com pisos por carteira C1–C5 saiu do objeto confirmatório (proposta v5, seções 1.4, 5.1 e 7.3).
+- O Documento 3040 é referência estrutural e semântica. Não se acessa arquivo 3040 de instituição real. O leiaute público não autoriza reproduzir arquivos individuais.
+- O SCR.data é referência de calibração agregada. Inadimplência de estoque não equivale à incidência de primeiro atraso superior a 90 dias em 12 meses.
+- A ECL sintética não é provisão contábil nem referência regulatória para instituição real.
+
+**Pendências de conferência, anteriores à qualificação**
+
+- **Art. 51 da Resolução CMN nº 4.966/2021:** a v5 o cita ao afirmar que a metodologia simplificada não elimina a responsabilidade de apurar provisões com critérios consistentes e verificáveis. Conferir o texto vigente. A pendência equivalente da seção 6, sobre os arts. 76–81 da Resolução BCB nº 352/2023 e o art. 50 da CMN nº 4.966, continua aberta.
+- **Instrução Normativa BCB nº 733, de 4/5/2026:** a v5 a cita como exemplo de alteração do leiaute e das instruções do 3040 em datas-base de 2026. Conferir número, data, objeto e vigência no texto oficial antes de qualquer citação final.
+- **Versão do leiaute 3040:** definir a data-base regulatória de referência, identificar os campos exatos e congelar o dicionário. Não atribuir códigos ou campos sem confirmação do leiaute oficial.
+- **SCR.data:** registrar versão, filtros, período, unidade e supressões de cada série usada; verificar mudanças metodológicas entre publicações.
+- **Evento de 90 dias:** a v5 o trata como *proxy* operacional, não como equivalência à classificação de ativo com problema de recuperação de crédito. Conferir a definição regulatória vigente antes de descrever a relação entre os dois conceitos.
+- **IFRS 9:** conferir os parágrafos usados conceitualmente (perda esperada de 12 meses e presunção refutável de 90 dias) na versão consultada.
+
+**Sigilo e ética.** Código e conjuntos inteiramente sintéticos podem ser compartilhados se não incorporarem informação derivada de microdados confidenciais. A seção 5 volta a se aplicar integralmente se houver extensão com dados reais.
+

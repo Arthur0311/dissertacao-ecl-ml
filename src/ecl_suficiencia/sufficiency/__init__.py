@@ -1,4 +1,4 @@
-"""Diferenças experimentais entre perda modelada e referência de provisão.
+"""Diferenças entre perda modelada e referência de provisão; legado, fora do núcleo da v5.
 
 Nomes históricos preservados; os auxiliares não determinam suficiência contábil,
 conformidade, autorização de redução ou lançamento obrigatório.
