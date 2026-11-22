@@ -54,7 +54,7 @@ flowchart LR
     F["3040: estrutura; SCR.data e IF.data: agregados"] --> D
 ```
 
-O desenho corrente usa instituições virtuais e múltiplos DGPs. R0 é a referência ingênua, R1 local, R2 agrupado, R3 transferido e R4 transferido com recalibração. Reponderação é extensão condicionada. Não equiparar agregados de atraso à PD individual nem plausibilidade agregada à validação externa. A ECL permanece desdobramento da PD, sob premissas explícitas de LGD, EAD e desconto. A revisão deve procurar evidências contrárias à lacuna, sem presumir que instituições S4/S5 careçam de dados.
+O desenho corrente usa instituições virtuais e múltiplos DGPs. R0 é a referência simples, R1 local, R2 agrupado, R3 transferido e R4 transferido com recalibração. Reponderação é extensão condicionada. Não equiparar agregados de atraso à PD individual nem plausibilidade agregada à validação externa. A ECL permanece desdobramento da PD, sob premissas explícitas de LGD, EAD e desconto. A revisão deve procurar evidências contrárias à lacuna, sem presumir que instituições S4/S5 careçam de dados.
 
 ## 2. Consultas para colar no WoS
 

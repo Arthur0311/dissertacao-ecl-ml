@@ -1,6 +1,6 @@
 """Interfaces de PD: logística regularizada e gradient boosting; EBM é extensão histórica.
 
-A proposta v5 compara cinco regimes: R0 referência ingênua, R1 local, R2 agrupado,
+A proposta v5 compara cinco regimes: R0 referência simples, R1 local, R2 agrupado,
 R3 transferido e R4 transferido com recalibração. R1–R4 usam logística regularizada e
 gradient boosting quando a arquitetura comportar. Reponderação por importância é
 extensão condicionada ao piloto. O chamador define explicitamente a população de

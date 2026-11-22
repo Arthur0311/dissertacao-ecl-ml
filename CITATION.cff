@@ -6,8 +6,8 @@ authors:
     family-names: ""
     alias: Arthur0311
 type: software
-version: "0.5.0"
-date-released: "2026-11-15"
+version: "0.5.1"
+date-released: "2026-11-22"
 repository-code: "https://github.com/Arthur0311/dissertacao-ecl-ml"
 license: MIT
 keywords:

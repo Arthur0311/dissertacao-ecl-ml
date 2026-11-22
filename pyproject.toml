@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ecl-suficiencia"
-version = "0.5.0"
+version = "0.5.1"
 description = "Modelagem adaptativa de probabilidades de inadimplência com Machine Learning: experimentos de transferência entre carteiras sintéticas"
 readme = "README.md"
 requires-python = ">=3.11"

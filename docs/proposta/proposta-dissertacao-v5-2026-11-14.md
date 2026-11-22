@@ -5,6 +5,7 @@
 **Programa:** Mestrado em Controladoria e Contabilidade — PPGCONT/UFRGS.  
 **Linha de pesquisa:** Informações para Usuários Externos.  
 **Data da reformulação:** 14 de novembro de 2026.  
+**Última revisão:** 22 de novembro de 2026 (questão de pesquisa, objetivos, regimes de estimação e seção 10.3).  
 **Situação:** proposta de pesquisa para discussão com a orientação; parâmetros operacionais e lacuna de literatura ainda sujeitos à revisão.  
 **Documento de origem:** `proposta-dissertacao-v4-2026-11-14.md`. A versão 4 permanece como registro histórico; este texto propõe a substituição do desenho baseado primordialmente em microdados reais por simulações de Monte Carlo calibradas, quando possível, com estatísticas públicas brasileiras.
 
@@ -61,7 +62,7 @@ A **relevância aplicada** está relacionada à possibilidade de desenvolver pos
 
 ### 2.1 Objetivo geral
 
-Avaliar, por meio de simulações de Monte Carlo com carteiras de crédito sintéticas, como a disponibilidade de dados locais, a heterogeneidade entre carteiras e a complexidade dos algoritmos influenciam a qualidade das estimativas de probabilidade de inadimplência em 12 meses obtidas por estratégias de Machine Learning com e sem transferência de aprendizado.
+Avaliar, por meio de simulações de Monte Carlo com carteiras de crédito sintéticas, como a disponibilidade de dados locais, a heterogeneidade entre carteiras e a complexidade dos algoritmos influenciam a qualidade das estimativas de probabilidade de inadimplência em 12 meses obtidas por estratégias de Machine Learning com e sem transferência de aprendizado, examinando a repercussão dessas estimativas na perda esperada simulada.
 
 ### 2.2 Objetivos específicos
 
@@ -69,7 +70,7 @@ Avaliar, por meio de simulações de Monte Carlo com carteiras de crédito sint�
 2. Comparar as estimativas de PD de 12 meses de modelos locais, transferidos e recalibrados com as referências disponíveis em cada cenário, avaliando também o treinamento agrupado quando houver acesso aos dados individuais da origem.
 3. Examinar como o número de tomadores, a extensão do histórico e a quantidade de eventos locais observados afetam a viabilidade e o desempenho de cada estratégia.
 4. Analisar como diferenças de composição, nível de risco e relação entre os atributos e a inadimplência afetam a transferência entre carteiras.
-5. Avaliar como a complexidade do algoritmo interage com a disponibilidade de dados e a estrutura do risco, comparando regressão logística regularizada e gradient boosting sob diferentes mecanismos geradores.
+5. Avaliar como a complexidade do algoritmo interage com a disponibilidade de dados e a estrutura do risco, comparando regressão logística regularizada e *gradient boosting* sob diferentes mecanismos geradores.
 6. Identificar as condições em que cada estratégia produz melhores probabilidades na carteira de destino, considerando desempenho preditivo, calibração, erro em relação à PD de referência e estabilidade entre replicações.
 7. Quantificar a repercussão dos erros de PD sobre a perda esperada simulada, sob premissas comuns de exposição, recuperação e desconto.
 
@@ -115,7 +116,7 @@ O **estimando central** é a diferença esperada de desempenho preditivo entre m
 
 **Desdobramento contábil pré-especificado (C1).** Diferenças de PD entre métodos produzirão diferenças no erro da ECL sintética; sua magnitude dependerá da distribuição das exposições, das recuperações e do desconto. A análise será predominantemente quantitativa e descritiva, com intervalos de Monte Carlo e sensibilidade às hipóteses do simulador.
 
-**Resultado derivado.** A fronteira de utilidade será definida como o ponto ou faixa de disponibilidade em que o contraste esperado entre estratégia adaptada e local cruza zero ou uma margem pré-especificada de irrelevância prática. Se não existir cruzamento na região testada, registrar-se-á “não identificado no domínio experimental”, sem extrapolação automática. Não se presumirá que toda condição tenha um único ponto de cruzamento.
+**Resultado derivado.** A fronteira de utilidade será definida como o ponto ou faixa de disponibilidade em que o contraste esperado entre estratégia adaptada e local cruza zero ou uma margem pré-especificada de irrelevância prática. Se não existir cruzamento na região testada, registrar-se-á “não identificado no domínio experimental”, sem extrapolação automática. Não se presumirá que toda condição tenha um único ponto de cruzamento. No cenário sem modelo externo, será descrita, de modo análogo, a faixa de histórico ou de eventos locais a partir da qual o contraste pareado entre o modelo local (R1) e a referência simples (R0) cruza zero ou a mesma margem. Essa análise é pré-especificada e descritiva, sem hipótese direcional, e fica restrita às replicações em que ambos os regimes forem estimáveis.
 
 ### Matriz de amarração
 
@@ -250,7 +251,7 @@ O experimento cruzará a disponibilidade de histórico local com três condiçõ
 | **R3 — Transferido** | Treinado na origem e aplicado no destino sem atualização | Executável; calibração local não pode ser comprovada sem rótulos |
 | **R4 — Transferido + recalibração** | Modelo da origem atualizado com intercepto e, quando suportado, inclinação estimados no destino com estabilização/regularização | Adaptação supervisionada pode ser não estimável; retornar a R3 ou atualização por prior documentado |
 
-Os regimes R1–R4 serão avaliados com regressão logística regularizada e *gradient boosting* quando a arquitetura do regime comportar o algoritmo. A referência ingênua não será artificialmente duplicada. Os algoritmos terão o mesmo conjunto básico de atributos observáveis, e os hiperparâmetros serão ajustados somente no desenvolvimento.
+Os regimes R1–R4 serão avaliados com regressão logística regularizada e *gradient boosting* quando a arquitetura do regime comportar o algoritmo. A referência simples (R0) não será artificialmente duplicada. Os algoritmos terão o mesmo conjunto básico de atributos observáveis, e os hiperparâmetros serão ajustados somente no desenvolvimento.
 
 **Extensões condicionadas:** reponderação por importância sob *covariate shift* com suporte adequado, atualização bayesiana para poucos/nenhum evento, modelo hierárquico parcial e horizontes adicionais. A reponderação não será tomada como solução geral para diferenças condicionais; estimativas de razão de densidades serão estabilizadas e verificadas quanto à variância dos pesos.
 
@@ -383,9 +384,15 @@ Serão utilizados testes automáticos de integridade, casos-limite (zero eventos
 
 Os prazos pressupõem aprovação do piloto dentro dos quatro primeiros meses. Caso a simulação longitudinal completa ultrapasse recursos ou tempo disponíveis, o núcleo mínimo será um DGP com risco de evento em horizonte fixo, desde que as conclusões não afirmem ter simulado trajetórias mensais de operações ou fluxos completos de recuperação. A redução de escopo deverá ser relatada como tal.
 
-### 10.3 Possível aplicação comercial posterior
+### 10.3 Finalidade comercial posterior da plataforma de perdas esperadas de crédito
 
-O método poderá fundamentar uma ferramenta que integre dados de carteiras, avalie sua condição informacional, indique uma estratégia de modelagem e documente os resultados. O laboratório de instituições virtuais será útil para testes e demonstrações sem expor contratos reais. Entretanto, a implantação de uma solução de ECL em produção exigirá acesso legítimo aos dados da instituição, validação externa, controle de deriva do modelo, governança, auditoria, segregação de clientes e aderência às normas aplicáveis — atividades **fora do objeto da dissertação**. Nessa validação posterior, as PDs atribuídas em uma data passada serão confrontadas com os eventos observados nos mesmos contratos reais ao longo dos 12 meses seguintes. Eventual recalibração utilizará histórico anterior ao período de teste.
+O produto pretendido é uma plataforma que permita às equipes de risco e contabilidade de instituições financeiras estimar, monitorar e documentar a perda esperada de crédito (ECL) por operação e consolidar os valores por carteira e data-base. A plataforma deverá mostrar como se chegou ao valor em reais, quais dados e premissas sustentam a estimativa e quanto ela varia sob diferentes hipóteses de risco e recuperação. O público de interesse inclui instituições recém-operantes, com pouco histórico próprio, e instituições especializadas que já dispõem de dados, mas atendem a públicos com características distintas.
+
+A dissertação fornecerá a base metodológica do módulo de probabilidade de inadimplência (PD) em 12 meses. Para cada carteira, esse módulo deverá identificar o histórico disponível, os desfechos já observados e o acesso a informações externas, comparar as estratégias viáveis e registrar a evidência que sustenta a escolha. Em uma instituição recém-operante sem modelo externo e sem desfechos locais suficientes, a plataforma poderá apresentar cenários com premissas explícitas e acompanhar as safras de concessão. À medida que os contratos completarem o período de observação, será possível confrontar as previsões anteriores com os resultados e avaliar o uso de modelos locais ou, quando disponíveis, de modelos externos recalibrados.
+
+Para estimar a ECL em produção, o desenvolvimento posterior deverá integrar a PD à exposição esperada no momento da inadimplência (EAD) e à perda em caso de inadimplência (LGD), considerando valores e prazos de recuperação. O cálculo deverá respeitar o horizonte aplicável a cada operação, os cenários prospectivos e o desconto dos fluxos, com tratamento consistente do desconto já incorporado à LGD. Quando a mensuração abranger a vida da operação, será necessário desenvolver e validar estimativas de risco ao longo desse horizonte. A plataforma deverá preservar as versões dos dados, modelos e premissas usados em cada data-base para permitir a reprodução dos resultados e apoiar a análise da provisão pela instituição.
+
+O laboratório de instituições virtuais servirá para experimentar métodos e demonstrar funcionalidades. A implantação comercial exigirá acesso legítimo aos dados, segregação entre clientes, governança, auditoria e avaliação de aderência às normas aplicáveis. A validação do módulo de PD confrontará previsões com os eventos observados nos mesmos contratos reais nos 12 meses seguintes, reservando um período posterior a qualquer recalibração para o teste. Os demais componentes da ECL também exigirão validação própria e monitoramento de desempenho na carteira de cada instituição. O desenvolvimento da plataforma e essas validações estão **fora do objeto da dissertação**.
 
 ## 11. Limitações e decisões pendentes
 

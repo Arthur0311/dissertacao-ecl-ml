@@ -80,7 +80,7 @@ fatores:
   cenarios: [confirmatorios, exploratorios]
 
 regimes:
-  R0: {nome: referencia_ingenua, definicao: taxa_base_de_origem_ou_estimativa_suavizada, zero_eventos: executavel}
+  R0: {nome: referencia_simples, definicao: taxa_agregada_comparavel_ou_estimativa_suavizada, zero_eventos: aplicavel_se_houver_base_documentada}
   R1: {nome: local, definicao: apenas_desenvolvimento_do_destino, zero_eventos: pode_ser_nao_estimavel}
   R2: {nome: agrupado, definicao: modelo_unico_origem_mais_destino, zero_eventos: executavel_com_eventos_na_origem}
   R3: {nome: transferido, definicao: treinado_na_origem_sem_atualizacao, zero_eventos: executavel}

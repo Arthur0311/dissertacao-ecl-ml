@@ -23,7 +23,7 @@ Ingestão, construção de atributos, treinamento, recalibração, LGD/EAD, perd
 | Tabela de verdade isolada do treino | novo módulo de simulação |
 | Testes de coerência estrutural e de propriedades | `tests/` |
 | Extração e tratamento reproduzível do SCR.data; relatório de plausibilidade | `ingestion` e `reporting` |
-| Regime R0 (referência ingênua) | `pd_models` |
+| Regime R0 (referência simples) | `pd_models` |
 | Regimes R1–R3 com logística regularizada e gradient boosting | `pd_models` |
 | R4: intercepto e inclinação no destino, com regularização e retorno a R3 | `local_recalibration` |
 | Partições cronológicas, maturação e embargo | `validation` |
