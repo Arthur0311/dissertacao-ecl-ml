@@ -12,7 +12,7 @@
 
 ## Resumo
 
-A mensuração de perdas esperadas de crédito depende de estimativas de risco capazes de representar, com incerteza conhecida, a probabilidade de inadimplência das operações. Instituições financeiras podem enfrentar diferentes condições informacionais: carteiras recém-originadas, poucas ocorrências de inadimplência, públicos especializados ou dados extensos, mas pouco comparáveis aos de outras populações. O aproveitamento de modelos estimados com dados de carteiras de referência pode reduzir a instabilidade das estimativas locais; contudo, pode introduzir viés quando as populações diferem. Esta dissertação investigará em que condições a disponibilidade de dados locais, a heterogeneidade entre carteiras de origem e destino e a complexidade dos algoritmos afetam a qualidade de estratégias de transferência e adaptação de probabilidades de inadimplência (PD) de 12 meses. Será adotado estudo quantitativo de simulação de Monte Carlo, com mecanismos geradores de dados explicitados e diferentes perfis de instituições financeiras virtuais. A estrutura analítica das operações tomará o leiaute do Documento 3040 do Sistema de Informações de Créditos (SCR) como referência, sem utilizar arquivos individuais de instituições reais. Estatísticas públicas do SCR.data apoiarão a calibração de características observáveis das carteiras, sendo explicitadas as dimensões não identificáveis a partir de agregados. Serão comparados modelos locais, agrupados, transferidos e recalibrados, utilizando regressão logística regularizada e *gradient boosting*. Os desfechos principais incluirão pontuação probabilística, calibração, erro em relação às probabilidades verdadeiras do simulador e frequência de transferência negativa. A análise contábil mensurará como erros de PD se propagam à perda esperada simulada, mantendo explícitas as premissas de severidade, exposição e desconto. Os resultados pretendem delimitar condições de utilidade da transferência e fundamentar um procedimento reproduzível de escolha de estratégias; sua aplicação a carteiras reais dependerá de validação posterior.
+A mensuração de perdas esperadas de crédito depende de estimativas de risco capazes de representar, com incerteza conhecida, a probabilidade de inadimplência das operações. Instituições financeiras podem enfrentar diferentes condições informacionais: carteiras recém-originadas, poucas ocorrências de inadimplência, públicos especializados ou dados extensos, mas pouco comparáveis aos de outras populações. O aproveitamento de modelos estimados com dados de carteiras de referência pode reduzir a instabilidade das estimativas locais; contudo, pode introduzir viés quando as populações diferem. Esta dissertação investigará em que condições a disponibilidade de dados locais, a heterogeneidade entre carteiras de origem e destino e a complexidade dos algoritmos afetam a qualidade das estimativas de probabilidade de inadimplência (PD) em 12 meses obtidas com e sem transferência de aprendizado. Será adotado estudo quantitativo de simulação de Monte Carlo, com mecanismos geradores de dados explicitados e diferentes perfis de instituições financeiras virtuais. A estrutura analítica das operações tomará o leiaute do Documento 3040 do Sistema de Informações de Créditos (SCR) como referência, sem utilizar arquivos individuais de instituições reais. Estatísticas públicas do SCR.data apoiarão a calibração de características observáveis das carteiras, sendo explicitadas as dimensões não identificáveis a partir de agregados. Serão comparados modelos locais, agrupados, transferidos e recalibrados, utilizando regressão logística regularizada e *gradient boosting*. Os desfechos principais incluirão pontuação probabilística, calibração, erro em relação às probabilidades verdadeiras do simulador e frequência de transferência negativa. A análise contábil mensurará como erros de PD se propagam à perda esperada simulada, mantendo explícitas as premissas de severidade, exposição e desconto. Os resultados pretendem delimitar condições de utilidade da transferência e fundamentar um procedimento reproduzível de escolha de estratégias; sua aplicação a carteiras reais dependerá de validação posterior.
 
 **Palavras-chave:** perdas esperadas de crédito; probabilidade de inadimplência; Machine Learning; simulação de Monte Carlo; transferência de aprendizado; dados sintéticos; calibração; SCR.
 
@@ -32,11 +32,11 @@ O aproveitamento de modelos estimados em outras populações constitui uma alter
 
 ### 1.2 Problema científico
 
-A literatura já investiga estimação de PD em carteiras de poucos eventos e transferência de aprendizado aplicada a risco de crédito (Kiefer, 2009; Blümke, 2020; Suryanto et al., 2022). Portanto, nem a utilização de Machine Learning nem a possibilidade de transferência negativa constituem, isoladamente, uma lacuna científica. O problema específico consiste em determinar **sob quais condições a transferência de informação entre carteiras melhora ou prejudica a qualidade das estimativas de PD**, distinguindo restrição informacional, diferença entre populações e complexidade do estimador. O experimento simulado permitirá observar, além dos eventos realizados, as probabilidades verdadeiras estipuladas pelo mecanismo gerador e a influência de diferentes especificações desse mecanismo.
+A literatura já investiga estimação de PD em carteiras de poucos eventos e transferência de aprendizado aplicada a risco de crédito (Kiefer, 2009; Blümke, 2020; Suryanto et al., 2022). Portanto, nem a utilização de Machine Learning nem a possibilidade de transferência negativa constituem, isoladamente, uma lacuna científica. O problema específico consiste em determinar **sob quais condições a transferência de informação entre carteiras melhora ou prejudica a qualidade das estimativas de PD**, distinguindo restrição informacional, diferença entre populações e complexidade do estimador. O experimento simulado permitirá observar, além dos eventos realizados, as probabilidades verdadeiras estipuladas pelo mecanismo gerador e a influência de diferentes especificações desse mecanismo. Para uma instituição recém-constituída, o acesso a um modelo externo é uma condição do experimento. Na sua ausência, interessa saber com que histórico o treinamento local passa a melhorar a previsão em relação a uma referência simples disponível.
 
 **Questão de pesquisa**
 
-> **Em que condições a disponibilidade de dados locais, a heterogeneidade entre carteiras de origem e destino e a complexidade dos algoritmos influenciam a qualidade das estimativas de probabilidade de inadimplência produzidas por estratégias de Machine Learning com transferência e adaptação de aprendizado?**
+> **Como a disponibilidade de dados locais, a heterogeneidade entre carteiras e a complexidade dos algoritmos influenciam a qualidade das estimativas de probabilidade de inadimplência em 12 meses obtidas por estratégias de Machine Learning com e sem transferência de aprendizado?**
 
 A **qualidade da PD** é o desfecho central. O cálculo de perdas esperadas a partir dessas probabilidades constitui um desdobramento contábil subordinado ao problema principal. A pesquisa não pretende investigar, como problema independente, a conformidade de instituições reais com o provisionamento regulatório, nem desenvolver uma plataforma comercial completa.
 
@@ -61,17 +61,17 @@ A **relevância aplicada** está relacionada à possibilidade de desenvolver pos
 
 ### 2.1 Objetivo geral
 
-Avaliar, por meio de simulações de Monte Carlo com carteiras sintéticas calibradas parcialmente por evidências agregadas do mercado de crédito brasileiro, como a disponibilidade de dados locais, a heterogeneidade entre carteiras de origem e destino e a complexidade dos algoritmos condicionam a qualidade das estimativas de PD de 12 meses obtidas por estratégias locais, agrupadas, transferidas e adaptativas de Machine Learning, examinando suas implicações para a mensuração de perdas esperadas simuladas.
+Avaliar, por meio de simulações de Monte Carlo com carteiras de crédito sintéticas, como a disponibilidade de dados locais, a heterogeneidade entre carteiras e a complexidade dos algoritmos influenciam a qualidade das estimativas de probabilidade de inadimplência em 12 meses obtidas por estratégias de Machine Learning com e sem transferência de aprendizado.
 
 ### 2.2 Objetivos específicos
 
-1. **Estruturar e documentar** uma base sintética longitudinal de operações de crédito inspirada nos atributos e conceitos do Documento 3040, diferenciando campos de reporte, variáveis analíticas adicionais e parâmetros não observáveis nos dados públicos.
-2. **Calibrar e verificar** características agregadas das instituições virtuais com referência ao SCR.data e a outras estatísticas públicas, declarando explicitamente os parâmetros não identificáveis e as respectivas análises de sensibilidade.
-3. **Construir e validar o simulador** com diferentes mecanismos geradores de inadimplência, incluindo condições lineares, não lineares, diferenças de composição, diferenças condicionais, mudanças temporais e carteiras com poucos ou nenhum evento observado.
-4. **Comparar** modelos de referência, locais, agrupados, transferidos e adaptados, utilizando regressão logística regularizada e *gradient boosting*, com treino, ajuste e teste separados cronologicamente.
-5. **Quantificar** desempenho probabilístico, calibração, erros em relação à PD verdadeira e ocorrência de transferência negativa ao variar disponibilidade de dados, heterogeneidade e estrutura do algoritmo.
-6. **Mensurar** a propagação do erro de PD para a ECL sintética sob mecanismos conhecidos de exposição, recuperação e desconto, distinguindo erro de previsão realizado de viés em relação ao valor esperado verdadeiro.
-7. **Produzir** uma fronteira de utilidade — quando identificável — e uma regra experimental de escolha de estratégias, avaliando a estabilidade dos resultados entre diferentes mecanismos geradores e as exigências computacionais de cada método.
+1. Construir cenários de carteiras sintéticas com diferentes históricos, perfis de tomadores e relações de risco, utilizando estatísticas públicas brasileiras para fundamentar características agregadas selecionadas.
+2. Comparar as estimativas de PD de 12 meses de modelos locais, transferidos e recalibrados com as referências disponíveis em cada cenário, avaliando também o treinamento agrupado quando houver acesso aos dados individuais da origem.
+3. Examinar como o número de tomadores, a extensão do histórico e a quantidade de eventos locais observados afetam a viabilidade e o desempenho de cada estratégia.
+4. Analisar como diferenças de composição, nível de risco e relação entre os atributos e a inadimplência afetam a transferência entre carteiras.
+5. Avaliar como a complexidade do algoritmo interage com a disponibilidade de dados e a estrutura do risco, comparando regressão logística regularizada e gradient boosting sob diferentes mecanismos geradores.
+6. Identificar as condições em que cada estratégia produz melhores probabilidades na carteira de destino, considerando desempenho preditivo, calibração, erro em relação à PD de referência e estabilidade entre replicações.
+7. Quantificar a repercussão dos erros de PD sobre a perda esperada simulada, sob premissas comuns de exposição, recuperação e desconto.
 
 ## 3. Referencial teórico e lacuna
 
@@ -121,13 +121,14 @@ O **estimando central** é a diferença esperada de desempenho preditivo entre m
 
 | Objetivo | Hipótese / análise | Fatores manipulados | Desfechos | Unidade de inferência |
 |---|---|---|---|---|
-| 3 e 4 | Verificação do DGP | Família de DGP, parâmetros, sementes | Taxas agregadas, eventos, distribuições | Replicação independente do cenário |
-| 5 | H1 | Volume local e nº de eventos | Diferença de *log-loss*, calibração | Replicação de Monte Carlo × cenário |
-| 5 | H2 | Composição e diferença condicional | Transferência negativa, desempenho | Replicação de Monte Carlo × cenário |
-| 5 | H3 | Diferença de taxa-base e tamanho local | Calibração média; *log-loss* | Replicação de Monte Carlo × cenário |
+| 1 | Verificação do DGP | Família de DGP, parâmetros, sementes | Taxas agregadas, eventos, distribuições | Replicação independente do cenário |
+| 2, 3 e 6 | Cenário sem modelo externo | Histórico e eventos locais | Viabilidade de R0 e R1 e diferença pareada de *log-loss* quando ambos forem estimáveis | Replicação de Monte Carlo × cenário |
+| 2 e 3 | H1 | Volume local e nº de eventos | Diferença de *log-loss*, calibração | Replicação de Monte Carlo × cenário |
+| 4 e 6 | H2 | Composição e diferença condicional | Transferência negativa, desempenho | Replicação de Monte Carlo × cenário |
+| 2 e 4 | H3 | Diferença de taxa-base e tamanho local | Calibração média; *log-loss* | Replicação de Monte Carlo × cenário |
 | 5 | H4 | Complexidade × DGP × volume | Diferença de desempenho | Replicação de Monte Carlo × cenário |
-| 6 | C1 | Exposição, LGD, recuperação, desconto | Desvio da ECL estimada frente à ECL verdadeira simulada | Replicação de Monte Carlo × cenário |
-| 7 | Regra de seleção | Condições conhecidas de treino | Arrependimento e frequência de acerto | Novas replicações independentes |
+| 7 | C1 | Exposição, LGD, recuperação, desconto | Desvio da ECL estimada frente à ECL verdadeira simulada | Replicação de Monte Carlo × cenário |
+| 6 | Regra de seleção | Condições conhecidas de treino | Arrependimento e frequência de acerto | Novas replicações independentes |
 
 ## 5. Enquadramento contábil, regulatório e fontes de dados
 
@@ -175,6 +176,8 @@ As instituições serão arquétipos experimentais, não reproduções de empres
 | IF-D — referência | Conjunto de carteiras sintéticas | Histórico longo e maior volume | Uso como possível origem de aprendizado |
 
 Os nomes indicam **cenários estilizados**. Não se presumirá que instituições de modalidades distintas disponham das mesmas variáveis explicativas. Os testes confirmatórios de transferência utilizarão somente um **núcleo comum de atributos** que possa ser representado de modo consistente entre origem e destino. Testes de variáveis específicas de uma modalidade serão complementares. O perfil de capacidade operacional será tratado separadamente da estrutura estatística do risco e não será usado como justificativa automática para reduzir qualidade de dados.
+
+Neste estudo, carteira é o conjunto de operações delimitado por instituição, modalidade e perfil dos tomadores. A PD é estimada por contrato e data-base. A carteira de destino reúne as operações avaliadas. Quando há transferência, a carteira de origem fornece a experiência utilizada para treinar o modelo. Para representar a especialização setorial, poderá ser simulado um contraste dentro da mesma modalidade, como capital de giro PJ para empresas do varejo e da cadeia do agronegócio. O DGP poderá variar tanto a frequência de receitas sazonais como a relação da sazonalidade com o risco. Essas diferenças são hipóteses experimentais.
 
 ### 6.3 Estrutura da base sintética
 
@@ -227,6 +230,8 @@ Parâmetros identificados apenas por suposição serão variados em **análises 
 
 **Disponibilidade de informação local.** Serão variados, separadamente quando possível, o número de tomadores, o número efetivo de eventos e a extensão temporal do histórico. Uma malha **candidata** para o piloto é de 0, 5, 20, 50 e 200 eventos locais maturados, complementada por níveis maiores. Para replicações em que o número aleatório observado de eventos não coincida com o alvo, registrar-se-á o valor realizado, sem selecionar observações futuras para forçar um número exato de casos. Poderão ser controlados também números de contratos e meses de histórico. O tratamento de **zero eventos** deverá ser explícito; métodos não estimáveis serão contabilizados, e métodos de transferência sem adaptação supervisionada continuarão elegíveis.
 
+O piloto distinguirá ausência de contratos com acompanhamento completo de 12 meses e ausência de eventos entre contratos já acompanhados por esse período. No primeiro caso, faltam desfechos completos para o treino supervisionado em horizonte fixo. No segundo, o número de contratos acompanhados fornece informação sobre a frequência de eventos, mas limita a estimação de diferenças de risco entre perfis.
+
 **Heterogeneidade.** A distância de composição será variada alterando parâmetros de distribuição dos atributos e, quando apropriado, o suporte entre populações. A diferença de taxa-base será variada por interceptos ou mecanismos equivalentes. A diferença condicional será variada por coeficientes, interações ou funções diferentes entre origem e destino. As diferenças conhecidas nos parâmetros do DGP serão registradas como verdade experimental; índices empíricos de separabilidade de domínios serão calculados apenas com dados de desenvolvimento.
 
 **Complexidade do algoritmo.** A regressão logística regularizada e o *gradient boosting* serão treinados sob protocolo comparável de seleção de hiperparâmetros, sem exigir igualdade artificial de tempo de computação. O custo observado será reportado separadamente.
@@ -235,11 +240,11 @@ Parâmetros identificados apenas por suposição serão variados em **análises 
 
 ### 6.7 Estratégias de estimação
 
-O conjunto principal de comparação terá cinco estratégias:
+O experimento cruzará a disponibilidade de histórico local com três condições de acesso. Sem modelo externo nem microdados da origem, serão avaliados R0 e R1 quando viáveis. Com acesso às previsões de um modelo externo, também serão elegíveis R3 e R4, conforme haja informação local para recalibrar. R2 exigirá acesso aos microdados de desenvolvimento da origem. Em todos os casos, a avaliação usará os mesmos contratos futuros do destino em cada replicação. O simulador manterá a PD de referência reservada à avaliação.
 
 | Regime | Definição | Situação com zero evento local |
 |---|---|---|
-| **R0 — Referência ingênua** | Taxa-base de origem ou estimativa suavizada previamente definida, sem recorrer a rótulos futuros | Executável com referência externa simulada |
+| **R0 — Referência simples** | Taxa agregada comparável ao evento e horizonte ou estimativa suavizada fundamentada nas informações disponíveis na data-base | Aplicável se houver base documentada. Sem ela, registrar indisponibilidade |
 | **R1 — Local** | Modelo ajustado apenas com desenvolvimento do destino | Pode ser não estimável sem regularização/prior apropriado |
 | **R2 — Agrupado** | Modelo único com dados de origem e destino elegíveis | Executável quando houver eventos na origem |
 | **R3 — Transferido** | Treinado na origem e aplicado no destino sem atualização | Executável; calibração local não pode ser comprovada sem rótulos |
@@ -283,7 +288,7 @@ A precisão da **calibração em uma carteira simulada** será tratada separadam
 
 ### 6.11 Fronteira de utilidade e regra experimental de seleção
 
-A fronteira de utilidade será estimada em cada família de DGP e tipo de heterogeneidade. A regra de seleção utilizará características disponíveis **antes** da estimação do destino (por exemplo, volume local, número de eventos maturados, duração histórica, indicadores de distância de composição e atributos dos regimes), sem utilizar diferenças condicionais verdadeiras que só o simulador conhece. A regra será comparada, em replicações independentes, ao regime local, ao transferido e a um **oráculo retrospectivo** que escolhe o melhor método com conhecimento do desempenho de teste. A distância em desempenho entre a regra factível e esse oráculo será denominada *arrependimento* (*regret*), sem sugerir que o oráculo seja aplicável por uma instituição real.
+A fronteira de utilidade será estimada em cada família de DGP e tipo de heterogeneidade. A regra de seleção utilizará características disponíveis **antes** da estimação do destino (por exemplo, volume local, número de eventos maturados, duração histórica, indicadores de distância de composição e atributos dos regimes), sem utilizar diferenças condicionais verdadeiras que só o simulador conhece. A regra será comparada, em replicações independentes, ao regime local, ao transferido e a um **oráculo retrospectivo** que escolhe o melhor método com conhecimento do desempenho de teste. A distância em desempenho entre a regra factível e esse oráculo será denominada *arrependimento* (*regret*), sem sugerir que o oráculo seja aplicável por uma instituição real. A seleção será restrita aos regimes elegíveis segundo o acesso efetivo da instituição. Indicadores que exijam microdados da origem só poderão ser usados no cenário que os disponibiliza. Se nenhum regime for estimável, será registrada a insuficiência de informação.
 
 Caso as condições observáveis não permitam prever qual regime é melhor, esse resultado deverá ser relatado. A dissertação não se compromete a produzir um seletor universal ou eficaz em todo cenário.
 
@@ -380,7 +385,7 @@ Os prazos pressupõem aprovação do piloto dentro dos quatro primeiros meses. C
 
 ### 10.3 Possível aplicação comercial posterior
 
-O método poderá fundamentar uma ferramenta que integre dados de carteiras, avalie sua condição informacional, indique uma estratégia de modelagem e documente os resultados. O laboratório de instituições virtuais será útil para testes e demonstrações sem expor contratos reais. Entretanto, a implantação de uma solução de ECL em produção exigirá acesso legítimo aos dados da instituição, validação externa, controle de deriva do modelo, governança, auditoria, segregação de clientes e aderência às normas aplicáveis — atividades **fora do objeto da dissertação**.
+O método poderá fundamentar uma ferramenta que integre dados de carteiras, avalie sua condição informacional, indique uma estratégia de modelagem e documente os resultados. O laboratório de instituições virtuais será útil para testes e demonstrações sem expor contratos reais. Entretanto, a implantação de uma solução de ECL em produção exigirá acesso legítimo aos dados da instituição, validação externa, controle de deriva do modelo, governança, auditoria, segregação de clientes e aderência às normas aplicáveis — atividades **fora do objeto da dissertação**. Nessa validação posterior, as PDs atribuídas em uma data passada serão confrontadas com os eventos observados nos mesmos contratos reais ao longo dos 12 meses seguintes. Eventual recalibração utilizará histórico anterior ao período de teste.
 
 ## 11. Limitações e decisões pendentes
 
