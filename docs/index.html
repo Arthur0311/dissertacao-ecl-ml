@@ -463,11 +463,12 @@ kbd{font-family:var(--mono);font-size:11px;border:1px solid var(--border2);borde
     <div class="tabs" id="regTabs" role="tablist"></div>
     <div class="g2">
       <svg class="pl rg" id="regSvg" viewBox="0 -26 640 270" role="img" aria-label="Fluxo de dados de cada regime">
-        <path class="e" id="eOP" d="M100 24 C100 -22 545 -22 545 98"/><path class="e" id="eOM" d="M180 51 L250 51"/><path class="e" id="eDM" d="M180 188 C218 188 212 62 250 62"/><path class="e" id="eDC" d="M180 205 L250 205"/><path class="e" id="eMP" d="M400 51 C438 51 432 118 470 118"/><path class="e" id="eMC" d="M325 78 L325 172"/><path class="e" id="eCP" d="M400 199 C438 199 432 132 470 132"/>
+        <path class="e" id="eRP" d="M545 28 L545 98"/><path class="e" id="eOM" d="M180 51 L250 51"/><path class="e" id="eDM" d="M180 188 C218 188 212 62 250 62"/><path class="e" id="eDC" d="M180 205 L250 205"/><path class="e" id="eMP" d="M400 51 C438 51 432 118 470 118"/><path class="e" id="eMC" d="M325 78 L325 172"/><path class="e" id="eCP" d="M400 199 C438 199 432 132 470 132"/>
         <g class="nd" id="nO"><rect x="20" y="24" width="160" height="54" rx="12"/><text x="100" y="47">Origem</text><text x="100" y="64" style="font-size:10.5px;font-weight:400">muitos dados</text></g>
         <g class="nd" id="nD"><rect x="20" y="172" width="160" height="54" rx="12"/><text x="100" y="195">Destino</text><text x="100" y="212" style="font-size:10.5px;font-weight:400">desenvolvimento local</text></g>
         <g class="nd" id="nM"><rect x="250" y="24" width="150" height="54" rx="12"/><text x="325" y="55">Modelo de PD</text></g>
         <g class="nd" id="nC"><rect x="250" y="172" width="150" height="54" rx="12"/><text x="325" y="195">Recalibração</text><text x="325" y="212" style="font-size:10.5px;font-weight:400">intercepto e inclinação</text></g>
+        <g class="nd" id="nR"><rect x="470" y="-20" width="150" height="48" rx="12"/><text x="545" y="0">Referência agregada</text><text x="545" y="16" style="font-size:10.5px;font-weight:400">taxa na data-base</text></g>
         <g class="nd" id="nP"><rect x="470" y="98" width="150" height="54" rx="12"/><text x="545" y="121">PD no destino</text><text x="545" y="138" style="font-size:10.5px;font-weight:400">teste futuro</text></g>
       </svg>
       <div class="box panel" id="regPanel" aria-live="polite"></div>
@@ -954,7 +955,7 @@ $$('.ic2 svg').forEach(function(s){s.style.cssText='width:15px;height:15px;fill:
 
 /* Regimes */
 var RG=[
- {l:'R0',n:'Referência simples',on:['nO','nP','eOP'],d:'Taxa agregada comparável ao evento e ao horizonte, ou estimativa suavizada fundamentada nas informações disponíveis na data-base.',z:'Aplicável se houver base documentada; sem ela, registra-se indisponibilidade.',w:'Dá o piso de comparação: um modelo só é útil se superar a referência simples.'},
+ {l:'R0',n:'Referência simples',on:['nR','nP','eRP'],d:'Taxa agregada comparável ao evento e ao horizonte, ou estimativa suavizada fundamentada nas informações disponíveis na data-base.',z:'Aplicável se houver base documentada; sem ela, registra-se indisponibilidade.',w:'Dá o piso de comparação: um modelo só é útil se superar a referência simples.'},
  {l:'R1',n:'Local',on:['nD','nM','nP','eDM','eMP'],d:'Modelo ajustado apenas com o desenvolvimento do destino.',z:'Pode ser não estimável sem regularização ou prior apropriado.',w:'É o comparador da transferência negativa: transferir só vale se não piorar o local.'},
  {l:'R2',n:'Agrupado',on:['nO','nD','nM','nP','eOM','eDM','eMP'],d:'Modelo único com dados de origem e destino elegíveis.',z:'Executável quando houver eventos na origem.',w:'Representa o compartilhamento mais simples de informação, sem tratar as carteiras como distintas.'},
  {l:'R3',n:'Transferido',on:['nO','nM','nP','eOM','eMP'],d:'Treinado na origem e aplicado no destino sem atualização.',z:'Executável; a calibração local não pode ser comprovada sem rótulos.',w:'Isola o efeito de usar o modelo alheio sem adaptação; continua disponível com zero evento local.'},
