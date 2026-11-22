@@ -1,0 +1,27 @@
+Consultas Q0–Q6 em linha única, para colar no Query Preview do Web of Science (Advanced Search).
+Mesmas strings do protocolo-busca-wos-q0-q6.md; único acréscimo: AND PY=(2009-2026) (período candidato do protocolo).
+Base: Web of Science Core Collection, Editions: All. Sem filtro de idioma ou de tipo.
+
+Q0
+TS=(("credit risk" OR "credit scor*" OR "credit default*" OR "loan default*" OR "default predict*" OR "probability of default" OR "expected credit loss*" OR "loan loss provision*") AND ("machine learning" OR "statistical learning" OR "predictive model*" OR "prediction model*" OR "risk model*" OR "probabilistic model*" OR "transfer learning" OR "domain adaptation" OR "synthetic data" OR "Monte Carlo" OR "credit risk simulation")) AND PY=(2009-2026)
+
+Q1
+TS=(("credit risk" OR "credit scor*" OR "loan default*" OR "credit default" OR "probability of default" OR "default prediction" OR "expected credit loss*") AND ("transfer learning" OR "domain adaptation" OR "domain shift" OR "covariate shift" OR "cross-domain" OR "cross-portfolio" OR "negative transfer" OR "multi-task learning" OR "model transportability" OR "model transfer*")) AND PY=(2009-2026)
+
+Q2
+TS=(("credit risk" OR "credit scor*" OR "probability of default" OR "loan default*" OR "default estimation") AND ("low-default" OR "low default" OR "no-default" OR "no default" OR "rare event*" OR "small sample*" OR "few-shot" OR "data scarc*" OR "data spars*" OR "cold start" OR "limited data")) AND PY=(2009-2026)
+
+Q3
+TS=(("credit risk" OR "credit scor*" OR "loan default*" OR "probability of default" OR "expected credit loss*") AND ("synthetic data" OR "simulated data" OR "simulation stud*" OR "Monte Carlo" OR "data-generating process*" OR "data generation" OR "synthetic portfolio*" OR "credit portfolio simulation")) AND PY=(2009-2026)
+
+Q4
+TS=(("credit risk" OR "credit scor*" OR "loan default*" OR "probability of default" OR "default prediction") AND ("probability calibration" OR "model calibration" OR "calibration slope" OR "calibration intercept" OR "Brier score" OR "log-loss" OR "logarithmic loss" OR "proper scoring rule*" OR "calibration curve*")) AND PY=(2009-2026)
+
+Q5
+TS=(("expected credit loss*" OR "IFRS 9" OR "loan loss provision*" OR "credit loss provision*" OR "credit impairment") AND ("machine learning" OR "probability of default" OR "predictive model*" OR "credit risk model*" OR "default forecast*" OR "model calibration")) AND PY=(2009-2026)
+
+Q6
+TS=(("transfer learning" OR "domain adaptation" OR "covariate shift" OR "negative transfer") AND ("simulation stud*" OR "Monte Carlo" OR "model calibration" OR "probabilistic prediction")) AND PY=(2009-2026)
+
+Exportação (para cada consulta): Export > Excel > Records from 1 to 1000 (repetir em lotes de 1000 se passar disso) > Record Content: Full Record.
+Depois, o mesmo em Export > BibTeX. Deixar os arquivos na pasta Downloads com o nome que o WoS der; a renomeação para wos_Qn_2026-11-15[_loteNN] é feita depois.

@@ -1,17 +1,17 @@
 # Fluxo de seleção da mini RSL
 
-**Situação:** nenhuma busca executada; todas as contagens pendentes. [Protocolo](protocolo-busca-wos-q0-q6.md) e [registro](registro-buscas.md).
+**Situação:** Q1–Q6 exportadas em 18/11/2026 e triadas por título e resumo (IA, duas leituras; conferência humana por amostra pendente). Leitura integral pendente. Q0 sem exportação. [Protocolo](protocolo-busca-wos-q0-q6.md) e [registro](registro-buscas.md).
 
 Modelo de relato inspirado no PRISMA, a adaptar ao processo efetivamente executado. Registros bibliográficos, relatórios/publicações e estudos não são unidades intercambiáveis.
 
 ```mermaid
 flowchart TD
-    A["WoS Q0 a Q6: registros N pendente"] --> C["Consolidação: N pendente"]
-    B["Outras vias: registros N pendente"] --> C
-    C --> D["Duplicatas removidas: N pendente"]
-    C --> E["Registros únicos triados: N pendente"]
-    E --> F["Excluídos em título e resumo: N pendente"]
-    E --> G["Relatórios procurados: N pendente"]
+    A["WoS Q1 a Q6: 1.351 registros"] --> C["Consolidação: 1.351"]
+    B["Outras vias: 0 até agora"] --> C
+    C --> D["Duplicatas removidas: 55"]
+    C --> E["Registros únicos triados: 1.296"]
+    E --> F["Excluídos: 1.092, sendo 317 por critério formal e 775 por conteúdo"]
+    E --> G["Relatórios a procurar: 204"]
     G --> H["Não recuperados: N pendente"]
     G --> I["Relatórios avaliados: N pendente"]
     I --> J["Excluídos por motivo: N pendente"]
@@ -22,12 +22,12 @@ flowchart TD
 
 ## Contagens a preencher
 
-- Identificação WoS por Q e execução: **pendente**.
-- Identificação por outras vias, separada por origem: **pendente**.
-- Duplicatas removidas entre consultas, execuções e vias: **pendente**.
-- Registros únicos triados: **pendente**.
-- Excluídos em títulos/resumos: **pendente**.
-- Relatórios procurados: **pendente**.
+- Identificação WoS por Q e execução: **Q1 49; Q2 199; Q3 456; Q4 67; Q5 80; Q6 500 (total 1.351)**. Q6 completa (500 resultados, confirmado pelo autor).
+- Identificação por outras vias, separada por origem: **0 até agora**.
+- Duplicatas removidas entre consultas, execuções e vias: **55**.
+- Registros únicos triados: **1.296**.
+- Excluídos em títulos/resumos: **1.092** (E1 234; E2 14; E3 69; E4 1; M1 34; M2 333; M3 13; M4 315; M5 9; M7 70).
+- Relatórios procurados: **204 a procurar** (principal 66; simulação 27; calibração 23; contábil 38; metodológico 50).
 - Relatórios não recuperados: **pendente**.
 - Relatórios avaliados integralmente: **pendente**.
 - Relatórios excluídos por motivo principal (listar cada motivo e N): **pendente**.

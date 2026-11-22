@@ -192,7 +192,7 @@ Planejar, implementar, documentar e avaliar um estudo quantitativo de simulaçã
 - [ ] **Aims:** fixar pergunta, H1–H4 e C1; contrastes principais e secundários.
 - [ ] **Data-generating mechanisms:** fixar famílias, parâmetros, níveis de volume e de distância, horizontes e mecanismos de saída.
 - [ ] **Estimands:** definir diferenças esperadas de *log-loss*, erro frente à PD verdadeira, frequência de transferência negativa e diferença de ECL sintética.
-- [ ] **Methods:** fixar R0 referência ingênua; R1 local; R2 agrupado; R3 transferido; R4 transferido + recalibração; regressão logística regularizada e *gradient boosting*.
+- [ ] **Methods:** fixar R0 referência simples; R1 local; R2 agrupado; R3 transferido; R4 transferido + recalibração; regressão logística regularizada e *gradient boosting*.
 - [ ] **Performance:** fixar *log-loss* primário, Brier, calibração, erro frente à verdade, AUC descritiva, ECL sintética e custo operacional.
 - [ ] Definir limiares de relevância e critérios de adequação, com precisão estatística e custos; não confundir IC de calibração individual com erro de Monte Carlo.
 - [ ] Planejar número de replicações pelo erro-padrão observado em piloto e orçamento; `100` é apenas valor inicial exploratório da v5, não meta fixada.

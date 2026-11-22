@@ -1,5 +1,13 @@
 # Histórico
 
+## 0.5.1 — 2026-11-22
+- Proposta v5 revisada pelo autor: a questão de pesquisa e o objetivo geral passam a comparar estratégias com e sem transferência de aprendizado; objetivos específicos reescritos e matriz de amarração renumerada, com o cenário sem modelo externo.
+- R0 passa a "referência simples". Os regimes ficam condicionados ao acesso: sem modelo externo nem microdados da origem, R0 e R1; com previsões de modelo externo, R3 e R4; R2 exige os microdados da origem.
+- Acrescentados à proposta: definição de carteira, distinção entre falta de contratos maturados e falta de eventos, contraste R1–R0 como resultado derivado descritivo e restrição da regra de seleção aos regimes elegíveis. O objetivo geral volta a mencionar a repercussão na perda esperada simulada.
+- Seção 10.3 reescrita como finalidade comercial posterior da plataforma de perdas esperadas; o desenvolvimento permanece fora do objeto da dissertação.
+- README, apresentação, protocolo experimental v5, roadmap, protocolo de busca, mapa do protótipo e configuração de exemplo alinhados à nova questão e ao novo nome de R0.
+- Mini revisão no Web of Science: Q1–Q6 exportadas em 18/11/2026; 1.351 registros, 1.296 únicos, 204 para leitura integral após triagem de título e resumo feita por IA em duas leituras, sem revisor humano independente. Lista de estudo priorizada em `literature/analysis/`.
+
 ## 0.5.0 — 2026-11-15
 - Documentos dependentes alinhados à proposta v5 (14/11/2026): simulação de Monte Carlo com carteiras sintéticas, mecanismos geradores explícitos e PD verdadeira conhecida, em substituição ao desenho baseado em microdados reais.
 - Título passa a "Modelagem adaptativa de probabilidades de inadimplência com Machine Learning: experimentos de transferência entre carteiras sintéticas e implicações para a mensuração de perdas esperadas de crédito".

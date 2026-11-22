@@ -8,9 +8,9 @@ Projeto de dissertação em Controladoria e Contabilidade, PPGCONT/UFRGS, linha 
 
 ## Questão de pesquisa
 
-Em que condições a disponibilidade de dados locais, a heterogeneidade entre carteiras de origem e destino e a complexidade dos algoritmos influenciam a qualidade das estimativas de PD produzidas por estratégias de Machine Learning com transferência e adaptação?
+Como a disponibilidade de dados locais, a heterogeneidade entre carteiras e a complexidade dos algoritmos influenciam a qualidade das estimativas de probabilidade de inadimplência em 12 meses obtidas por estratégias de Machine Learning com e sem transferência de aprendizado?
 
-O desenho corrente usa simulação de Monte Carlo e instituições virtuais, com PD verdadeira conhecida sob múltiplos mecanismos geradores. O Documento 3040 orienta a estrutura; SCR.data e, quando útil, IF.data apoiam a calibração agregada. Compara R0 referência ingênua, R1 local, R2 agrupado, R3 transferido e R4 transferido com recalibração, usando logística regularizada e gradient boosting quando aplicáveis. A repercussão em ECL é sintética e condicional às premissas de LGD, EAD e desconto. Validação com dados reais é complementar, não pré-requisito do desenho principal. A ferramenta comercial permanece fora do escopo.
+O desenho corrente usa simulação de Monte Carlo e instituições virtuais, com PD verdadeira conhecida sob múltiplos mecanismos geradores. O Documento 3040 orienta a estrutura; SCR.data e, quando útil, IF.data apoiam a calibração agregada. Compara R0 referência simples, R1 local, R2 agrupado, R3 transferido e R4 transferido com recalibração, usando logística regularizada e gradient boosting quando aplicáveis. A repercussão em ECL é sintética e condicional às premissas de LGD, EAD e desconto. Validação com dados reais é complementar, não pré-requisito do desenho principal. A ferramenta comercial permanece fora do escopo.
 
 ## Documentos correntes
 

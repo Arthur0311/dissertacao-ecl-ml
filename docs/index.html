@@ -281,7 +281,7 @@ kbd{font-family:var(--mono);font-size:11px;border:1px solid var(--border2);borde
   <article class="slide" data-t="Questão de pesquisa">
     <h3>Problema científico e questão de pesquisa</h3>
     <p class="lead2">Nem o uso de Machine Learning nem a possibilidade de transferência negativa constituem, isoladamente, uma lacuna <i class="s" title="Proposta v5, seção 1.2">§1.2</i>. O problema é determinar <b>sob quais condições</b> a transferência melhora ou prejudica a estimativa.</p>
-    <blockquote data-step>Em que condições a <mark>disponibilidade de dados locais</mark>, a <mark>heterogeneidade entre carteiras de origem e destino</mark> e a <mark>complexidade dos algoritmos</mark> influenciam a <mark class="o">qualidade das estimativas de probabilidade de inadimplência</mark> produzidas por estratégias de Machine Learning com transferência e adaptação de aprendizado?</blockquote>
+    <blockquote data-step>Como a <mark>disponibilidade de dados locais</mark>, a <mark>heterogeneidade entre carteiras</mark> e a <mark>complexidade dos algoritmos</mark> influenciam a <mark class="o">qualidade das estimativas de probabilidade de inadimplência em 12 meses</mark> obtidas por estratégias de Machine Learning com e sem transferência de aprendizado?</blockquote>
     <div class="g2" style="margin-top:18px">
       <div class="box" data-step><h4>Três fatores manipulados</h4><p>Disponibilidade, heterogeneidade e algoritmo. Em carteiras reais eles se combinam e os dados individuais raramente estão disponíveis à pesquisa, o que dificulta separar seus efeitos <i class="s" title="Proposta v5, seção 1.1">§1.1</i>.</p></div>
       <div class="box" data-step><h4>Um desfecho central</h4><p>A <b>qualidade da PD</b>. O cálculo da perda esperada é desdobramento contábil subordinado. Conformidade de instituições reais e produto comercial ficam fora <i class="s" title="Proposta v5, seção 1.2">§1.2</i>.</p></div>
@@ -293,7 +293,7 @@ kbd{font-family:var(--mono);font-size:11px;border:1px solid var(--border2);borde
 <section class="view" data-title="Objetivos e delimitação" data-desc="Objetivo geral, sete objetivos específicos e as fronteiras do que a pesquisa afirma" data-ic="target">
   <article class="slide" data-t="Objetivos">
     <h3>Objetivo geral e objetivos específicos</h3>
-    <p class="lead2">Avaliar, por simulações de Monte Carlo com carteiras sintéticas calibradas parcialmente por evidências agregadas do mercado brasileiro, como disponibilidade local, heterogeneidade e complexidade dos algoritmos condicionam a qualidade da PD de 12 meses, examinando as implicações para a perda esperada simulada <i class="s" title="Proposta v5, seção 2.1">§2.1</i>.</p>
+    <p class="lead2">Avaliar, por simulações de Monte Carlo com carteiras de crédito sintéticas, como disponibilidade de dados locais, heterogeneidade entre carteiras e complexidade dos algoritmos influenciam a qualidade da PD em 12 meses obtida por estratégias com e sem transferência de aprendizado, examinando a repercussão na perda esperada simulada <i class="s" title="Proposta v5, seção 2.1">§2.1</i>.</p>
     <div class="tabs" id="objTabs" role="tablist"></div>
     <div class="box panel" id="objPanel" aria-live="polite"></div>
   </article>
@@ -463,11 +463,12 @@ kbd{font-family:var(--mono);font-size:11px;border:1px solid var(--border2);borde
     <div class="tabs" id="regTabs" role="tablist"></div>
     <div class="g2">
       <svg class="pl rg" id="regSvg" viewBox="0 -26 640 270" role="img" aria-label="Fluxo de dados de cada regime">
-        <path class="e" id="eOP" d="M100 24 C100 -22 545 -22 545 98"/><path class="e" id="eOM" d="M180 51 L250 51"/><path class="e" id="eDM" d="M180 188 C218 188 212 62 250 62"/><path class="e" id="eDC" d="M180 205 L250 205"/><path class="e" id="eMP" d="M400 51 C438 51 432 118 470 118"/><path class="e" id="eMC" d="M325 78 L325 172"/><path class="e" id="eCP" d="M400 199 C438 199 432 132 470 132"/>
+        <path class="e" id="eRP" d="M545 28 L545 98"/><path class="e" id="eOM" d="M180 51 L250 51"/><path class="e" id="eDM" d="M180 188 C218 188 212 62 250 62"/><path class="e" id="eDC" d="M180 205 L250 205"/><path class="e" id="eMP" d="M400 51 C438 51 432 118 470 118"/><path class="e" id="eMC" d="M325 78 L325 172"/><path class="e" id="eCP" d="M400 199 C438 199 432 132 470 132"/>
         <g class="nd" id="nO"><rect x="20" y="24" width="160" height="54" rx="12"/><text x="100" y="47">Origem</text><text x="100" y="64" style="font-size:10.5px;font-weight:400">muitos dados</text></g>
         <g class="nd" id="nD"><rect x="20" y="172" width="160" height="54" rx="12"/><text x="100" y="195">Destino</text><text x="100" y="212" style="font-size:10.5px;font-weight:400">desenvolvimento local</text></g>
         <g class="nd" id="nM"><rect x="250" y="24" width="150" height="54" rx="12"/><text x="325" y="55">Modelo de PD</text></g>
         <g class="nd" id="nC"><rect x="250" y="172" width="150" height="54" rx="12"/><text x="325" y="195">Recalibração</text><text x="325" y="212" style="font-size:10.5px;font-weight:400">intercepto e inclinação</text></g>
+        <g class="nd" id="nR"><rect x="470" y="-20" width="150" height="48" rx="12"/><text x="545" y="0">Referência agregada</text><text x="545" y="16" style="font-size:10.5px;font-weight:400">taxa na data-base</text></g>
         <g class="nd" id="nP"><rect x="470" y="98" width="150" height="54" rx="12"/><text x="545" y="121">PD no destino</text><text x="545" y="138" style="font-size:10.5px;font-weight:400">teste futuro</text></g>
       </svg>
       <div class="box panel" id="regPanel" aria-live="polite"></div>
@@ -603,13 +604,14 @@ kbd{font-family:var(--mono);font-size:11px;border:1px solid var(--border2);borde
     <div class="tw"><table>
       <thead><tr><th>Objetivo</th><th>Hipótese ou análise</th><th>Fatores manipulados</th><th>Desfechos</th></tr></thead>
       <tbody>
-        <tr><td>3 e 4</td><td>Verificação do DGP</td><td>Família de DGP, parâmetros, sementes</td><td>Taxas agregadas, eventos, distribuições</td></tr>
-        <tr><td>5</td><td><b>H1</b></td><td>Volume local e número de eventos</td><td>Diferença de log-loss, calibração</td></tr>
-        <tr><td>5</td><td><b>H2</b></td><td>Composição e diferença condicional</td><td>Transferência negativa, desempenho</td></tr>
-        <tr><td>5</td><td><b>H3</b></td><td>Diferença de taxa-base e tamanho local</td><td>Calibração média; log-loss</td></tr>
+        <tr><td>1</td><td>Verificação do DGP</td><td>Família de DGP, parâmetros, sementes</td><td>Taxas agregadas, eventos, distribuições</td></tr>
+        <tr><td>2, 3 e 6</td><td>Cenário sem modelo externo</td><td>Histórico e eventos locais</td><td>Viabilidade de R0 e R1; diferença pareada de log-loss</td></tr>
+        <tr><td>2 e 3</td><td><b>H1</b></td><td>Volume local e número de eventos</td><td>Diferença de log-loss, calibração</td></tr>
+        <tr><td>4 e 6</td><td><b>H2</b></td><td>Composição e diferença condicional</td><td>Transferência negativa, desempenho</td></tr>
+        <tr><td>2 e 4</td><td><b>H3</b></td><td>Diferença de taxa-base e tamanho local</td><td>Calibração média; log-loss</td></tr>
         <tr><td>5</td><td><b>H4</b></td><td>Complexidade × DGP × volume</td><td>Diferença de desempenho</td></tr>
-        <tr><td>6</td><td><b>C1</b></td><td>Exposição, LGD, recuperação, desconto</td><td>Desvio da ECL estimada frente à verdadeira simulada</td></tr>
-        <tr><td>7</td><td>Regra de seleção</td><td>Condições conhecidas de treino</td><td>Arrependimento e frequência de acerto</td></tr>
+        <tr><td>7</td><td><b>C1</b></td><td>Exposição, LGD, recuperação, desconto</td><td>Desvio da ECL estimada frente à verdadeira simulada</td></tr>
+        <tr><td>6</td><td>Regra de seleção</td><td>Condições conhecidas de treino</td><td>Arrependimento e frequência de acerto</td></tr>
       </tbody></table></div>
     <p class="small muted" style="margin-top:8px">Unidade de inferência: replicação de Monte Carlo × cenário; para a regra de seleção, novas replicações independentes <i class="s" title="Proposta v5, seção 4, matriz de amarração">§4</i>.</p>
   </article>
@@ -891,13 +893,13 @@ function swap(p,html){p.classList.remove('panel');void p.offsetWidth;p.innerHTML
 
 /* Objetivos */
 tabs($('#objTabs'),[
- {l:'1 Estruturar',h:'<b>Estruturar e documentar</b> uma base sintética longitudinal de operações de crédito inspirada nos atributos e conceitos do Documento 3040, diferenciando campos de reporte, variáveis analíticas adicionais e parâmetros não observáveis nos dados públicos.'},
- {l:'2 Calibrar',h:'<b>Calibrar e verificar</b> características agregadas das instituições virtuais com referência ao SCR.data e a outras estatísticas públicas, declarando os parâmetros não identificáveis e as análises de sensibilidade.'},
- {l:'3 Simular',h:'<b>Construir e validar o simulador</b> com diferentes mecanismos geradores de inadimplência: condições lineares, não lineares, diferenças de composição, diferenças condicionais, mudanças temporais e carteiras com poucos ou nenhum evento.'},
- {l:'4 Comparar',h:'<b>Comparar</b> modelos de referência, locais, agrupados, transferidos e adaptados, com regressão logística regularizada e <i>gradient boosting</i>, com treino, ajuste e teste separados cronologicamente.'},
- {l:'5 Quantificar',h:'<b>Quantificar</b> desempenho probabilístico, calibração, erros frente à PD verdadeira e ocorrência de transferência negativa ao variar disponibilidade, heterogeneidade e algoritmo.'},
- {l:'6 Mensurar',h:'<b>Mensurar</b> a propagação do erro de PD para a ECL sintética sob mecanismos conhecidos de exposição, recuperação e desconto, distinguindo erro de previsão realizado de viés frente ao valor esperado verdadeiro.'},
- {l:'7 Produzir',h:'<b>Produzir</b> uma fronteira de utilidade, quando identificável, e uma regra experimental de escolha de estratégias, avaliando a estabilidade entre mecanismos geradores e as exigências computacionais.'}
+ {l:'1 Cenários',h:'<b>Construir cenários</b> de carteiras sintéticas com diferentes históricos, perfis de tomadores e relações de risco, utilizando estatísticas públicas brasileiras para fundamentar características agregadas selecionadas.'},
+ {l:'2 Comparar',h:'<b>Comparar</b> as estimativas de PD de 12 meses de modelos locais, transferidos e recalibrados com as referências disponíveis em cada cenário, avaliando também o treinamento agrupado quando houver acesso aos dados individuais da origem.'},
+ {l:'3 Informação local',h:'<b>Examinar</b> como o número de tomadores, a extensão do histórico e a quantidade de eventos locais observados afetam a viabilidade e o desempenho de cada estratégia.'},
+ {l:'4 Heterogeneidade',h:'<b>Analisar</b> como diferenças de composição, nível de risco e relação entre os atributos e a inadimplência afetam a transferência entre carteiras.'},
+ {l:'5 Algoritmo',h:'<b>Avaliar</b> como a complexidade do algoritmo interage com a disponibilidade de dados e a estrutura do risco, comparando regressão logística regularizada e <i>gradient boosting</i> sob diferentes mecanismos geradores.'},
+ {l:'6 Condições',h:'<b>Identificar</b> as condições em que cada estratégia produz melhores probabilidades na carteira de destino, considerando desempenho preditivo, calibração, erro frente à PD de referência e estabilidade entre replicações.'},
+ {l:'7 Perda esperada',h:'<b>Quantificar</b> a repercussão dos erros de PD sobre a perda esperada simulada, sob premissas comuns de exposição, recuperação e desconto.'}
 ],function(it,i){swap($('#objPanel'),'<span class="tag a">Objetivo específico '+(i+1)+' de 7</span><p style="font-size:16px;margin:0">'+it.h+' <i class="s" title="Proposta v5, seção 2.2">§2.2</i></p>')});
 
 /* ADEMP */
@@ -905,7 +907,7 @@ tabs($('#ademp'),[
  {l:'<b>A</b><span>Aims · objetivos</span>',h:'<h4>Objetivos</h4><p>Estimar, sob mecanismos geradores fixados, a diferença esperada de desempenho entre regimes de estimação da PD de 12 meses, em função de disponibilidade local, heterogeneidade e algoritmo (H1–H4), e medir a propagação à ECL sintética (C1).</p>'},
  {l:'<b>D</b><span>Data-generating mechanisms</span>',h:'<h4>Mecanismos geradores</h4><p>Instituições virtuais IF-A a IF-D e cinco famílias de DGP: L (logístico), N (não linear), C (composição), R (condicional) e T (temporal). Núcleo obrigatório: L, N, C e R.</p>'},
  {l:'<b>E</b><span>Estimands · alvos</span>',h:'<h4>Estimandos</h4><p>Central: diferença esperada de <i>log-loss</i> entre métodos na população de teste do destino. Também: erro frente à PD verdadeira, probabilidade de transferência negativa e desvio da ECL sintética frente à verdadeira.</p>'},
- {l:'<b>M</b><span>Methods · métodos</span>',h:'<h4>Métodos</h4><p>Regimes R0 (referência ingênua), R1 (local), R2 (agrupado), R3 (transferido) e R4 (transferido com recalibração), com regressão logística regularizada e <i>gradient boosting</i>.</p>'},
+ {l:'<b>M</b><span>Methods · métodos</span>',h:'<h4>Métodos</h4><p>Regimes R0 (referência simples), R1 (local), R2 (agrupado), R3 (transferido) e R4 (transferido com recalibração), com regressão logística regularizada e <i>gradient boosting</i>.</p>'},
  {l:'<b>P</b><span>Performance measures</span>',h:'<h4>Medidas de desempenho</h4><p><i>Log-loss</i> (primária), Brier, intercepto e inclinação de calibração, AUC-ROC, erro frente à PD verdadeira, frequência de transferência negativa e desvio monetário, com erro-padrão de Monte Carlo.</p>'}
 ],function(it){swap($('#adempPanel'),it.h+'<p class="small muted" style="margin:0">Fonte: proposta v5, seções 3.3 e 6.1, e protocolo experimental v5 (preliminar, ainda não congelado).</p>')},' ');
 
@@ -953,7 +955,7 @@ $$('.ic2 svg').forEach(function(s){s.style.cssText='width:15px;height:15px;fill:
 
 /* Regimes */
 var RG=[
- {l:'R0',n:'Referência ingênua',on:['nO','nP','eOP'],d:'Taxa-base de origem ou estimativa suavizada previamente definida, sem recorrer a rótulos futuros.',z:'Executável com referência externa simulada.',w:'Dá o piso de comparação: um modelo só é útil se superar a taxa-base.'},
+ {l:'R0',n:'Referência simples',on:['nR','nP','eRP'],d:'Taxa agregada comparável ao evento e ao horizonte, ou estimativa suavizada fundamentada nas informações disponíveis na data-base.',z:'Aplicável se houver base documentada; sem ela, registra-se indisponibilidade.',w:'Dá o piso de comparação: um modelo só é útil se superar a referência simples.'},
  {l:'R1',n:'Local',on:['nD','nM','nP','eDM','eMP'],d:'Modelo ajustado apenas com o desenvolvimento do destino.',z:'Pode ser não estimável sem regularização ou prior apropriado.',w:'É o comparador da transferência negativa: transferir só vale se não piorar o local.'},
  {l:'R2',n:'Agrupado',on:['nO','nD','nM','nP','eOM','eDM','eMP'],d:'Modelo único com dados de origem e destino elegíveis.',z:'Executável quando houver eventos na origem.',w:'Representa o compartilhamento mais simples de informação, sem tratar as carteiras como distintas.'},
  {l:'R3',n:'Transferido',on:['nO','nM','nP','eOM','eMP'],d:'Treinado na origem e aplicado no destino sem atualização.',z:'Executável; a calibração local não pode ser comprovada sem rótulos.',w:'Isola o efeito de usar o modelo alheio sem adaptação; continua disponível com zero evento local.'},
@@ -1040,7 +1042,7 @@ function rng(seed){return function(){seed|=0;seed=seed+0x6D2B79F5|0;var t=Math.i
     var r=rng(99),s=0,N=6000;for(var i=0;i<N;i++)s+=sig(A0+a+bd[0]*(m+randn(r))+bd[1]*randn(r));var rate=s/N;
     $('#tEo').textContent=e;$('#tAo').textContent=fmt(a,1);$('#tMo').textContent=fmt(m,1);$('#tDo').textContent=fmt(d,2);
     return{e:e,a:a,m:m,d:d,n:e?Math.round(e/rate):0,rate:rate}}
-  var strip=$('#tStrip'),bars=$('#tBars'),NM=['R0','R1','R2','R3','R4'],LB={R0:'R0 ingênuo',R1:'R1 local',R2:'R2 agrupado',R3:'R3 transferido',R4:'R4 recalibrado'};
+  var strip=$('#tStrip'),bars=$('#tBars'),NM=['R0','R1','R2','R3','R4'],LB={R0:'R0 simples',R1:'R1 local',R2:'R2 agrupado',R3:'R3 transferido',R4:'R4 recalibrado'};
   function clear(s){while(s.firstChild)s.removeChild(s.firstChild)}
   function ms(v){var a=v.filter(function(x){return isFinite(x)}),n=a.length;if(!n)return{m:NaN,se:NaN,n:0};var m=a.reduce(function(p,c){return p+c},0)/n,s=0;a.forEach(function(x){s+=(x-m)*(x-m)});return{m:m,se:n>1?Math.sqrt(s/(n-1)/n):0,n:n}}
   function render(res,P){

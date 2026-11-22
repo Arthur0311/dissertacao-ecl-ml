@@ -54,7 +54,7 @@ flowchart LR
     F["3040: estrutura; SCR.data e IF.data: agregados"] --> D
 ```
 
-O desenho corrente usa instituições virtuais e múltiplos DGPs. R0 é a referência ingênua, R1 local, R2 agrupado, R3 transferido e R4 transferido com recalibração. Reponderação é extensão condicionada. Não equiparar agregados de atraso à PD individual nem plausibilidade agregada à validação externa. A ECL permanece desdobramento da PD, sob premissas explícitas de LGD, EAD e desconto. A revisão deve procurar evidências contrárias à lacuna, sem presumir que instituições S4/S5 careçam de dados.
+O desenho corrente usa instituições virtuais e múltiplos DGPs. R0 é a referência simples, R1 local, R2 agrupado, R3 transferido e R4 transferido com recalibração. Reponderação é extensão condicionada. Não equiparar agregados de atraso à PD individual nem plausibilidade agregada à validação externa. A ECL permanece desdobramento da PD, sob premissas explícitas de LGD, EAD e desconto. A revisão deve procurar evidências contrárias à lacuna, sem presumir que instituições S4/S5 careçam de dados.
 
 ## 2. Consultas para colar no WoS
 
@@ -165,8 +165,8 @@ TS=(
 ## 3. Escopo, filtros e critérios
 
 - **Período exploratório candidato:** 2009–2026 (justificar mudanças; exceções metodológicas antigas podem ser recuperadas por citações).
-- **Tipos:** Article, Review Article e Proceedings Paper conforme cobertura e objetivo. A inclusão definitiva depende da pergunta e do protocolo; trabalhos de revisão não são observações empíricas independentes.
-- **Idioma:** iniciar sem restrição estreita; registrar filtros posteriores, se aplicados.
+- **Tipos:** Article.
+- **Idioma:** apenas inglês.
 - **Núcleo empírico:** estudos de crédito/PD com resultados pertinentes a transferência/adaptação, escassez, calibração ou simulação.
 - **Suporte teórico:** trabalhos metodológicos externos ao crédito e normativos contábeis entram como contexto, não como evidência empírica de eficácia em carteira bancária.
 - **Exclusões:** duplicatas; estudos sem pertinência; textos sem informações suficientes para extração (registrar motivo); estudos somente de fraude ou outros domínios sem ligação justificável.
@@ -190,7 +190,6 @@ flowchart TD
     F --> X
     F --> Y["Texto não obtido: registrar separadamente"]
 ```
-
 
 **Planilhas:** `literature/processed/triagem_estudos.xlsx` e `literature/analysis/matriz-extracao.xlsx`. **Documentação:** `docs/revisao/registro-buscas.md` e `docs/revisao/fluxo-prisma.md`.
 

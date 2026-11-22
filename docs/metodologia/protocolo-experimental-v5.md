@@ -26,7 +26,7 @@ Alteração posterior é emenda datada, com justificativa e indicação do que j
 
 ## 2. A — Objetivos (*Aims*)
 
-Estimar, sob mecanismos geradores fixados, a diferença esperada de desempenho preditivo entre regimes de estimação de PD de 12 meses no destino, em função de disponibilidade local, heterogeneidade origem–destino e algoritmo (H1–H4). Mensurar a propagação do erro de PD à ECL sintética (C1). Derivar, quando identificável, a fronteira de utilidade e avaliar uma regra de seleção de regime.
+Estimar, sob mecanismos geradores fixados, a diferença esperada de desempenho preditivo entre regimes de estimação de PD de 12 meses no destino, em função de disponibilidade local, heterogeneidade origem–destino e algoritmo (H1–H4), com e sem transferência de aprendizado. Os regimes elegíveis dependem do acesso: sem modelo externo nem microdados da origem, R0 e R1; com previsões de um modelo externo, também R3 e R4; R2 exige os microdados da origem. Mensurar a propagação do erro de PD à ECL sintética (C1). Derivar, quando identificável, a fronteira de utilidade e avaliar uma regra de seleção de regime.
 
 ## 3. D — Mecanismos geradores (*Data-generating mechanisms*)
 
@@ -52,13 +52,13 @@ Estimar, sob mecanismos geradores fixados, a diferença esperada de desempenho p
 - **Contra a verdade:** erro médio, absoluto médio e quadrático médio da PD estimada frente à PD verdadeira do DGP, ao longo das replicações.
 - **Transferência negativa:** probabilidade de o regime transferido ou adaptado ter *log-loss* superior ao local por mais que a margem de irrelevância.
 - **Monetário:** diferença entre a ECL sintética estimada e a ECL verdadeira do simulador, em moeda simulada e em pontos-base da exposição.
-- **Derivado:** ponto ou faixa de disponibilidade em que o contraste adaptado–local cruza zero ou a margem. Sem cruzamento na região testada: "não identificado no domínio experimental".
+- **Derivado:** ponto ou faixa de disponibilidade em que o contraste adaptado–local cruza zero ou a margem. Sem cruzamento na região testada: "não identificado no domínio experimental". No cenário sem modelo externo, descreve-se de modo análogo o contraste R1–R0, sem hipótese direcional.
 
 ## 5. M — Métodos (*Methods*)
 
 | Regime | Definição | Zero evento local |
 |---|---|---|
-| R0 — Referência ingênua | Taxa-base de origem ou estimativa suavizada | Executável |
+| R0 — Referência simples | Taxa agregada comparável ao evento e ao horizonte ou estimativa suavizada, com as informações disponíveis na data-base | Aplicável se houver base documentada; sem ela, registrar indisponibilidade |
 | R1 — Local | Apenas desenvolvimento do destino | Pode ser não estimável |
 | R2 — Agrupado | Modelo único com origem e destino | Executável com eventos na origem |
 | R3 — Transferido | Treinado na origem, sem atualização | Executável |
