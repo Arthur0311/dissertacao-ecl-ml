@@ -165,8 +165,8 @@ TS=(
 ## 3. Escopo, filtros e critérios
 
 - **Período exploratório candidato:** 2009–2026 (justificar mudanças; exceções metodológicas antigas podem ser recuperadas por citações).
-- **Tipos:** Article, Review Article e Proceedings Paper conforme cobertura e objetivo. A inclusão definitiva depende da pergunta e do protocolo; trabalhos de revisão não são observações empíricas independentes.
-- **Idioma:** iniciar sem restrição estreita; registrar filtros posteriores, se aplicados.
+- **Tipos:** Article.
+- **Idioma:** apenas inglês.
 - **Núcleo empírico:** estudos de crédito/PD com resultados pertinentes a transferência/adaptação, escassez, calibração ou simulação.
 - **Suporte teórico:** trabalhos metodológicos externos ao crédito e normativos contábeis entram como contexto, não como evidência empírica de eficácia em carteira bancária.
 - **Exclusões:** duplicatas; estudos sem pertinência; textos sem informações suficientes para extração (registrar motivo); estudos somente de fraude ou outros domínios sem ligação justificável.
@@ -190,7 +190,6 @@ flowchart TD
     F --> X
     F --> Y["Texto não obtido: registrar separadamente"]
 ```
-
 
 **Planilhas:** `literature/processed/triagem_estudos.xlsx` e `literature/analysis/matriz-extracao.xlsx`. **Documentação:** `docs/revisao/registro-buscas.md` e `docs/revisao/fluxo-prisma.md`.
 

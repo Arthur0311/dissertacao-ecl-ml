@@ -38,3 +38,12 @@ Thumbs.db
 !literature/raw/*.xlsx
 !literature/processed/*.xlsx
 !literature/analysis/*.xlsx
+
+# Web of Science: registros completos e resumos ficam só no disco (repositório público)
+literature/raw/*.bib
+literature/raw/*.xls
+literature/processed/wos_consolidado.xlsx
+literature/processed/wos_deduplicado.xlsx
+literature/processed/registros_unicos.jsonl
+literature/analysis/lista_estudo_priorizada.xlsx
+~$*
